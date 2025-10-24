@@ -22,13 +22,11 @@ echo "Executing Wally setup.sh"
 # Path to RISC-V Tools
 if [ -d /opt/riscv ]; then
     export RISCV=/opt/riscv
-elif [ -d ~/riscv ]; then
-    export RISCV=~/riscv
+#elif [ -d ~/riscv ]; then
+#    export RISCV=~/riscv
 else
     # set the $RISCV directory here and remove the subsequent two lines
-    # export RISCV=
-    echo -e "${FAIL_COLOR}\$RISCV directory not found. Checked /opt/riscv and ~/riscv. Edit setup.sh to point to your custom \$RISCV directory.${ENDC}"
-    return 1
+    export RISCV="/rs23/shared/riscv"
 fi
 echo \$RISCV set to "${RISCV}"
 
@@ -51,8 +49,8 @@ fi
 ulimit -c 300000
 
 # load site licenses and tool locations
-if [ -e "${RISCV}"/site-setup.sh ]; then
-    source "${RISCV}"/site-setup.sh
+if [ -e "${WALLY}"/site-setup.sh ]; then
+    source "${WALLY}"/site-setup.sh
 else
     echo -e "${FAIL_COLOR}site-setup.sh not found in \$RISCV directory. Rerun wally-toolchain-install.sh to automatically download it.${ENDC}"
     return 1

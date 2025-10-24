@@ -15,19 +15,20 @@ ENDC='\033[0m' # Reset to default color
 
 # license servers and commercial CAD tool paths
 # Must edit these based on your local environment.
-export MGLS_LICENSE_FILE=27002@zircon.eng.hmc.edu                   # Change this to your Siemens license server for Questa
-export SNPSLMD_LICENSE_FILE=27020@zircon.eng.hmc.edu                # Change this to your Synopsys license server
+export MGLS_LICENSE_FILE=1717@mentor.lic.rice.edu                   
+export SALT_LICENSE_SERVER=1717@mentor.lic.rice.edu
+export SNPSLMD_LICENSE_FILE=27105@synopsys.lic.rice.edu                
 export IMPERASD_LICENSE_FILE=27020@zircon.eng.hmc.edu               # Change this to your Imperas license server
 export BREKER_LICENSE_FILE=1819@zircon.eng.hmc.edu                  # Change this to your Breker license server
-export QUESTA_HOME=/cad/mentor/QUESTA                               # Change this for your path to Questa, excluding bin
-export DC_HOME=/cad/synopsys/SYN                                    # Change this for your path to Synopsys DC, excluding bin
+export QUESTA_HOME="/rs23/shared/questa/questasim"                              
+export DC_HOME="/rs23/shared/synopsys/syn/W-2024.09-SP5-3/"                               
 export VCS_HOME=/cad/synopsys/VCS                                   # Change this for your path to Synopsys VCS, excluding bin
 export BREKER_HOME=/cad/breker/TREK                                 # Change this for your path to Breker Trek
 export SPYGLASS_HOME=/cad/synopsys/SPYGLASS_HOME                    # Change this for your path to Synopsys Spyglass
-
+export VIVADO_HOME=/rs23/shared/vivado/2025.1/Vivado
 # Tools
 # Questa and Synopsys
-export PATH=$QUESTA_HOME/bin:$DC_HOME/bin:$VCS_HOME/bin:$SPYGLASS_HOME/bin:$PATH
+export PATH=$QUESTA_HOME/bin:$DC_HOME/bin:$VCS_HOME/bin:$SPYGLASS_HOME/bin:$VIVADO_HOME/bin:$PATH
 # Synopsys Spyglass
 export SNPSLMD_QUEUE=1
 

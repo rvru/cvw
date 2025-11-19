@@ -27,8 +27,6 @@
 
 `include "BranchPredictorType.vh"
 
-`define max(a,b) (((a) > (b)) ? (a) : (b))
-
 // RV32 or RV64: XLEN = 32 or 64
 localparam XLEN = 32'd32;
 
@@ -41,7 +39,7 @@ localparam logic E_SUPPORTED = 0;
 
 // Integer instruction set extensions
 localparam logic ZIFENCEI_SUPPORTED = 1; // Instruction-Fetch fence
-localparam logic ZICSR_SUPPORTED    = 0; // CSR Instructions
+localparam logic ZICSR_SUPPORTED    = 1; // CSR Instructions
 localparam logic ZICCLSM_SUPPORTED  = 0; // Misaligned loads/stores
 localparam logic ZICOND_SUPPORTED   = 1; // Integer conditional operations
 
@@ -57,8 +55,8 @@ localparam logic ZMMUL_SUPPORTED = 1;
 
 // Atomic extensions
 // A extension is Zaamo + Zalrsc
-localparam logic ZAAMO_SUPPORTED  = 0;
-localparam logic ZALRSC_SUPPORTED = 0;
+localparam logic ZAAMO_SUPPORTED  = 1;
+localparam logic ZALRSC_SUPPORTED = 1;
 
 // Bit manipulation extensions
 // B extension is Zba + Zbb + Zbs
@@ -111,14 +109,14 @@ localparam logic ZICBOP_SUPPORTED = 1;
 // Virtual memory extensions
 localparam logic SVPBMT_SUPPORTED  = 0;
 localparam logic SVNAPOT_SUPPORTED = 0;
-localparam logic SVINVAL_SUPPORTED = 1; //1
-localparam logic SVADU_SUPPORTED   = 1; //1
+localparam logic SVINVAL_SUPPORTED = 1;
+localparam logic SVADU_SUPPORTED   = 1;
 
 
 // LSU microarchitectural Features
 localparam logic BUS_SUPPORTED = 1;
 localparam logic DCACHE_SUPPORTED = 1;
-localparam logic ICACHE_SUPPORTED = 1; // TODO: add cache and vmem
+localparam logic ICACHE_SUPPORTED = 1;
 localparam logic VIRTMEM_SUPPORTED = 1;
 localparam logic VECTORED_INTERRUPTS_SUPPORTED = 1;
 localparam logic BIGENDIAN_SUPPORTED = 1;

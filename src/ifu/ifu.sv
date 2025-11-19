@@ -96,7 +96,18 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   input  var logic [P.PA_BITS-3:0] PMPADDR_ARRAY_REGW[P.PMP_ENTRIES-1:0],// PMP address from privileged unit
   output logic                 InstrAccessFaultF,                        // Instruction access fault 
   output logic                 ICacheAccess,                             // Report I$ read to performance counters
-  output logic                 ICacheMiss                                // Report I$ miss to performance counters
+  output logic                 ICacheMiss,                                // Report I$ miss to performance counters
+
+  // ============ NEW VLIW PORTS ============
+  //VLIW Instruction Outputs (added after InstrD declaration)
+  output logic [31:0]          VLIWInstr0D,        // First VLIW instruction (decoded)
+  output logic [31:0]          VLIWInstr1D,        // Second VLIW instruction (decoded)
+  output logic [31:0]          VLIWInstr2D,        // Third VLIW instruction (decoded)
+  output logic [31:0]          VLIWInstr3D,        // Fourth VLIW instruction (decoded)
+  output logic [3:0]           VLIWValidD,         // Valid bits for each VLIW instruction
+  output logic                 VLIWModeD          // Indicates VLIW mode is active so we can ignore 
+  //InstrD as we know it is a HINT
+  // ========================================
 );
 
   localparam [31:0]            nop = 32'h00000013;                       // instruction for NOP
@@ -143,6 +154,22 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   logic 		       ITLBMissF;
   logic 		       InstrUpdateAF;                            // ITLB hit needs to update dirty or access bits
     
+  ///////////////////////////////////////////
+  // VLIW Signal Declarations (conditional on P.LOG_HINTS)
+  ///////////////////////////////////////////
+  logic [31:0]   VLIWInstr0F, VLIWInstr1F, VLIWInstr2F, VLIWInstr3F;
+  logic [3:0]    VLIWValidF;
+  logic          VLIWModeF;
+  logic [5:0]    VLIWCountF;  // Number of VLIW instructions (from hint immediate)
+
+  // Raw VLIW instructions before decompression
+  logic [31:0]   VLIWInstrRaw0D, VLIWInstrRaw1D, VLIWInstrRaw2D, VLIWInstrRaw3D;
+
+  logic [15:0]    check_16bit0, check_16bit1, check_16bit2, check_16bit3;
+
+  // Decompressed VLIW instructions
+  logic [31:0]   VLIWInstrDecomp0D, VLIWInstrDecomp1D, VLIWInstrDecomp2D, VLIWInstrDecomp3D;
+
   assign PCFExt = {2'b00, PCSpillF};
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -280,77 +307,122 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
                                   .s({SelIROM, ~CacheableF}), .y(InstrRawF[31:0]));
 
 
-      if (P.LOG_HINTS) begin
-        // Detect 16-bit HINT (C.LI x0, imm) *before* decompression
-        // This is encoded as C.ADDI with rd=x0, rs1=x0, imm!=0
-        
-        // --- Use F-stage signal InstrRawF ---
-        wire [1:0]   op_c     = InstrRawF[1:0];   
-        wire [2:0]   funct3_c = InstrRawF[15:13];
-        wire [4:0]   rd_c     = InstrRawF[11:7];  
-        wire [5:0]   imm_c    = {InstrRawF[12], InstrRawF[6:2]};
+    // Detect 16-bit HINT (C.LI x0, imm) *before* decompression
+    // This is encoded as C.ADDI with rd=x0, rs1=x0, imm!=0
+    // --- Use F-stage signal InstrRawF ---
+    wire [1:0]   op_c     = InstrRawF[1:0];   
+    wire [2:0]   funct3_c = InstrRawF[15:13];
+    wire [4:0]   rd_c     = InstrRawF[11:7];  
+    wire [5:0]   imm_c    = {InstrRawF[12], InstrRawF[6:2]};
 
-        wire is_16bit_hint = (op_c == 2'b01) && 
-                            (funct3_c == 3'b010) && 
-                            (rd_c == 5'b00000) && 
-                            (imm_c != 6'b0);
+    wire is_vliw_hint = (op_c == 2'b01) && 
+                        (funct3_c == 3'b010) && 
+                        (rd_c == 5'b00000) && 
+                        (imm_c != 6'b0);
 
-          always @(posedge clk) begin
-      integer i;
-      integer current_bit_idx;
-      integer fetch_bit_offset;
+  ///////////////////////////////////////////
+  // VLIW Extraction Logic (in Fetch Stage)
+  ///////////////////////////////////////////
 
-      if (~IFUStallF && ~reset && is_16bit_hint) begin
-        // -------------------------------------------------------
-        // 1. Compute the correct offset of PC inside FetchBuffer
-        // -------------------------------------------------------
-        localparam int LINEBYTES = P.ICACHE_LINELENINBITS / 8;
-        localparam int OFFSETLEN = $clog2(LINEBYTES);
+  // Calculate bit offset in fetch buffer
+  localparam int LINEBYTES = P.ICACHE_LINELENINBITS / 8;
+  localparam int OFFSETLEN = $clog2(LINEBYTES);
 
-        // Byte offset within current cache line (from icache signals)
-        logic [OFFSETLEN-1:0] fetch_byte_offset;
-        assign fetch_byte_offset = PCPF[OFFSETLEN-1:0];
+  logic [OFFSETLEN-1:0] fetch_byte_offset;
+  integer bit_offset;
+  if (P.LOG_HINTS) begin : vliw_extract
+  always_comb begin
+    // --- defaults so no latches are inferred ---
+    VLIWModeF    = 1'b0;
+    VLIWCountF   = 6'b0;
+    VLIWValidF   = 4'b0;
+    VLIWInstr0F  = 32'b0;
+    VLIWInstr1F  = 32'b0;
+    VLIWInstr2F  = 32'b0;
+    VLIWInstr3F  = 32'b0;
 
-        // Convert to bit offset
-        fetch_bit_offset = fetch_byte_offset * 8;
+    // Defaults for signals that were only conditionally assigned
+    fetch_byte_offset = '0;
+    bit_offset = 0;
 
-        // Start logging *after* the 16-bit hint
-        current_bit_idx = fetch_bit_offset + 16;
+    // Default temporaries (clear them so they are driven on all paths)
+    check_16bit0 = 16'b0;
+    check_16bit1 = 16'b0;
+    check_16bit2 = 16'b0;
+    check_16bit3 = 16'b0;
 
-        $info("IFU: [PC=0x%h] *** 16-bit HINT DETECTED (C.LI) ***. VLIW count: %0d.", PCF, imm_c);
-        $info("IFU: FETCH_BUFFER=0x%h (bit_offset=%0d)", FetchBuffer, fetch_bit_offset);
+    if (is_vliw_hint && !IFUStallF && !reset) begin
+      VLIWModeF = 1'b1;
+      VLIWCountF = imm_c;
 
-        // -------------------------------------------------------
-        // 2. Decode following instructions starting mid-buffer
-        // -------------------------------------------------------
-        for (i = 0; i < imm_c; i = i + 1) begin : VLIW_SCAN
+      fetch_byte_offset = PCPF[OFFSETLEN-1:0];
+      bit_offset = (fetch_byte_offset * 8) + 16; // Start after 16-bit hint
 
-          logic [15:0] instr_16bit;
-          logic [31:0] next_instr;
-          logic is_32bit;
-
-          // Stop if fewer than 32 bits remain
-          if (current_bit_idx + 32 > P.ICACHE_LINELENINBITS) begin
-            $info("IFU: END OF BUFFER at bit_idx=%0d. Stopping.", current_bit_idx);
-            disable VLIW_SCAN;                     // <-- ADDED
-          end
-
-          instr_16bit = FetchBuffer[current_bit_idx +: 16];
-          is_32bit = (instr_16bit[1:0] == 2'b11);
-
-          if (is_32bit) begin
-            next_instr = FetchBuffer[current_bit_idx +: 32];
-            $info("IFU: [PC=0x%h]   VLIW instr %0d (32b) at bit_idx=%0d : 0x%08h",
-                  PCF, i+1, current_bit_idx, next_instr);
-            current_bit_idx += 32;
-          end else begin
-            $info("IFU: [PC=0x%h]   VLIW instr %0d (16b) at bit_idx=%0d : 0x%04h",
-                  PCF, i+1, current_bit_idx, instr_16bit);
-            current_bit_idx += 16;
-          end
+      // Instruction 0
+      if (imm_c >= 1 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
+        check_16bit0 = FetchBuffer[bit_offset +: 16];
+        if (check_16bit0[1:0] == 2'b11) begin
+          VLIWInstr0F = FetchBuffer[bit_offset +: 32];
+          VLIWValidF[0] = 1'b1;
+          bit_offset = bit_offset + 32;
+        end else begin
+          VLIWInstr0F = {16'b0, check_16bit0};
+          VLIWValidF[0] = 1'b1;
+          bit_offset = bit_offset + 16;
         end
       end
+
+      // Instruction 1
+      if (imm_c >= 2 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
+        check_16bit1 = FetchBuffer[bit_offset +: 16];
+        if (check_16bit1[1:0] == 2'b11) begin
+          VLIWInstr1F = FetchBuffer[bit_offset +: 32];
+          VLIWValidF[1] = 1'b1;
+          bit_offset = bit_offset + 32;
+        end else begin
+          VLIWInstr1F = {16'b0, check_16bit1};
+          VLIWValidF[1] = 1'b1;
+          bit_offset = bit_offset + 16;
+        end
+      end
+
+      // Instruction 2
+      if (imm_c >= 3 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
+        check_16bit2 = FetchBuffer[bit_offset +: 16];
+        if (check_16bit2[1:0] == 2'b11) begin
+          VLIWInstr2F = FetchBuffer[bit_offset +: 32];
+          VLIWValidF[2] = 1'b1;
+          bit_offset = bit_offset + 32;
+        end else begin
+          VLIWInstr2F = {16'b0, check_16bit2};
+          VLIWValidF[2] = 1'b1;
+          bit_offset = bit_offset + 16;
+        end
+      end
+
+      // Instruction 3
+      if (imm_c >= 4 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
+        check_16bit3 = FetchBuffer[bit_offset +: 16];
+        if (check_16bit3[1:0] == 2'b11) begin
+          VLIWInstr3F = FetchBuffer[bit_offset +: 32];
+          VLIWValidF[3] = 1'b1;
+          bit_offset = bit_offset + 32;
+        end else begin
+          VLIWInstr3F = {16'b0, check_16bit3};
+          VLIWValidF[3] = 1'b1;
+          bit_offset = bit_offset + 16;
+        end
+      end
+
     end
+  end
+
+    
+    end else begin : no_vliw
+      assign VLIWModeF = 1'b0;
+      assign VLIWCountF = 6'b0;
+      assign VLIWValidF = 4'b0;
+      assign {VLIWInstr0F, VLIWInstr1F, VLIWInstr2F, VLIWInstr3F} = '0;
     end
 
     end else begin : passthrough
@@ -458,6 +530,20 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   
   // Decode stage pipeline register and logic
   flopenrc #(P.XLEN) PCDReg(clk, reset, FlushD, ~StallD, PCF, PCD);
+
+  ///////////////////////////////////////////
+  // VLIW Decode Stage Registers
+  ///////////////////////////////////////////
+  if (P.LOG_HINTS) begin : vliw_decode_regs
+    // Pipeline VLIW signals to Decode stage
+    flopenrc #(1)    VLIWModeDReg(clk, reset, FlushD, ~StallD, VLIWModeF, VLIWModeD);
+    flopenrc #(4)    VLIWValidDReg(clk, reset, FlushD, ~StallD, VLIWValidF, VLIWValidD);
+    flopenrc #(32)   VLIWInstr0DReg(clk, reset, FlushD, ~StallD, VLIWInstr0F, VLIWInstrRaw0D);
+    flopenrc #(32)   VLIWInstr1DReg(clk, reset, FlushD, ~StallD, VLIWInstr1F, VLIWInstrRaw1D);
+    flopenrc #(32)   VLIWInstr2DReg(clk, reset, FlushD, ~StallD, VLIWInstr2F, VLIWInstrRaw2D);
+    flopenrc #(32)   VLIWInstr3DReg(clk, reset, FlushD, ~StallD, VLIWInstr3F, VLIWInstrRaw3D);
+  end
+
    
   // expand 16-bit compressed instructions to 32 bits
   if (P.ZCA_SUPPORTED) begin: decomp
@@ -467,6 +553,53 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   end else begin: decomp
     assign InstrD = InstrRawD;
     assign IllegalIEUInstrD = IllegalBaseInstrD;
+  end
+
+  ///////////////////////////////////////////
+  // VLIW Decompression
+  ///////////////////////////////////////////
+  if (P.LOG_HINTS) begin : vliw_decomp_block
+    if (P.ZCA_SUPPORTED) begin: vliw_decomp
+      logic IllegalVLIWComp0D, IllegalVLIWComp1D, IllegalVLIWComp2D, IllegalVLIWComp3D;
+      
+      // Decompress each VLIW instruction if it's 16-bit
+      decompress #(P) vliw_decomp0(
+        .InstrRawD(VLIWInstrRaw0D[15:0] != 16'b0 ? VLIWInstrRaw0D : VLIWInstrRaw0D), 
+        .InstrD(VLIWInstrDecomp0D), 
+        .IllegalCompInstrD(IllegalVLIWComp0D)
+      );
+      
+      decompress #(P) vliw_decomp1(
+        .InstrRawD(VLIWInstrRaw1D[15:0] != 16'b0 ? VLIWInstrRaw1D : VLIWInstrRaw1D), 
+        .InstrD(VLIWInstrDecomp1D), 
+        .IllegalCompInstrD(IllegalVLIWComp1D)
+      );
+      
+      decompress #(P) vliw_decomp2(
+        .InstrRawD(VLIWInstrRaw2D[15:0] != 16'b0 ? VLIWInstrRaw2D : VLIWInstrRaw2D), 
+        .InstrD(VLIWInstrDecomp2D), 
+        .IllegalCompInstrD(IllegalVLIWComp2D)
+      );
+      
+      decompress #(P) vliw_decomp3(
+        .InstrRawD(VLIWInstrRaw3D[15:0] != 16'b0 ? VLIWInstrRaw3D : VLIWInstrRaw3D), 
+        .InstrD(VLIWInstrDecomp3D), 
+        .IllegalCompInstrD(IllegalVLIWComp3D)
+      );
+      
+      // Output decompressed instructions
+      assign VLIWInstr0D = VLIWInstrDecomp0D;
+      assign VLIWInstr1D = VLIWInstrDecomp1D;
+      assign VLIWInstr2D = VLIWInstrDecomp2D;
+      assign VLIWInstr3D = VLIWInstrDecomp3D;
+      
+    end else begin: vliw_no_decomp
+      // No decompression needed
+      assign VLIWInstr0D = VLIWInstrRaw0D;
+      assign VLIWInstr1D = VLIWInstrRaw1D;
+      assign VLIWInstr2D = VLIWInstrRaw2D;
+      assign VLIWInstr3D = VLIWInstrRaw3D;
+    end
   end
 
   assign IllegalIEUFPUInstrD = IllegalIEUInstrD & (IllegalFPUInstrD | !P.F_SUPPORTED);

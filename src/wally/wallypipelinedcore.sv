@@ -209,7 +209,6 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
 
   // PRINT DECODED VLIW BUNDLES FOR DEBUGGING
   always @(posedge clk) begin
-    $info("--------------------");
     if (VLIWModeD) begin
       if (VLIWValidD[0]) begin
         $info("CORE: [PC~=0x%h] VLIW instr 0 (32b) 0x%08h", - PCE, VLIWInstr0D);

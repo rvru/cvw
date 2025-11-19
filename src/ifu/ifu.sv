@@ -119,6 +119,7 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   logic [P.XLEN-1:0]           UnalignedPCNextF;                         // The next PCF, but not aligned to 2 bytes. 
   logic                        BranchMisalignedFaultE;                   // Branch target not aligned to 4 bytes if no compressed allowed (2 bytes if allowed)
   logic [P.XLEN-1:0]           PCPlus2or4F;                              // PCF + 2 (CompressedF) or PCF + 4 (Non-compressed)
+  logic [P.XLEN-1:0]           AdjustedPCPlus2or4F;                      // Next PC adjusted for VLIW
   logic [P.XLEN-1:0]           PCSpillNextF;                             // Next PCF after possible + 2 to handle spill
   logic [P.XLEN-1:2]           PCPlus4F;                                 // PCPlus4F is always PCF + 4.  Fancy way to compute PCPlus2or4F
   logic [P.XLEN-1:0]           PCD;                                      // Decode stage instruction address
@@ -464,6 +465,65 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   
   flopenl #(32) AlignedInstrRawDFlop(clk, reset | FlushD, ~StallD, PostSpillInstrRawF, nop, InstrRawD);
 
+  ///////////////////////////////////////////
+  // VLIW PC Increment Logic
+  ///////////////////////////////////////////
+
+  if (P.LOG_HINTS) begin : vliw_pc_logic
+    logic [P.XLEN-1:0] VLIWBundleSizeF;
+    logic [P.XLEN-1:0] PCPlusVLIWF;
+    // Calculate total size of VLIW bundle in bytes
+    // Start with 2 bytes for the HINT itself
+    always_comb begin
+      VLIWBundleSizeF = 'd2; // HINT is always 16-bit (2 bytes)
+      
+      // Add size of each valid instruction
+      if (VLIWValidF[0]) begin
+        // Check if instruction 0 is compressed (16-bit) or full (32-bit)
+        if (VLIWInstr0F[1:0] == 2'b11)
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
+        else
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
+      end
+      
+      if (VLIWValidF[1]) begin
+        if (VLIWInstr1F[1:0] == 2'b11)
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
+        else
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
+      end
+      
+      if (VLIWValidF[2]) begin
+        if (VLIWInstr2F[1:0] == 2'b11)
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
+        else
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
+      end
+      
+      if (VLIWValidF[3]) begin
+        if (VLIWInstr3F[1:0] == 2'b11)
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
+        else
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
+      end
+    end
+    
+    // Calculate PC + VLIW bundle size
+    assign PCPlusVLIWF = PCF + VLIWBundleSizeF;
+    
+    // Select between normal PC increment and VLIW bundle increment
+    // When in VLIW mode, use PCPlusVLIWF instead of PCPlus2or4F
+    assign AdjustedPCPlus2or4F = VLIWModeF ? PCPlusVLIWF : PCPlus2or4F;
+    
+  end else begin : no_vliw_pc_logic
+    // When VLIW is not supported, just pass through normal PC increment
+    assign AdjustedPCPlus2or4F = PCPlus2or4F;
+  end
+
+  always @(posedge clk) begin
+      $info("IFU: [ADJ PC=0x%h] [NORMAL PC=0x%h]", AdjustedPCPlus2or4F, PCPlus2or4F);
+  end
+
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // PCNextF logic
   ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -500,12 +560,12 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
                 .StallF, .StallD, .StallE, .StallM, .StallW,
                 .FlushD, .FlushE, .FlushM, .FlushW, .InstrValidD, .InstrValidE, 
                 .BranchD, .BranchE, .JumpD, .JumpE,
-                .InstrD, .PCNextF, .PCPlus2or4F, .PC1NextF, .PCE, .PCM, .PCSrcE, .IEUAdrE, .IEUAdrM, .PCF, .NextValidPCE,
+                .InstrD, .PCNextF, .PCPlus2or4F(AdjustedPCPlus2or4F), .PC1NextF, .PCE, .PCM, .PCSrcE, .IEUAdrE, .IEUAdrM, .PCF, .NextValidPCE,
                 .PCD, .PCLinkE, .IClassM, .BPWrongE, .PostSpillInstrRawF, .BPWrongM,
                 .BPDirWrongM, .BTAWrongM, .RASPredPCWrongM, .IClassWrongM);
 
   end else begin : bpred
-    mux2 #(P.XLEN) pcmux1(.d0(PCPlus2or4F), .d1(IEUAdrE), .s(PCSrcE), .y(PC1NextF));    
+    mux2 #(P.XLEN) pcmux1(.d0(AdjustedPCPlus2or4F), .d1(IEUAdrE), .s(PCSrcE), .y(PC1NextF));    
     logic BranchM, JumpM, BranchW, JumpW;
     logic CallD, CallE, CallM, CallW;
     logic ReturnD, ReturnE, ReturnM, ReturnW;

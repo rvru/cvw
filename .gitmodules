@@ -36,3 +36,6 @@
 [submodule "addins/cvw-riscv-arch-test"]
 	path = addins/cvw-riscv-arch-test
 	url = https://github.com/jordancarlin/riscv-arch-test
+[submodule "examples/C/starbug_benchmarks"]
+	path = examples/C/starbug_benchmarks
+	url = https://github.com/leomarek/starbug-benchmarks.git

@@ -53,6 +53,9 @@ localparam logic ZMMUL_SUPPORTED = 1;
 localparam logic ZAAMO_SUPPORTED  = 0;
 localparam logic ZALRSC_SUPPORTED = 0;
 
+// STARBUG Params
+localparam logic STARBUG_SUPPORTED  = 1; // HINT based VLIW Bundle Support
+
 // Bit manipulation extensions
 // B extension is Zba + Zbb + Zbs
 localparam logic ZBA_SUPPORTED = 0;

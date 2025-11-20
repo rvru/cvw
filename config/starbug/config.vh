@@ -28,7 +28,7 @@
 `include "BranchPredictorType.vh"
 
 // RV32 or RV64: XLEN = 32 or 64
-localparam XLEN = 32'd64;
+localparam XLEN = 32'd32;
 
 // IEEE 754 compliance
 localparam logic IEEE754 = 0;
@@ -40,8 +40,12 @@ localparam logic E_SUPPORTED = 0;
 // Integer instruction set extensions
 localparam logic ZIFENCEI_SUPPORTED = 1; // Instruction-Fetch fence
 localparam logic ZICSR_SUPPORTED    = 1; // CSR Instructions
-localparam logic ZICCLSM_SUPPORTED  = 1; // Misaligned loads/stores
+localparam logic ZICCLSM_SUPPORTED  = 0; // Misaligned loads/stores
 localparam logic ZICOND_SUPPORTED   = 1; // Integer conditional operations
+
+
+// STARBUG Params
+localparam logic STARBUG_SUPPORTED  = 1; // HINT based VLIW Bundle Support
 
 // Multiplication & division extensions
 // M implies (and in the configuration file requires) Zmmul
@@ -52,9 +56,6 @@ localparam logic ZMMUL_SUPPORTED = 1;
 // A extension is Zaamo + Zalrsc
 localparam logic ZAAMO_SUPPORTED  = 1;
 localparam logic ZALRSC_SUPPORTED = 1;
-
-// STARBUG Params
-localparam logic STARBUG_SUPPORTED  = 1; // HINT based VLIW Bundle Support
 
 // Bit manipulation extensions
 // B extension is Zba + Zbb + Zbs
@@ -78,14 +79,14 @@ localparam logic ZKNH_SUPPORTED = 1;
 localparam logic ZCA_SUPPORTED = 1;
 localparam logic ZCB_SUPPORTED = 1;
 localparam logic ZCF_SUPPORTED = 0; // RV32 only, requires F
-localparam logic ZCD_SUPPORTED = 1; // requires D
+localparam logic ZCD_SUPPORTED = 0; // requires D
 
 // Floating point extensions
-localparam logic F_SUPPORTED   = 1;
-localparam logic D_SUPPORTED   = 1;
+localparam logic F_SUPPORTED   = 0;
+localparam logic D_SUPPORTED   = 0;
 localparam logic Q_SUPPORTED   = 0;
-localparam logic ZFH_SUPPORTED = 1;
-localparam logic ZFA_SUPPORTED = 1;
+localparam logic ZFH_SUPPORTED = 0;
+localparam logic ZFA_SUPPORTED = 0;
 
 // privilege modes
 localparam logic S_SUPPORTED = 1; // Supervisor mode
@@ -105,8 +106,8 @@ localparam logic ZICBOZ_SUPPORTED = 1;
 localparam logic ZICBOP_SUPPORTED = 1;
 
 // Virtual memory extensions
-localparam logic SVPBMT_SUPPORTED  = 1;
-localparam logic SVNAPOT_SUPPORTED = 1;
+localparam logic SVPBMT_SUPPORTED  = 0;
+localparam logic SVNAPOT_SUPPORTED = 0;
 localparam logic SVINVAL_SUPPORTED = 1;
 localparam logic SVADU_SUPPORTED   = 1;
 
@@ -135,18 +136,17 @@ localparam CACHE_SRAMLEN = 32'd128;
 
 // Integer Divider Configuration
 // IDIV_BITSPERCYCLE must be 1, 2, or 4
-localparam IDIV_BITSPERCYCLE = 32'd4;
-localparam logic IDIV_ON_FPU = 1;
+localparam IDIV_BITSPERCYCLE = 32'd2;
+localparam logic IDIV_ON_FPU = 0;
 
 // Legal number of PMP entries are 0, 16, or 64
 localparam PMP_ENTRIES = 32'd16;
-
 // grain size should be a full cache line to avoid problems with accesses within a cache line
 // that span grain boundaries but are handled without a spill
-localparam PMP_G = 32'd4;  //e.g. 4 for 64-byte grains (512-bit cache lines)
+localparam PMP_G = 32'd4; // 64 bytes for 512-bit cache line
 
 // Address space
-localparam logic [63:0] RESET_VECTOR = 64'h0000000080000000;
+localparam logic [63:0] RESET_VECTOR = 64'h80000000;
 
 // WFI Timeout Wait
 localparam WFI_TIMEOUT_BIT = 32'd16;
@@ -191,7 +191,7 @@ localparam logic [63:0] SPI_BASE         = 64'h10040000;
 localparam logic [63:0] SPI_RANGE        = 64'h00000FFF;
 
 // Bus Interface width
-localparam AHBW = (XLEN);
+localparam AHBW = XLEN;
 
 // Test modes
 
@@ -216,7 +216,7 @@ localparam PLIC_SPI_ID = 32'd6;
 localparam PLIC_SDC_ID = 32'd9;
 
 // Branch prediction
-localparam logic BPRED_SUPPORTED = 1;
+localparam logic BPRED_SUPPORTED = 0;
 localparam BPRED_TYPE = `BP_GSHARE; // BP_GSHARE_BASIC, BP_GLOBAL, BP_GLOBAL_BASIC, BP_TWOBIT
 localparam BPRED_SIZE = 32'd10;
 localparam BPRED_NUM_LHR = 32'd6;
@@ -226,7 +226,7 @@ localparam INSTR_CLASS_PRED = 1;
 
 // FPU division architecture
 localparam RADIX = 32'd4;
-localparam DIVCOPIES = 32'd4;
+localparam DIVCOPIES = 32'd2;
 
 // Memory synthesis configuration
 localparam logic USE_SRAM = 0;

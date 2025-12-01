@@ -96,7 +96,18 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   input  var logic [P.PA_BITS-3:0] PMPADDR_ARRAY_REGW[P.PMP_ENTRIES-1:0],// PMP address from privileged unit
   output logic                 InstrAccessFaultF,                        // Instruction access fault 
   output logic                 ICacheAccess,                             // Report I$ read to performance counters
-  output logic                 ICacheMiss                                // Report I$ miss to performance counters
+  output logic                 ICacheMiss,                                // Report I$ miss to performance counters
+
+  // ============ NEW VLIW PORTS ============
+  //VLIW Instruction Outputs (added after InstrD declaration)
+  output logic [31:0]          VLIWInstr0D,        // First VLIW instruction (decoded)
+  output logic [31:0]          VLIWInstr1D,        // Second VLIW instruction (decoded)
+  output logic [31:0]          VLIWInstr2D,        // Third VLIW instruction (decoded)
+  output logic [31:0]          VLIWInstr3D,        // Fourth VLIW instruction (decoded)
+  output logic [3:0]           VLIWValidD,         // Valid bits for each VLIW instruction
+  output logic                 VLIWModeD          // Indicates VLIW mode is active so we can ignore 
+  //InstrD as we know it is a HINT
+  // ========================================
 );
 
   localparam [31:0]            nop = 32'h00000013;                       // instruction for NOP
@@ -108,6 +119,7 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   logic [P.XLEN-1:0]           UnalignedPCNextF;                         // The next PCF, but not aligned to 2 bytes. 
   logic                        BranchMisalignedFaultE;                   // Branch target not aligned to 4 bytes if no compressed allowed (2 bytes if allowed)
   logic [P.XLEN-1:0]           PCPlus2or4F;                              // PCF + 2 (CompressedF) or PCF + 4 (Non-compressed)
+  logic [P.XLEN-1:0]           AdjustedPCPlus2or4F;                      // Next PC adjusted for VLIW
   logic [P.XLEN-1:0]           PCSpillNextF;                             // Next PCF after possible + 2 to handle spill
   logic [P.XLEN-1:2]           PCPlus4F;                                 // PCPlus4F is always PCF + 4.  Fancy way to compute PCPlus2or4F
   logic [P.XLEN-1:0]           PCD;                                      // Decode stage instruction address
@@ -143,6 +155,22 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   logic 		       ITLBMissF;
   logic 		       InstrUpdateAF;                            // ITLB hit needs to update dirty or access bits
     
+  ///////////////////////////////////////////
+  // VLIW Signal Declarations (conditional on P.STARBUG_SUPPORTED)
+  ///////////////////////////////////////////
+  logic [31:0]   VLIWInstr0F, VLIWInstr1F, VLIWInstr2F, VLIWInstr3F;
+  logic [3:0]    VLIWValidF;
+  logic          VLIWModeF;
+  logic [5:0]    VLIWCountF;  // Number of VLIW instructions (from hint immediate)
+
+  // Raw VLIW instructions before decompression
+  logic [31:0]   VLIWInstrRaw0D, VLIWInstrRaw1D, VLIWInstrRaw2D, VLIWInstrRaw3D;
+
+  logic [15:0]    check_16bit0, check_16bit1, check_16bit2, check_16bit3;
+
+  // Decompressed VLIW instructions
+  logic [31:0]   VLIWInstrDecomp0D, VLIWInstrDecomp1D, VLIWInstrDecomp2D, VLIWInstrDecomp3D;
+
   assign PCFExt = {2'b00, PCSpillF};
 
   /////////////////////////////////////////////////////////////////////////////////////////////
@@ -265,19 +293,139 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
              .PAdr(PCPF),
              .CacheCommitted(CacheCommittedF), .InvalidateCache(InvalidateICacheM), .CMOpM('0)); 
 
-      ahbcacheinterface #(P, BEATSPERLINE, AHBWLOGBWPL, LINELEN, LLENPOVERAHBW, 1) 
+      ahbcacheinterface #(P, BEATSPERLINE, AHBWLOGBWPL, LINELEN , LLENPOVERAHBW, 1) 
       ahbcacheinterface(.HCLK(clk), .HRESETn(~reset),
             .HRDATA,
             .Flush(FlushD), .CacheBusRW, .BusCMOZero(1'b0), .HSIZE(IFUHSIZE), .HBURST(IFUHBURST), .HTRANS(IFUHTRANS), .HWSTRB(),
             .Funct3(3'b010), .HADDR(IFUHADDR), .HREADY(IFUHREADY), .HWRITE(IFUHWRITE), .CacheBusAdr(ICacheBusAdr),
             .BeatCount(), .Cacheable(CacheableF), .SelBusBeat(), .WriteDataM('0), .BusAtomic('0),
             .CacheBusAck(ICacheBusAck), .HWDATA(), .CacheableOrFlushCacheM(1'b0), .CacheReadDataWordM('0),
-            .FetchBuffer, .PAdr(PCPF),
+            .FetchBuffer(FetchBuffer), .PAdr(PCPF),
             .BusRW, .Stall(GatedStallD),
             .BusStall, .BusCommitted(BusCommittedF));
 
-      mux3 #(32) UnCachedDataMux(.d0(ICacheInstrF), .d1(ShiftUncachedInstr), .d2(IROMInstrF),
-                                 .s({SelIROM, ~CacheableF}), .y(InstrRawF[31:0]));
+       mux3 #(32) UnCachedDataMux(.d0(ICacheInstrF), .d1(ShiftUncachedInstr), .d2(IROMInstrF),
+                                  .s({SelIROM, ~CacheableF}), .y(InstrRawF[31:0]));
+
+
+    // Detect 16-bit HINT (C.LI x0, imm) *before* decompression
+    // This is encoded as C.ADDI with rd=x0, rs1=x0, imm!=0
+    // --- Use F-stage signal InstrRawF ---
+    wire [1:0]   op_c     = InstrRawF[1:0];   
+    wire [2:0]   funct3_c = InstrRawF[15:13];
+    wire [4:0]   rd_c     = InstrRawF[11:7];  
+    wire [5:0]   imm_c    = {InstrRawF[12], InstrRawF[6:2]};
+
+    wire is_vliw_hint = (op_c == 2'b01) && 
+                        (funct3_c == 3'b010) && 
+                        (rd_c == 5'b00000) && 
+                        (imm_c != 6'b0);
+
+  ///////////////////////////////////////////
+  // VLIW Extraction Logic (in Fetch Stage)
+  ///////////////////////////////////////////
+
+  // Calculate bit offset in fetch buffer
+  localparam int LINEBYTES = P.ICACHE_LINELENINBITS / 8;
+  localparam int OFFSETLEN = $clog2(LINEBYTES);
+
+  logic [OFFSETLEN-1:0] fetch_byte_offset;
+  integer bit_offset;
+  if (P.STARBUG_SUPPORTED) begin : vliw_extract
+  always_comb begin
+    // --- defaults so no latches are inferred ---
+    VLIWModeF    = 1'b0;
+    VLIWCountF   = 6'b0;
+    VLIWValidF   = 4'b0;
+    VLIWInstr0F  = 32'b0;
+    VLIWInstr1F  = 32'b0;
+    VLIWInstr2F  = 32'b0;
+    VLIWInstr3F  = 32'b0;
+
+    // Defaults for signals that were only conditionally assigned
+    fetch_byte_offset = '0;
+    bit_offset = 0;
+
+    // Default temporaries (clear them so they are driven on all paths)
+    check_16bit0 = 16'b0;
+    check_16bit1 = 16'b0;
+    check_16bit2 = 16'b0;
+    check_16bit3 = 16'b0;
+
+    if (is_vliw_hint && !IFUStallF && !reset) begin
+      VLIWModeF = 1'b1;
+      VLIWCountF = imm_c;
+
+      fetch_byte_offset = PCPF[OFFSETLEN-1:0];
+      bit_offset = (fetch_byte_offset * 8) + 16; // Start after 16-bit hint
+
+      // Instruction 0
+      if (imm_c >= 1 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
+        check_16bit0 = FetchBuffer[bit_offset +: 16];
+        if (check_16bit0[1:0] == 2'b11) begin
+          VLIWInstr0F = FetchBuffer[bit_offset +: 32];
+          VLIWValidF[0] = 1'b1;
+          bit_offset = bit_offset + 32;
+        end else begin
+          VLIWInstr0F = {16'b0, check_16bit0};
+          VLIWValidF[0] = 1'b1;
+          bit_offset = bit_offset + 16;
+        end
+      end
+
+      // Instruction 1
+      if (imm_c >= 2 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
+        check_16bit1 = FetchBuffer[bit_offset +: 16];
+        if (check_16bit1[1:0] == 2'b11) begin
+          VLIWInstr1F = FetchBuffer[bit_offset +: 32];
+          VLIWValidF[1] = 1'b1;
+          bit_offset = bit_offset + 32;
+        end else begin
+          VLIWInstr1F = {16'b0, check_16bit1};
+          VLIWValidF[1] = 1'b1;
+          bit_offset = bit_offset + 16;
+        end
+      end
+
+      // Instruction 2
+      if (imm_c >= 3 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
+        check_16bit2 = FetchBuffer[bit_offset +: 16];
+        if (check_16bit2[1:0] == 2'b11) begin
+          VLIWInstr2F = FetchBuffer[bit_offset +: 32];
+          VLIWValidF[2] = 1'b1;
+          bit_offset = bit_offset + 32;
+        end else begin
+          VLIWInstr2F = {16'b0, check_16bit2};
+          VLIWValidF[2] = 1'b1;
+          bit_offset = bit_offset + 16;
+        end
+      end
+
+      // Instruction 3
+      if (imm_c >= 4 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
+        check_16bit3 = FetchBuffer[bit_offset +: 16];
+        if (check_16bit3[1:0] == 2'b11) begin
+          VLIWInstr3F = FetchBuffer[bit_offset +: 32];
+          VLIWValidF[3] = 1'b1;
+          bit_offset = bit_offset + 32;
+        end else begin
+          VLIWInstr3F = {16'b0, check_16bit3};
+          VLIWValidF[3] = 1'b1;
+          bit_offset = bit_offset + 16;
+        end
+      end
+
+    end
+  end
+
+    
+    end else begin : no_vliw
+      assign VLIWModeF = 1'b0;
+      assign VLIWCountF = 6'b0;
+      assign VLIWValidF = 4'b0;
+      assign {VLIWInstr0F, VLIWInstr1F, VLIWInstr2F, VLIWInstr3F} = '0;
+    end
+
     end else begin : passthrough
       assign IFUHADDR = PCPF;
       logic [1:0] BusRW;
@@ -301,6 +449,8 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
                                                       FetchBuffer[64-1:32], {16'b0, FetchBuffer[64-1:48]},
                                                       PCSpillF[2:1], ShiftUncachedInstr);
     else mux2 #(32) UncachedShiftInstrMux(FetchBuffer[32-1:0], {16'b0, FetchBuffer[32-1:16]}, PCSpillF[1], ShiftUncachedInstr);
+
+
   end else begin : nobus // block: bus
     assign {IFUHADDR, IFUHWRITE, IFUHSIZE, IFUHBURST, IFUHTRANS, 
             BusStall, CacheCommittedF, BusCommittedF, FetchBuffer} = '0;   
@@ -311,8 +461,64 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   assign IFUCacheBusStallF = ICacheStallF | BusStall;
   assign IFUStallF = IFUCacheBusStallF | SelSpillNextF;
   assign GatedStallD = StallD & ~SelSpillNextF;
+
   
   flopenl #(32) AlignedInstrRawDFlop(clk, reset | FlushD, ~StallD, PostSpillInstrRawF, nop, InstrRawD);
+
+  ///////////////////////////////////////////
+  // VLIW PC Increment Logic
+  ///////////////////////////////////////////
+
+  if (P.STARBUG_SUPPORTED) begin : vliw_pc_logic
+    logic [P.XLEN-1:0] VLIWBundleSizeF;
+    logic [P.XLEN-1:0] PCPlusVLIWF;
+    // Calculate total size of VLIW bundle in bytes
+    // Start with 2 bytes for the HINT itself
+    always_comb begin
+      VLIWBundleSizeF = 'd2; // HINT is always 16-bit (2 bytes)
+      
+      // Add size of each valid instruction
+      if (VLIWValidF[0]) begin
+        // Check if instruction 0 is compressed (16-bit) or full (32-bit)
+        if (VLIWInstr0F[1:0] == 2'b11)
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
+        else
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
+      end
+      
+      if (VLIWValidF[1]) begin
+        if (VLIWInstr1F[1:0] == 2'b11)
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
+        else
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
+      end
+      
+      if (VLIWValidF[2]) begin
+        if (VLIWInstr2F[1:0] == 2'b11)
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
+        else
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
+      end
+      
+      if (VLIWValidF[3]) begin
+        if (VLIWInstr3F[1:0] == 2'b11)
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
+        else
+          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
+      end
+    end
+    
+    // Calculate PC + VLIW bundle size
+    assign PCPlusVLIWF = PCF + VLIWBundleSizeF;
+    
+    // Select between normal PC increment and VLIW bundle increment
+    // When in VLIW mode, use PCPlusVLIWF instead of PCPlus2or4F
+    assign AdjustedPCPlus2or4F = VLIWModeF ? PCPlusVLIWF : PCPlus2or4F;
+    
+  end else begin : no_vliw_pc_logic
+    // When VLIW is not supported, just pass through normal PC increment
+    assign AdjustedPCPlus2or4F = PCPlus2or4F;
+  end
 
   ////////////////////////////////////////////////////////////////////////////////////////////////
   // PCNextF logic
@@ -350,12 +556,12 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
                 .StallF, .StallD, .StallE, .StallM, .StallW,
                 .FlushD, .FlushE, .FlushM, .FlushW, .InstrValidD, .InstrValidE, 
                 .BranchD, .BranchE, .JumpD, .JumpE,
-                .InstrD, .PCNextF, .PCPlus2or4F, .PC1NextF, .PCE, .PCM, .PCSrcE, .IEUAdrE, .IEUAdrM, .PCF, .NextValidPCE,
+                .InstrD, .PCNextF, .PCPlus2or4F(AdjustedPCPlus2or4F), .PC1NextF, .PCE, .PCM, .PCSrcE, .IEUAdrE, .IEUAdrM, .PCF, .NextValidPCE,
                 .PCD, .PCLinkE, .IClassM, .BPWrongE, .PostSpillInstrRawF, .BPWrongM,
                 .BPDirWrongM, .BTAWrongM, .RASPredPCWrongM, .IClassWrongM);
 
   end else begin : bpred
-    mux2 #(P.XLEN) pcmux1(.d0(PCPlus2or4F), .d1(IEUAdrE), .s(PCSrcE), .y(PC1NextF));    
+    mux2 #(P.XLEN) pcmux1(.d0(AdjustedPCPlus2or4F), .d1(IEUAdrE), .s(PCSrcE), .y(PC1NextF));    
     logic BranchM, JumpM, BranchW, JumpW;
     logic CallD, CallE, CallM, CallW;
     logic ReturnD, ReturnE, ReturnM, ReturnW;
@@ -380,6 +586,20 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   
   // Decode stage pipeline register and logic
   flopenrc #(P.XLEN) PCDReg(clk, reset, FlushD, ~StallD, PCF, PCD);
+
+  ///////////////////////////////////////////
+  // VLIW Decode Stage Registers
+  ///////////////////////////////////////////
+  if (P.STARBUG_SUPPORTED) begin : vliw_decode_regs
+    // Pipeline VLIW signals to Decode stage
+    flopenrc #(1)    VLIWModeDReg(clk, reset, FlushD, ~StallD, VLIWModeF, VLIWModeD);
+    flopenrc #(4)    VLIWValidDReg(clk, reset, FlushD, ~StallD, VLIWValidF, VLIWValidD);
+    flopenrc #(32)   VLIWInstr0DReg(clk, reset, FlushD, ~StallD, VLIWInstr0F, VLIWInstrRaw0D);
+    flopenrc #(32)   VLIWInstr1DReg(clk, reset, FlushD, ~StallD, VLIWInstr1F, VLIWInstrRaw1D);
+    flopenrc #(32)   VLIWInstr2DReg(clk, reset, FlushD, ~StallD, VLIWInstr2F, VLIWInstrRaw2D);
+    flopenrc #(32)   VLIWInstr3DReg(clk, reset, FlushD, ~StallD, VLIWInstr3F, VLIWInstrRaw3D);
+  end
+
    
   // expand 16-bit compressed instructions to 32 bits
   if (P.ZCA_SUPPORTED) begin: decomp
@@ -390,6 +610,54 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
     assign InstrD = InstrRawD;
     assign IllegalIEUInstrD = IllegalBaseInstrD;
   end
+
+  ///////////////////////////////////////////
+  // VLIW Decompression
+  ///////////////////////////////////////////
+  if (P.STARBUG_SUPPORTED) begin : vliw_decomp_block
+    if (P.ZCA_SUPPORTED) begin: vliw_decomp
+      logic IllegalVLIWComp0D, IllegalVLIWComp1D, IllegalVLIWComp2D, IllegalVLIWComp3D;
+      
+      // Decompress each VLIW instruction if it's 16-bit
+      decompress #(P) vliw_decomp0(
+        .InstrRawD(VLIWInstrRaw0D[15:0] != 16'b0 ? VLIWInstrRaw0D : VLIWInstrRaw0D), 
+        .InstrD(VLIWInstrDecomp0D), 
+        .IllegalCompInstrD(IllegalVLIWComp0D)
+      );
+      
+      decompress #(P) vliw_decomp1(
+        .InstrRawD(VLIWInstrRaw1D[15:0] != 16'b0 ? VLIWInstrRaw1D : VLIWInstrRaw1D), 
+        .InstrD(VLIWInstrDecomp1D), 
+        .IllegalCompInstrD(IllegalVLIWComp1D)
+      );
+      
+      decompress #(P) vliw_decomp2(
+        .InstrRawD(VLIWInstrRaw2D[15:0] != 16'b0 ? VLIWInstrRaw2D : VLIWInstrRaw2D), 
+        .InstrD(VLIWInstrDecomp2D), 
+        .IllegalCompInstrD(IllegalVLIWComp2D)
+      );
+      
+      decompress #(P) vliw_decomp3(
+        .InstrRawD(VLIWInstrRaw3D[15:0] != 16'b0 ? VLIWInstrRaw3D : VLIWInstrRaw3D), 
+        .InstrD(VLIWInstrDecomp3D), 
+        .IllegalCompInstrD(IllegalVLIWComp3D)
+      );
+      
+      // Output decompressed instructions
+      assign VLIWInstr0D = VLIWInstrDecomp0D;
+      assign VLIWInstr1D = VLIWInstrDecomp1D;
+      assign VLIWInstr2D = VLIWInstrDecomp2D;
+      assign VLIWInstr3D = VLIWInstrDecomp3D;
+      
+    end else begin: vliw_no_decomp
+      // No decompression needed
+      assign VLIWInstr0D = VLIWInstrRaw0D;
+      assign VLIWInstr1D = VLIWInstrRaw1D;
+      assign VLIWInstr2D = VLIWInstrRaw2D;
+      assign VLIWInstr3D = VLIWInstrRaw3D;
+    end
+  end
+
   assign IllegalIEUFPUInstrD = IllegalIEUInstrD & (IllegalFPUInstrD | !P.F_SUPPORTED);
 
   // Misaligned PC logic

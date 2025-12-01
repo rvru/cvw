@@ -176,6 +176,15 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   logic [4:0]        a1, a2, a3;
   logic              we3;
 
+  // ============ NEW VLIW PORTS ============
+  logic [31:0]          VLIWInstr0D;        // First VLIW instruction (decoded)
+  logic [31:0]          VLIWInstr1D;        // Second VLIW instruction (decoded)
+  logic [31:0]          VLIWInstr2D;        // Third VLIW instruction (decoded)
+  logic [31:0]          VLIWInstr3D;        // Fourth VLIW instruction (decoded)
+  logic [3:0]           VLIWValidD;         // Valid bits for each VLIW instruction
+  logic                 VLIWModeD;          // Indicates VLIW mode is active so we can ignore 
+  //InstrD as we know it is a HINT
+
   // instruction fetch unit: PC, branch prediction, instruction cache
   ifu #(P) ifu(.clk, .reset,
     .StallF, .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
@@ -197,7 +206,29 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
     .PrivilegeModeW, .PTE, .PageType, .SATP_REGW, .STATUS_MXR, .STATUS_SUM, .STATUS_MPRV,
     .STATUS_MPP, .ENVCFG_PBMTE, .ENVCFG_ADUE, .ITLBWriteF, .sfencevmaM, .ITLBMissOrUpdateAF,
     // pmp/pma (inside mmu) signals. 
-    .PMPCFG_ARRAY_REGW,  .PMPADDR_ARRAY_REGW, .InstrAccessFaultF); 
+    .PMPCFG_ARRAY_REGW,  .PMPADDR_ARRAY_REGW, .InstrAccessFaultF,
+    // ============ NEW VLIW PORTS ============
+    .VLIWInstr0D, .VLIWInstr1D, .VLIWInstr2D, .VLIWInstr3D,
+    .VLIWValidD, .VLIWModeD
+    ); 
+
+  // PRINT DECODED VLIW BUNDLES FOR DEBUGGING
+  always @(posedge clk) begin
+    if (VLIWModeD) begin
+      if (VLIWValidD[0]) begin
+        $info("CORE: [PC~=0x%h] VLIW instr 0 (32b) 0x%08h", - PCE, VLIWInstr0D);
+      end
+      if (VLIWValidD[1]) begin
+        $info("CORE: [PC~=0x%h] VLIW instr 1 (32b) 0x%08h", - PCE, VLIWInstr1D);
+      end
+      if (VLIWValidD[2]) begin
+        $info("CORE: [PC~=0x%h] VLIW instr 2 (32b) 0x%08h", - PCE, VLIWInstr2D);
+      end
+      if (VLIWValidD[3]) begin
+        $info("CORE: [PC~=0x%h] VLIW instr 3 (32b) 0x%08h", - PCE, VLIWInstr3D);
+      end
+    end
+  end
     
   // integer execution unit: integer register file, datapath and controller
   ieu #(P) ieu(.clk, .reset,
@@ -248,6 +279,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
       .rd10(tieoff), .rd11(tieoff)
     );
   end
+
 
   lsu #(P) lsu(
     .clk, .reset, .StallM, .FlushM, .StallW, .FlushW,

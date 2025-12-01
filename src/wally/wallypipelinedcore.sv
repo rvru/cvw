@@ -2,7 +2,7 @@
 // wallypipelinedcore.sv
 //
 // Written: David_Harris@hmc.edu 9 January 2021
-// Modified: 
+// Modified: jc165@rice.edu 24 November 2025
 //
 // Purpose: Pipelined RISC-V Processor
 // 
@@ -171,6 +171,11 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   logic                          DCacheStallM, ICacheStallF;
   logic                          wfiM, IntPendingM;
 
+  // Declarations for STARBUG VLIW
+  logic [P.XLEN-1:0] rd1, rd2, wd3;
+  logic [4:0]        a1, a2, a3;
+  logic              we3;
+
   // instruction fetch unit: PC, branch prediction, instruction cache
   ifu #(P) ifu(.clk, .reset,
     .StallF, .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
@@ -217,7 +222,32 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      // hazards
      .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
      .StructuralStallD, .LoadStallD, .StoreStallD, .PCSrcE,
-     .CSRReadM, .CSRWriteM, .PrivilegedM, .CSRWriteFenceM, .InvalidateICacheM); 
+     .CSRReadM, .CSRWriteM, .PrivilegedM, .CSRWriteFenceM, .InvalidateICacheM,
+     // VLIW STARBUG Signals (for widened regfile)
+     .rd1_ieu(rd1), .rd2_ieu(rd2),
+     .we3_ieu(we3),
+     .a1_ieu(a1), .a2_ieu(a2), .a3_ieu(a3),
+     .wd3_ieu(wd3)
+     ); 
+
+  if (P.STARBUG_SUPPORTED) begin : rf
+    logic tieoff;
+    assign tieoff = 0;
+    // Instantiate Widened regfile
+    regfile_widened #(XLEN, E_SUPPORTED) regfile_widened (
+      .clk(clk), .reset(reset),
+      .we3(we3), .we6(tieoff), .we9(tieoff), .we12(tieoff),
+      .a1(a1), .a2(a2), .a3(a3),
+      .a4(tieoff), .a5(tieoff), .a6(tieoff),
+      .a7(tieoff), .a8(tieoff), .a9(tieoff),
+      .a10(tieoff), .a11(tieoff), .a12(tieoff),
+      .wd3(wd3), .wd6(tieoff), .wd9(tieoff), .wd12(tieoff),
+      .rd1(rd1), .rd2(rd2),
+      .rd4(tieoff), .rd5(tieoff),
+      .rd7(tieoff), .rd8(tieoff),
+      .rd10(tieoff), .rd11(tieoff)
+    );
+  end
 
   lsu #(P) lsu(
     .clk, .reset, .StallM, .FlushM, .StallW, .FlushW,

@@ -22,8 +22,8 @@ echo "Executing Wally setup.sh"
 # Path to RISC-V Tools
 if [ -d /opt/riscv ]; then
     export RISCV=/opt/riscv
-#elif [ -d ~/riscv ]; then
-#    export RISCV=~/riscv
+elif [ -d ~/riscv ]; then
+    export RISCV=~/riscv
 else
     # set the $RISCV directory here and remove the subsequent two lines
     export RISCV="/rs23/shared/riscv"

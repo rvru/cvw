@@ -87,9 +87,14 @@ module rvvitbwrapper import cvw::*; #(parameter cvw_t P,
   assign Minstret       = dut.core.priv.priv.csr.counters.counters.HPMCOUNTER_REGW[2];
   assign TrapM          = dut.core.TrapM;
   assign PrivilegeModeW = dut.core.priv.priv.privmode.PrivilegeModeW;
-  assign GPRAddr        = dut.core.ieu.dp.regf.a3;
-  assign GPRWen         = dut.core.ieu.dp.regf.we3;
-  assign GPRValue       = dut.core.ieu.dp.regf.wd3;
+  // assign GPRAddr        = dut.core.ieu.dp.regf.a3;
+  // assign GPRWen         = dut.core.ieu.dp.regf.we3;
+  // assign GPRValue       = dut.core.ieu.dp.regf.wd3;
+  // Change start
+  assign GPRAddr        = dut.core.rf.regfile_widened.a3;
+  assign GPRWen         = dut.core.rf.regfile_widened.we3;
+  assign GPRValue       = dut.core.rf.regfile_widened.wd3;
+  // Change end
   assign FPRAddr        = dut.core.fpu.fpu.fregfile.a4;
   assign FPRWen         = dut.core.fpu.fpu.fregfile.we4;
   assign FPRValue       = dut.core.fpu.fpu.fregfile.wd4;

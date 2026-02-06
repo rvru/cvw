@@ -327,137 +327,137 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteW_1(RegWriteWOut_1), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
      );
     
-    // ieu #(P)
-    // ieu_1(.clk, .reset,
-    //   // Decode Stage interface
-    //   .InstrD(VLIWInstr1D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_1),
-    //   // Execute Stage interface
-    //   .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_1), .FCvtIntE(FCvtIntE_1), 
-    //     // .IEUAdrE, 
-    //   .IntDivE(IntDivE_1), .W64E(W64E_1),
-    //   .Funct3E(Funct3E_1), .ForwardedSrcAE(ForwardedSrcAE_1), .ForwardedSrcBE(ForwardedSrcBE_1), 
-    //   .MDUActiveE(MDUActiveE_1), .CMOpM(CMOpM_1), .IFUPrefetchE(IFUPrefetchE_1), .LSUPrefetchM(LSUPrefetchM_1),
-    //   // Memory stage interface
-    //   .SquashSCW(SquashSCW_1),  // from LSU
-    //   .MemRWE(MemRWE_1),     // read/write control goes to LSU
-    //   .MemRWM(MemRWM_1),     // read/write control goes to LSU
-    //   .AtomicM(AtomicM_1),    // atomic control goes to LSU
-    //   .WriteDataM(WriteDataM_1), // Write data to LSU
-    //   .Funct3M(Funct3M_1),    // size and signedness to LSU
-    //   .SrcAM(SrcAM_1),      // to privilege and fpu
-    //   .RdE(RdE_1), .RdM(RdM_1), .FIntResM(FIntResM_1), .FlushDCacheM(FlushDCacheM_1),
-    //   .BranchD(BranchD_1), .BranchE(BranchE_1), .JumpD(JumpD_1), .JumpE(JumpE_1),
-    //   // Writeback stage
-    //   .CSRReadValW, .MDUResultW(MDUResultW_1), .FIntDivResultW(FIntDivResultW_1), .RdW(RdW_1), .ReadDataW(ReadDataW_1[P.XLEN-1:0]),
-    //   .InstrValidM(InstrValidM_1), .InstrValidE(InstrValidE_1), .InstrValidD(InstrValidD_1), .FCvtIntResW(FCvtIntResW_1), .FCvtIntW(FCvtIntW_1),
-    //   // hazards
-    //   .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
-    //   .StructuralStallD(StructuralStallD_1), .LoadStallD(LoadStallD_1), .StoreStallD(StoreStallD_1), 
-    //   // .PCSrcE,
-    //   .CSRReadM(CSRReadM_1), .CSRWriteM(CSRWriteM_1), .PrivilegedM(PrivilegedM_1), .CSRWriteFenceM(CSRWriteFenceM_1), .InvalidateICacheM(InvalidateICacheM_1),
-    //  // VLIW STARBUG Signals (for widened regfile)
-    //  .rd1_ieu(rd4), .rd2_ieu(rd5),
-    //  .we3_ieu(we6),
-    //  .a1_ieu(a4), .a2_ieu(a5), .a3_ieu(a6),
-    //  .wd3_ieu(wd6),
-    //  // VLIW STARBUG Signals (for forwarding between FUs)
-    //  .RdW_1(RdW), .RdW_2(RdW_2), .RdW_3(RdW_3),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
-    //  .RdM_1(RdM), .RdM_2(RdM_2), .RdM_3(RdM_3),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
-    //  .ResultW_1(ResultW), .ResultW_2(ResultW_2), .ResultW_3(ResultW_3),                     // These inputs are the results from other FUs' WB Stage
-    //  .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_2), .IFResultM_3(IFResultM_3),         // These inputs are the results from other FUs' Mem Stage
-    //  .RegWriteMOut(RegWriteMOut_1), .RegWriteWOut(RegWriteWOut_1),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-    //  .ResultW(ResultW_1), .IFResultM(IFResultM_1),                                          // Results from this ieu instance
-    //  .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_2), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
-    //  .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
-    //  );
+    ieu #(P)
+    ieu_1(.clk, .reset,
+      // Decode Stage interface
+      .InstrD(VLIWInstr1D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_1),
+      // Execute Stage interface
+      .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_1), .FCvtIntE(FCvtIntE_1), 
+        // .IEUAdrE, 
+      .IntDivE(IntDivE_1), .W64E(W64E_1),
+      .Funct3E(Funct3E_1), .ForwardedSrcAE(ForwardedSrcAE_1), .ForwardedSrcBE(ForwardedSrcBE_1), 
+      .MDUActiveE(MDUActiveE_1), .CMOpM(CMOpM_1), .IFUPrefetchE(IFUPrefetchE_1), .LSUPrefetchM(LSUPrefetchM_1),
+      // Memory stage interface
+      .SquashSCW(SquashSCW_1),  // from LSU
+      .MemRWE(MemRWE_1),     // read/write control goes to LSU
+      .MemRWM(MemRWM_1),     // read/write control goes to LSU
+      .AtomicM(AtomicM_1),    // atomic control goes to LSU
+      .WriteDataM(WriteDataM_1), // Write data to LSU
+      .Funct3M(Funct3M_1),    // size and signedness to LSU
+      .SrcAM(SrcAM_1),      // to privilege and fpu
+      .RdE(RdE_1), .RdM(RdM_1), .FIntResM(FIntResM_1), .FlushDCacheM(FlushDCacheM_1),
+      .BranchD(BranchD_1), .BranchE(BranchE_1), .JumpD(JumpD_1), .JumpE(JumpE_1),
+      // Writeback stage
+      .CSRReadValW, .MDUResultW(MDUResultW_1), .FIntDivResultW(FIntDivResultW_1), .RdW(RdW_1), .ReadDataW(ReadDataW_1[P.XLEN-1:0]),
+      .InstrValidM(InstrValidM_1), .InstrValidE(InstrValidE_1), .InstrValidD(InstrValidD_1), .FCvtIntResW(FCvtIntResW_1), .FCvtIntW(FCvtIntW_1),
+      // hazards
+      .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
+      .StructuralStallD(StructuralStallD_1), .LoadStallD(LoadStallD_1), .StoreStallD(StoreStallD_1), 
+      // .PCSrcE,
+      .CSRReadM(CSRReadM_1), .CSRWriteM(CSRWriteM_1), .PrivilegedM(PrivilegedM_1), .CSRWriteFenceM(CSRWriteFenceM_1), .InvalidateICacheM(InvalidateICacheM_1),
+     // VLIW STARBUG Signals (for widened regfile)
+     .rd1_ieu(rd4), .rd2_ieu(rd5),
+     .we3_ieu(we6),
+     .a1_ieu(a4), .a2_ieu(a5), .a3_ieu(a6),
+     .wd3_ieu(wd6),
+     // VLIW STARBUG Signals (for forwarding between FUs)
+     .RdW_1(RdW), .RdW_2(RdW_2), .RdW_3(RdW_3),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+     .RdM_1(RdM), .RdM_2(RdM_2), .RdM_3(RdM_3),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+     .ResultW_1(ResultW), .ResultW_2(ResultW_2), .ResultW_3(ResultW_3),                     // These inputs are the results from other FUs' WB Stage
+     .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_2), .IFResultM_3(IFResultM_3),         // These inputs are the results from other FUs' Mem Stage
+     .RegWriteMOut(RegWriteMOut_1), .RegWriteWOut(RegWriteWOut_1),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+     .ResultW(ResultW_1), .IFResultM(IFResultM_1),                                          // Results from this ieu instance
+     .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_2), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
+     );
 
-    // ieu #(P)
-    // ieu_2(.clk, .reset,
-    //   // Decode Stage interface
-    //   .InstrD(VLIWInstr2D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_2),
-    //   // Execute Stage interface
-    //   .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_2), .FCvtIntE(FCvtIntE_2), 
-    //     // .IEUAdrE, 
-    //   .IntDivE(IntDivE_2), .W64E(W64E_2),
-    //   .Funct3E(Funct3E_2), .ForwardedSrcAE(ForwardedSrcAE_2), .ForwardedSrcBE(ForwardedSrcBE_2), 
-    //   .MDUActiveE(MDUActiveE_2), .CMOpM(CMOpM_2), .IFUPrefetchE(IFUPrefetchE_2), .LSUPrefetchM(LSUPrefetchM_2),
-    //   // Memory stage interface
-    //   .SquashSCW(SquashSCW_2),  // from LSU
-    //   .MemRWE(MemRWE_2),     // read/write control goes to LSU
-    //   .MemRWM(MemRWM_2),     // read/write control goes to LSU
-    //   .AtomicM(AtomicM_2),    // atomic control goes to LSU
-    //   .WriteDataM(WriteDataM_2), // Write data to LSU
-    //   .Funct3M(Funct3M_2),    // size and signedness to LSU
-    //   .SrcAM(SrcAM_2),      // to privilege and fpu
-    //   .RdE(RdE_2), .RdM(RdM_2), .FIntResM(FIntResM_2), .FlushDCacheM(FlushDCacheM_2),
-    //   .BranchD(BranchD_2), .BranchE(BranchE_2), .JumpD(JumpD_2), .JumpE(JumpE_2),
-    //   // Writeback stage
-    //   .CSRReadValW, .MDUResultW(MDUResultW_2), .FIntDivResultW(FIntDivResultW_2), .RdW(RdW_2), .ReadDataW(ReadDataW_2[P.XLEN-1:0]),
-    //   .InstrValidM(InstrValidM_2), .InstrValidE(InstrValidE_2), .InstrValidD(InstrValidD_2), .FCvtIntResW(FCvtIntResW_2), .FCvtIntW(FCvtIntW_2),
-    //   // hazards
-    //   .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
-    //   .StructuralStallD(StructuralStallD_2), .LoadStallD(LoadStallD_2), .StoreStallD(StoreStallD_2), 
-    //   // .PCSrcE,
-    //   .CSRReadM(CSRReadM_2), .CSRWriteM(CSRWriteM_2), .PrivilegedM(PrivilegedM_2), .CSRWriteFenceM(CSRWriteFenceM_2), .InvalidateICacheM(InvalidateICacheM_2),
-    //    // VLIW STARBUG Signals (for widened regfile)
-    //   .rd1_ieu(rd7), .rd2_ieu(rd8),
-    //   .we3_ieu(we9),
-    //   .a1_ieu(a7), .a2_ieu(a8), .a3_ieu(a9),
-    //   .wd3_ieu(wd9),
-    //   // VLIW STARBUG Signals (for forwarding between FUs)
-    //  .RdW_1(RdW), .RdW_2(RdW_1), .RdW_3(RdW_3),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
-    //  .RdM_1(RdM), .RdM_2(RdM_1), .RdM_3(RdM_3),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
-    //  .ResultW_1(ResultW), .ResultW_2(ResultW_1), .ResultW_3(ResultW_3),                     // These inputs are the results from other FUs' WB Stage
-    //  .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_1), .IFResultM_3(IFResultM_3),         // These inputs are the results from other FUs' Mem Stage
-    //  .RegWriteMOut(RegWriteMOut_2), .RegWriteWOut(RegWriteWOut_2),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-    //  .ResultW(ResultW_2), .IFResultM(IFResultM_2),                                          // Results from this ieu instance
-    //  .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
-    //  .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
-    //  );
+    ieu #(P)
+    ieu_2(.clk, .reset,
+      // Decode Stage interface
+      .InstrD(VLIWInstr2D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_2),
+      // Execute Stage interface
+      .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_2), .FCvtIntE(FCvtIntE_2), 
+        // .IEUAdrE, 
+      .IntDivE(IntDivE_2), .W64E(W64E_2),
+      .Funct3E(Funct3E_2), .ForwardedSrcAE(ForwardedSrcAE_2), .ForwardedSrcBE(ForwardedSrcBE_2), 
+      .MDUActiveE(MDUActiveE_2), .CMOpM(CMOpM_2), .IFUPrefetchE(IFUPrefetchE_2), .LSUPrefetchM(LSUPrefetchM_2),
+      // Memory stage interface
+      .SquashSCW(SquashSCW_2),  // from LSU
+      .MemRWE(MemRWE_2),     // read/write control goes to LSU
+      .MemRWM(MemRWM_2),     // read/write control goes to LSU
+      .AtomicM(AtomicM_2),    // atomic control goes to LSU
+      .WriteDataM(WriteDataM_2), // Write data to LSU
+      .Funct3M(Funct3M_2),    // size and signedness to LSU
+      .SrcAM(SrcAM_2),      // to privilege and fpu
+      .RdE(RdE_2), .RdM(RdM_2), .FIntResM(FIntResM_2), .FlushDCacheM(FlushDCacheM_2),
+      .BranchD(BranchD_2), .BranchE(BranchE_2), .JumpD(JumpD_2), .JumpE(JumpE_2),
+      // Writeback stage
+      .CSRReadValW, .MDUResultW(MDUResultW_2), .FIntDivResultW(FIntDivResultW_2), .RdW(RdW_2), .ReadDataW(ReadDataW_2[P.XLEN-1:0]),
+      .InstrValidM(InstrValidM_2), .InstrValidE(InstrValidE_2), .InstrValidD(InstrValidD_2), .FCvtIntResW(FCvtIntResW_2), .FCvtIntW(FCvtIntW_2),
+      // hazards
+      .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
+      .StructuralStallD(StructuralStallD_2), .LoadStallD(LoadStallD_2), .StoreStallD(StoreStallD_2), 
+      // .PCSrcE,
+      .CSRReadM(CSRReadM_2), .CSRWriteM(CSRWriteM_2), .PrivilegedM(PrivilegedM_2), .CSRWriteFenceM(CSRWriteFenceM_2), .InvalidateICacheM(InvalidateICacheM_2),
+       // VLIW STARBUG Signals (for widened regfile)
+      .rd1_ieu(rd7), .rd2_ieu(rd8),
+      .we3_ieu(we9),
+      .a1_ieu(a7), .a2_ieu(a8), .a3_ieu(a9),
+      .wd3_ieu(wd9),
+      // VLIW STARBUG Signals (for forwarding between FUs)
+     .RdW_1(RdW), .RdW_2(RdW_1), .RdW_3(RdW_3),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+     .RdM_1(RdM), .RdM_2(RdM_1), .RdM_3(RdM_3),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+     .ResultW_1(ResultW), .ResultW_2(ResultW_1), .ResultW_3(ResultW_3),                     // These inputs are the results from other FUs' WB Stage
+     .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_1), .IFResultM_3(IFResultM_3),         // These inputs are the results from other FUs' Mem Stage
+     .RegWriteMOut(RegWriteMOut_2), .RegWriteWOut(RegWriteWOut_2),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+     .ResultW(ResultW_2), .IFResultM(IFResultM_2),                                          // Results from this ieu instance
+     .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
+     );
 
-    // ieu #(P)
-    // ieu_3(.clk, .reset,
-    //   // Decode Stage interface
-    //   .InstrD(VLIWInstr3D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_3),
-    //   // Execute Stage interface
-    //   .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_3), .FCvtIntE(FCvtIntE_3), 
-    //     // .IEUAdrE, 
-    //   .IntDivE(IntDivE_3), .W64E(W64E_3),
-    //   .Funct3E(Funct3E_3), .ForwardedSrcAE(ForwardedSrcAE_3), .ForwardedSrcBE(ForwardedSrcBE_3), 
-    //   .MDUActiveE(MDUActiveE_3), .CMOpM(CMOpM_3), .IFUPrefetchE(IFUPrefetchE_3), .LSUPrefetchM(LSUPrefetchM_3),
-    //   // Memory stage interface
-    //   .SquashSCW(SquashSCW_3),  // from LSU
-    //   .MemRWE(MemRWE_3),     // read/write control goes to LSU
-    //   .MemRWM(MemRWM_3),     // read/write control goes to LSU
-    //   .AtomicM(AtomicM_3),    // atomic control goes to LSU
-    //   .WriteDataM(WriteDataM_3), // Write data to LSU
-    //   .Funct3M(Funct3M_3),    // size and signedness to LSU
-    //   .SrcAM(SrcAM_3),      // to privilege and fpu
-    //   .RdE(RdE_3), .RdM(RdM_3), .FIntResM(FIntResM_3), .FlushDCacheM(FlushDCacheM_3),
-    //   .BranchD(BranchD_3), .BranchE(BranchE_3), .JumpD(JumpD_3), .JumpE(JumpE_3),
-    //   // Writeback stage
-    //   .CSRReadValW, .MDUResultW(MDUResultW_3), .FIntDivResultW(FIntDivResultW_3), .RdW(RdW_3), .ReadDataW(ReadDataW_3[P.XLEN-1:0]),
-    //   .InstrValidM(InstrValidM_3), .InstrValidE(InstrValidE_3), .InstrValidD(InstrValidD_3), .FCvtIntResW(FCvtIntResW_3), .FCvtIntW(FCvtIntW_3),
-    //   // hazards
-    //   .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
-    //   .StructuralStallD(StructuralStallD_3), .LoadStallD(LoadStallD_3), .StoreStallD(StoreStallD_3), 
-    //   // .PCSrcE,
-    //   .CSRReadM(CSRReadM_3), .CSRWriteM(CSRWriteM_3), .PrivilegedM(PrivilegedM_3), .CSRWriteFenceM(CSRWriteFenceM_3), .InvalidateICacheM(InvalidateICacheM_3),
-    //    // VLIW STARBUG Signals (for widened regfile)
-    //   .rd1_ieu(rd10), .rd2_ieu(rd11),
-    //   .we3_ieu(we12),
-    //   .a1_ieu(a10), .a2_ieu(a11), .a3_ieu(a12),
-    //   .wd3_ieu(wd12),
-    //   // VLIW STARBUG Signals (for forwarding between FUs)
-    //  .RdW_1(RdW), .RdW_2(RdW_1), .RdW_3(RdW_2),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
-    //  .RdM_1(RdM), .RdM_2(RdM_1), .RdM_3(RdM_2),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
-    //  .ResultW_1(ResultW), .ResultW_2(ResultW_1), .ResultW_3(ResultW_2),                     // These inputs are the results from other FUs' WB Stage
-    //  .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_1), .IFResultM_3(IFResultM_2),         // These inputs are the results from other FUs' Mem Stage
-    //  .RegWriteMOut(RegWriteMOut_3), .RegWriteWOut(RegWriteWOut_3),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-    //  .ResultW(ResultW_3), .IFResultM(IFResultM_3),                                          // Results from this ieu instance
-    //  .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_2),       // WriteEnable status of other lanes insts in M stage
-    //  .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_2)        // WriteEnable status of other lanes insts in W stage
-    //   );
+    ieu #(P)
+    ieu_3(.clk, .reset,
+      // Decode Stage interface
+      .InstrD(VLIWInstr3D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_3),
+      // Execute Stage interface
+      .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_3), .FCvtIntE(FCvtIntE_3), 
+        // .IEUAdrE, 
+      .IntDivE(IntDivE_3), .W64E(W64E_3),
+      .Funct3E(Funct3E_3), .ForwardedSrcAE(ForwardedSrcAE_3), .ForwardedSrcBE(ForwardedSrcBE_3), 
+      .MDUActiveE(MDUActiveE_3), .CMOpM(CMOpM_3), .IFUPrefetchE(IFUPrefetchE_3), .LSUPrefetchM(LSUPrefetchM_3),
+      // Memory stage interface
+      .SquashSCW(SquashSCW_3),  // from LSU
+      .MemRWE(MemRWE_3),     // read/write control goes to LSU
+      .MemRWM(MemRWM_3),     // read/write control goes to LSU
+      .AtomicM(AtomicM_3),    // atomic control goes to LSU
+      .WriteDataM(WriteDataM_3), // Write data to LSU
+      .Funct3M(Funct3M_3),    // size and signedness to LSU
+      .SrcAM(SrcAM_3),      // to privilege and fpu
+      .RdE(RdE_3), .RdM(RdM_3), .FIntResM(FIntResM_3), .FlushDCacheM(FlushDCacheM_3),
+      .BranchD(BranchD_3), .BranchE(BranchE_3), .JumpD(JumpD_3), .JumpE(JumpE_3),
+      // Writeback stage
+      .CSRReadValW, .MDUResultW(MDUResultW_3), .FIntDivResultW(FIntDivResultW_3), .RdW(RdW_3), .ReadDataW(ReadDataW_3[P.XLEN-1:0]),
+      .InstrValidM(InstrValidM_3), .InstrValidE(InstrValidE_3), .InstrValidD(InstrValidD_3), .FCvtIntResW(FCvtIntResW_3), .FCvtIntW(FCvtIntW_3),
+      // hazards
+      .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
+      .StructuralStallD(StructuralStallD_3), .LoadStallD(LoadStallD_3), .StoreStallD(StoreStallD_3), 
+      // .PCSrcE,
+      .CSRReadM(CSRReadM_3), .CSRWriteM(CSRWriteM_3), .PrivilegedM(PrivilegedM_3), .CSRWriteFenceM(CSRWriteFenceM_3), .InvalidateICacheM(InvalidateICacheM_3),
+       // VLIW STARBUG Signals (for widened regfile)
+      .rd1_ieu(rd10), .rd2_ieu(rd11),
+      .we3_ieu(we12),
+      .a1_ieu(a10), .a2_ieu(a11), .a3_ieu(a12),
+      .wd3_ieu(wd12),
+      // VLIW STARBUG Signals (for forwarding between FUs)
+     .RdW_1(RdW), .RdW_2(RdW_1), .RdW_3(RdW_2),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+     .RdM_1(RdM), .RdM_2(RdM_1), .RdM_3(RdM_2),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+     .ResultW_1(ResultW), .ResultW_2(ResultW_1), .ResultW_3(ResultW_2),                     // These inputs are the results from other FUs' WB Stage
+     .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_1), .IFResultM_3(IFResultM_2),         // These inputs are the results from other FUs' Mem Stage
+     .RegWriteMOut(RegWriteMOut_3), .RegWriteWOut(RegWriteWOut_3),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+     .ResultW(ResultW_3), .IFResultM(IFResultM_3),                                          // Results from this ieu instance
+     .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_2),       // WriteEnable status of other lanes insts in M stage
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_2)        // WriteEnable status of other lanes insts in W stage
+      );
 
 
   lsu #(P) 

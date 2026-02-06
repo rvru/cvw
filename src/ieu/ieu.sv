@@ -94,7 +94,9 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
   input  logic [P.XLEN-1:0] ResultW_1, ResultW_2, ResultW_3,               // These inputs are the results from other FUs' WB Stage
   input  logic [P.XLEN-1:0] IFResultM_1, IFResultM_2, IFResultM_3,         // These inputs are the results from other FUs' Mem Stage
   output logic RegWriteMOut, RegWriteWOut,                                 // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-  output logic ResultW, IFResultM                                          // These outputs are WB and Mem stage results of this ieu instance
+  output logic ResultW, IFResultM,                                         // These outputs are WB and Mem stage results of this ieu instance
+  input  logic RegWriteM_1, RegWriteM_2, RegWriteM_3,                      // These inpits are WriteEnable status of other lanes insts in M stage
+  input  logic RegWriteW_1, RegWriteW_2, RegWriteW_3                       // These inpits are WriteEnable status of other lanes insts in W stage,
   
   // ---------------------------------------------------------------------------------
 );
@@ -162,6 +164,10 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
 
     // New VLIW Forwarding ports
     .RegWriteMOut(RegWriteMOut), .RegWriteWOut(RegWriteWOut),   // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+
+    .RegWriteM_1(RegWriteM_1), .RegWriteM_2(RegWriteM_2), .RegWriteM_3(RegWriteM_3),    // WriteEnable status of other lanes insts in M stage
+    .RegWriteW_1(RegWriteW_1), .RegWriteW_2(RegWriteW_2), .RegWriteW_3(RegWriteW_3),    // WriteEnable status of other lanes insts in W stage
+
     .RdW_1(RdW_1), .RdW_2(RdW_2), .RdW_3(RdW_3),                // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
     .RdM_1(RdM_1), .RdM_2(RdM_2), .RdM_3(RdM_3),                // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
     .ForwardSelect_Rs1(ForwardSelectControllerToDatapath_Rs1),  // This output is a 2-bit internal signal indicating which FU this ieu has decided to accept forwarded results from (0 indicates itself)

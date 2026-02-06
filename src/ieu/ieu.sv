@@ -94,7 +94,7 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
   input  logic [P.XLEN-1:0] ResultW_1, ResultW_2, ResultW_3,               // These inputs are the results from other FUs' WB Stage
   input  logic [P.XLEN-1:0] IFResultM_1, IFResultM_2, IFResultM_3,         // These inputs are the results from other FUs' Mem Stage
   output logic RegWriteMOut, RegWriteWOut,                                 // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-  output logic ResultW, IFResultM,                                         // These outputs are WB and Mem stage results of this ieu instance
+  output logic [P.XLEN-1:0] ResultW, IFResultM,                                         // These outputs are WB and Mem stage results of this ieu instance
   input  logic RegWriteM_1, RegWriteM_2, RegWriteM_3,                      // These inpits are WriteEnable status of other lanes insts in M stage
   input  logic RegWriteW_1, RegWriteW_2, RegWriteW_3                       // These inpits are WriteEnable status of other lanes insts in W stage,
   

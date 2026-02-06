@@ -93,10 +93,13 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   output logic        RegWriteMOut,            // WriteEnable status of instruction in Memory stage, used to relay to other FUs for VLIW forwarding
   output logic        RegWriteWOut,            // WriteEnable status of instruction in Writeback stage, used to relay to other FUs for VLIW forwarding
 
+  input  logic        RegWriteM_1, RegWriteM_2, RegWriteM_3,    // WriteEnable status of other lanes insts in M stage
+  input  logic        RegWriteW_1, RegWriteW_2, RegWriteW_3,    // WriteEnable status of other lanes insts in W stage
+
   input  logic [4:0]  RdW_1, RdW_2, RdW_3,      // RdW signals routed in from other ieu instances for VLIW forwarding
   input  logic [4:0]  RdM_1, RdM_2, RdM_3,      // RdM signals routed in from other ieu instances for VLIW forwarding
   output logic [1:0]  ForwardSelect_Rs1,         // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 1
-  output logic [1:0]  ForwardSelect_Rs2,        // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 2
+  output logic [1:0]  ForwardSelect_Rs2        // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 2
 );
 
   logic [4:0] Rs1E;                      // pipelined register sources
@@ -491,15 +494,15 @@ module controller import cvw::*;  #(parameter cvw_t P) (
         ForwardAE = 2'b10;
         ForwardSelectController_Rs1 = 2'b00;
       end
-      else if ((Rs1E == RdM_1) & RegWriteM) begin
+      else if ((Rs1E == RdM_1) & RegWriteM_1) begin
         ForwardAE = 2'b10;
         ForwardSelectController_Rs1 = 2'b01;
       end
-      else if ((Rs1E == RdM_2) & RegWriteM) begin
+      else if ((Rs1E == RdM_2) & RegWriteM_2) begin
         ForwardAE = 2'b10;
         ForwardSelectController_Rs1 = 2'b10;
       end
-      else if ((Rs1E == RdM_3) & RegWriteM) begin
+      else if ((Rs1E == RdM_3) & RegWriteM_3) begin
         ForwardAE = 2'b10;
         ForwardSelectController_Rs1 = 2'b11;
       end
@@ -509,15 +512,15 @@ module controller import cvw::*;  #(parameter cvw_t P) (
         ForwardAE = 2'b01;
         ForwardSelectController_Rs1 = 2'b00;
       end
-      else if ((Rs1E == RdW_1) & RegWriteW) begin
+      else if ((Rs1E == RdW_1) & RegWriteW_1) begin
         ForwardAE = 2'b01;
         ForwardSelectController_Rs1 = 2'b01;
       end
-      else if ((Rs1E == RdW_2) & RegWriteW) begin
+      else if ((Rs1E == RdW_2) & RegWriteW_2) begin
         ForwardAE = 2'b01;
         ForwardSelectController_Rs1 = 2'b10;
       end
-      else if ((Rs1E == RdW_3) & RegWriteW) begin
+      else if ((Rs1E == RdW_3) & RegWriteW_3) begin
         ForwardAE = 2'b01;
         ForwardSelectController_Rs1 = 2'b11;
       end
@@ -530,15 +533,15 @@ module controller import cvw::*;  #(parameter cvw_t P) (
         ForwardBE = 2'b10;
         ForwardSelectController_Rs2 = 2'b00;
       end
-      else if ((Rs2E == RdM_1) & RegWriteM) begin
+      else if ((Rs2E == RdM_1) & RegWriteM_1) begin
         ForwardBE = 2'b10;
         ForwardSelectController_Rs2 = 2'b01;
       end
-      else if ((Rs2E == RdM_2) & RegWriteM) begin
+      else if ((Rs2E == RdM_2) & RegWriteM_2) begin
         ForwardBE = 2'b10;
         ForwardSelectController_Rs2 = 2'b10;
       end
-      else if ((Rs2E == RdM_3) & RegWriteM) begin
+      else if ((Rs2E == RdM_3) & RegWriteM_3) begin
         ForwardBE = 2'b10;
         ForwardSelectController_Rs2 = 2'b11;
       end
@@ -548,15 +551,15 @@ module controller import cvw::*;  #(parameter cvw_t P) (
         ForwardBE = 2'b01;
         ForwardSelectController_Rs2 = 2'b00;
       end
-      else if ((Rs2E == RdW_1) & RegWriteW) begin
+      else if ((Rs2E == RdW_1) & RegWriteW_1) begin
         ForwardBE = 2'b01;
         ForwardSelectController_Rs2 = 2'b01;
       end
-      else if ((Rs2E == RdW_2) & RegWriteW) begin
+      else if ((Rs2E == RdW_2) & RegWriteW_2) begin
         ForwardBE = 2'b01;
         ForwardSelectController_Rs2 = 2'b10;
       end
-      else if ((Rs2E == RdW_3) & RegWriteW) begin
+      else if ((Rs2E == RdW_3) & RegWriteW_3) begin
         ForwardBE = 2'b01;
         ForwardSelectController_Rs2 = 2'b11;
       end

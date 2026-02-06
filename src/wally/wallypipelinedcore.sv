@@ -322,7 +322,9 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .ResultW_1(ResultW_1), .ResultW_2(ResultW_2), .ResultW_3(ResultW_3),                   // These inputs are the results from other FUs' WB Stage
      .IFResultM_1(IFResultM_1), .IFResultM_2(IFResultM_2), .IFResultM_3(IFResultM_3),       // These inputs are the results from other FUs' Mem Stage
      .RegWriteMOut(RegWriteMOut), .RegWriteWOut(RegWriteWOut),                              // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-     .ResultW(ResultW), .IFResultM(IFResultM)                                               // Results from this ieu instance
+     .ResultW(ResultW), .IFResultM(IFResultM),                                              // Results from this ieu instance
+     .RegWriteM_1(RegWriteMOut_1), .RegWriteM_2(RegWriteMOut_2), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
+     .RegWriteW_1(RegWriteWOut_1), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
      );
     
     ieu #(P)
@@ -364,7 +366,9 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .ResultW_1(ResultW), .ResultW_2(ResultW_2), .ResultW_3(ResultW_3),                     // These inputs are the results from other FUs' WB Stage
      .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_2), .IFResultM_3(IFResultM_3),         // These inputs are the results from other FUs' Mem Stage
      .RegWriteMOut(RegWriteMOut_1), .RegWriteWOut(RegWriteWOut_1),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-     .ResultW(ResultW_1), .IFResultM(IFResultM_1)                                           // Results from this ieu instance
+     .ResultW(ResultW_1), .IFResultM(IFResultM_1),                                          // Results from this ieu instance
+     .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_2), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
      );
 
     ieu #(P)
@@ -406,7 +410,9 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .ResultW_1(ResultW), .ResultW_2(ResultW_1), .ResultW_3(ResultW_3),                     // These inputs are the results from other FUs' WB Stage
      .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_1), .IFResultM_3(IFResultM_3),         // These inputs are the results from other FUs' Mem Stage
      .RegWriteMOut(RegWriteMOut_2), .RegWriteWOut(RegWriteWOut_2),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-     .ResultW(ResultW_2), .IFResultM(IFResultM_2)                                           // Results from this ieu instance
+     .ResultW(ResultW_2), .IFResultM(IFResultM_2),                                          // Results from this ieu instance
+     .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
      );
 
     ieu #(P)
@@ -448,7 +454,9 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .ResultW_1(ResultW), .ResultW_2(ResultW_1), .ResultW_3(ResultW_2),                     // These inputs are the results from other FUs' WB Stage
      .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_1), .IFResultM_3(IFResultM_2),         // These inputs are the results from other FUs' Mem Stage
      .RegWriteMOut(RegWriteMOut_3), .RegWriteWOut(RegWriteWOut_3),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-     .ResultW(ResultW_3), .IFResultM(IFResultM_3)                                           // Results from this ieu instance
+     .ResultW(ResultW_3), .IFResultM(IFResultM_3),                                          // Results from this ieu instance
+     .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_2),       // WriteEnable status of other lanes insts in M stage
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_2)        // WriteEnable status of other lanes insts in W stage
       );
 
 

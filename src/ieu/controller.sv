@@ -96,7 +96,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   input  logic [4:0]  RdW_1, RdW_2, RdW_3,      // RdW signals routed in from other ieu instances for VLIW forwarding
   input  logic [4:0]  RdM_1, RdM_2, RdM_3,      // RdM signals routed in from other ieu instances for VLIW forwarding
   output logic [1:0]  ForwardSelect_Rs1,         // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 1
-  output logic [1:0]  ForwardSelect_Rs2,        // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 2
+  output logic [1:0]  ForwardSelect_Rs2        // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 2
 );
 
   logic [4:0] Rs1E;                      // pipelined register sources

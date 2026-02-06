@@ -3,7 +3,7 @@
 //
 // Written: David_Harris@hmc.edu, Sarah.Harris@unlv.edu
 // Created: 9 January 2021
-// Modified: jc165@rice.edu 24 November 2025
+// Modified: jc165@rice.edu 28 January 2026
 //
 // Purpose: Wally Integer Datapath
 // 
@@ -72,16 +72,21 @@ module datapath import cvw::*;  #(parameter cvw_t P) (
   input  logic [P.XLEN-1:0] CSRReadValW,             // CSR read result
   input  logic [P.XLEN-1:0] MDUResultW,              // MDU (Multiply/divide unit) result
   input  logic [P.XLEN-1:0] FIntDivResultW,          // FPU's integer divide result
-  input  logic [4:0]        RdW,                      // Destination register
+  input  logic [4:0]        RdW,                     // Destination register
    // Hazard Unit signals
 
 
   // Widened Regfile Signals (relay from inside datapath to outside IEU)
-  input  logic [P.XLEN-1:0]  rd1, rd2,                         // Read data for ports 1, 2
-  output logic             we3,                              // Write enable
-  output logic [4:0]       a1, a2, a3,                       // Source registers to read (a1, a2), destination register to write (a3)
-  output logic [P.XLEN-1:0]  wd3                               // Write data for port 3
+  input  logic [P.XLEN-1:0]  rd1, rd2,               // Read data for ports 1, 2
+  output logic             we3,                      // Write enable
+  output logic [4:0]       a1, a2, a3,               // Source registers to read (a1, a2), destination register to write (a3)
+  output logic [P.XLEN-1:0]  wd3,                    // Write data for port 3
 
+  // VLIW Forwarding Ports
+  input [1:0] ForwardSelect_Rs1, ForwardSelect_Rs2,                 // This is the forward select signal from this ieu instance's controller. 0 means select forwarded results from this instance
+  input [P.XLEN-1:0] ResultW_1, ResultW_2, ResultW_3,             // These are the results from other FUs' WB Stage
+  input [P.XLEN-1:0] IFResultM_1, IFResultM_2, IFResultM_3,       // These are the results from other FUs' Mem Stage
+  output [P.XLEN-1:0] ResultW, IFResultM_0                        // These are the results from this ieu instance.
 );
 
   // Fetch stage signals
@@ -98,7 +103,7 @@ module datapath import cvw::*;  #(parameter cvw_t P) (
   logic [P.XLEN-1:0] IFResultM;                      // Result from either IEU or single-cycle FPU op writing an integer register
   // Writeback stage signals
   logic [P.XLEN-1:0] SCResultW;                      // Store Conditional result
-  logic [P.XLEN-1:0] ResultW;                        // Result to write to register file
+  logic [P.XLEN-1:0] ResultW_internal;                        // Result to write to register file
   logic [P.XLEN-1:0] IFResultW;                      // Result from either IEU or single-cycle FPU op writing an integer register
   logic [P.XLEN-1:0] IFCvtResultW;                   // Result from IEU, signle-cycle FPU op, or 2-cycle FCVT float to int 
   logic [P.XLEN-1:0] MulDivResultW;                  // Multiply always comes from MDU.  Divide could come from MDU or FPU (when using fdivsqrt for integer division)
@@ -108,7 +113,7 @@ module datapath import cvw::*;  #(parameter cvw_t P) (
   assign a1 = Rs1D;
   assign a2 = Rs2D;
   assign a3 = RdW;
-  assign wd3 = ResultW;
+  assign wd3 = ResultW_internal;
   assign R1D = rd1;
   assign R2D = rd2;
 
@@ -121,9 +126,61 @@ module datapath import cvw::*;  #(parameter cvw_t P) (
   flopenrc #(P.XLEN) RD1EReg(clk, reset, FlushE, ~StallE, R1D, R1E);
   flopenrc #(P.XLEN) RD2EReg(clk, reset, FlushE, ~StallE, R2D, R2E);
   flopenrc #(P.XLEN) ImmExtEReg(clk, reset, FlushE, ~StallE, ImmExtD, ImmExtE);
+
+
+  // Selection logic for which forwarded result to use:
+  assign IFResultM_0 = IFResultM;
+  logic [P.XLEN-1:0] ResultW_Select_Rs1;
+  logic [P.XLEN-1:0] IFResultM_Select_Rs1;
+
+  logic [P.XLEN-1:0] ResultW_Select_Rs2;
+  logic [P.XLEN-1:0] IFResultM_Select_Rs2;
+
+  always_comb begin
+    // Forward Lane Selection for RS1
+    case (ForwardSelect_Rs1)
+      2'b00 : begin
+        ResultW_Select_Rs1 = ResultW_internal;
+        IFResultM_Select_Rs1 = IFResultM;
+      end
+      2'b01 : begin
+        ResultW_Select_Rs1 = ResultW_1;
+        IFResultM_Select_Rs1 = IFResultM_1;
+      end
+      2'b10 : begin
+        ResultW_Select_Rs1 = ResultW_2;
+        IFResultM_Select_Rs1 = IFResultM_2;
+      end
+      2'b11 : begin
+        ResultW_Select_Rs1 = ResultW_3;
+        IFResultM_Select_Rs1 = IFResultM_3;
+      end
+    endcase
+
+    // Forward Lane Selection for RS2
+    case (ForwardSelect_Rs2)
+      2'b00 : begin
+        ResultW_Select_Rs2 = ResultW_internal;
+        IFResultM_Select_Rs2 = IFResultM;
+      end
+      2'b01 : begin
+        ResultW_Select_Rs2 = ResultW_1;
+        IFResultM_Select_Rs2 = IFResultM_1;
+      end
+      2'b10 : begin
+        ResultW_Select_Rs2 = ResultW_2;
+        IFResultM_Select_Rs2 = IFResultM_2;
+      end
+      2'b11 : begin
+        ResultW_Select_Rs2 = ResultW_3;
+        IFResultM_Select_Rs2 = IFResultM_3;
+      end
+    endcase
   
-  mux3  #(P.XLEN)  faemux(R1E, ResultW, IFResultM, ForwardAE, ForwardedSrcAE);
-  mux3  #(P.XLEN)  fbemux(R2E, ResultW, IFResultM, ForwardBE, ForwardedSrcBE);
+  end
+  
+  mux3  #(P.XLEN)  faemux(R1E, ResultW_Select_Rs1, IFResultM_Select_Rs1, ForwardAE, ForwardedSrcAE);  // Depending on ForwardAE, forward/send either R1E, Selected ResultW, or Selected IFResultM
+  mux3  #(P.XLEN)  fbemux(R2E, ResultW_Select_Rs2, IFResultM_Select_Rs2, ForwardBE, ForwardedSrcBE);
   comparator #(P.XLEN) comp(ForwardedSrcAE, ForwardedSrcBE, BranchSignedE, FlagsE);
   mux2  #(P.XLEN)  srcamux(ForwardedSrcAE, PCE, ALUSrcAE, SrcAE);
   mux2  #(P.XLEN)  srcbmux(ForwardedSrcBE, ImmExtE, ALUSrcBE, SrcBE);

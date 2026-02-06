@@ -247,6 +247,45 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
     end
   end
 
+
+  // IEU CONNECTION SCHEME FOR VLIW STARBUG FORWARDING
+    
+    // ieu sees the following:
+    //  - Connection 0: self
+    //  - Connection 1: ieu_1
+    //  - Connection 2: ieu_2
+    //  - Connection 3: ieu_3
+
+    // ieu_1 sees the following:
+    //  - Connection 0: self
+    //  - Connection 1: ieu
+    //  - Connection 2: ieu_2
+    //  - Connection 3: ieu_3
+
+    // ieu_2 sees the following:
+    //  - Connection 0: self
+    //  - Connection 1: ieu
+    //  - Connection 2: ieu_1
+    //  - Connection 3: ieu_3
+
+    // ieu_3 sees the following:
+    //  - Connection 0: self
+    //  - Connection 1: ieu
+    //  - Connection 2: ieu_1
+    //  - Connection 3: ieu_2
+
+  // VLIW Forwarding Inter FU Connections
+  //ieu
+  //logic [4:0] RdW_1, RdW_2, RdW_3,                                  // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+  //logic [4:0] RdM_1, RdM_2, RdM_3,                                  // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+  logic [P.XLEN-1:0] ResultW, ResultW_1, ResultW_2, ResultW_3;               // These inputs are the results from other FUs' WB Stage
+  logic [P.XLEN-1:0] IFResultM, IFResultM_1, IFResultM_2, IFResultM_3;         // These inputs are the results from other FUs' Mem Stage
+  logic RegWriteMOut, RegWriteMOut_1, RegWriteMOut_2, RegWriteMOut_3;
+  logic RegWriteWOut, RegWriteWOut_1, RegWriteWOut_2, RegWriteWOut_3;
+  //ieu_1
+
+
+
   // integer execution unit: integer register file, datapath and controller
   ieu #(P) 
   ieu(.clk, .reset,
@@ -276,7 +315,15 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .rd1_ieu(rd1), .rd2_ieu(rd2),
      .we3_ieu(we3),
      .a1_ieu(a1), .a2_ieu(a2), .a3_ieu(a3),
-     .wd3_ieu(wd3));
+     .wd3_ieu(wd3),
+     // VLIW STARBUG Signals (for forwarding between FUs)
+     .RdW_1(RdW_1), .RdW_2(RdW_2), .RdW_3(RdW_3),                                           // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+     .RdM_1(RdM_1), .RdM_2(RdM_2), .RdM_3(RdM_3),                                           // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+     .ResultW_1(ResultW_1), .ResultW_2(ResultW_2), .ResultW_3(ResultW_3),                   // These inputs are the results from other FUs' WB Stage
+     .IFResultM_1(IFResultM_1), .IFResultM_2(IFResultM_2), .IFResultM_3(IFResultM_3),       // These inputs are the results from other FUs' Mem Stage
+     .RegWriteMOut(RegWriteMOut), .RegWriteWOut(RegWriteWOut),                              // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+     .ResultW(ResultW), .IFResultM(IFResultM)                                               // Results from this ieu instance
+     );
     
     ieu #(P)
     ieu_1(.clk, .reset,
@@ -310,7 +357,15 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .rd1_ieu(rd4), .rd2_ieu(rd5),
      .we3_ieu(we6),
      .a1_ieu(a4), .a2_ieu(a5), .a3_ieu(a6),
-     .wd3_ieu(wd6));
+     .wd3_ieu(wd6),
+     // VLIW STARBUG Signals (for forwarding between FUs)
+     .RdW_1(RdW), .RdW_2(RdW_2), .RdW_3(RdW_3),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+     .RdM_1(RdM), .RdM_2(RdM_2), .RdM_3(RdM_3),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+     .ResultW_1(ResultW), .ResultW_2(ResultW_2), .ResultW_3(ResultW_3),                     // These inputs are the results from other FUs' WB Stage
+     .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_2), .IFResultM_3(IFResultM_3),         // These inputs are the results from other FUs' Mem Stage
+     .RegWriteMOut(RegWriteMOut_1), .RegWriteWOut(RegWriteWOut_1),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+     .ResultW(ResultW_1), .IFResultM(IFResultM_1)                                           // Results from this ieu instance
+     );
 
     ieu #(P)
     ieu_2(.clk, .reset,
@@ -344,7 +399,15 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
       .rd1_ieu(rd7), .rd2_ieu(rd8),
       .we3_ieu(we9),
       .a1_ieu(a7), .a2_ieu(a8), .a3_ieu(a9),
-      .wd3_ieu(wd9));
+      .wd3_ieu(wd9),
+      // VLIW STARBUG Signals (for forwarding between FUs)
+     .RdW_1(RdW), .RdW_2(RdW_1), .RdW_3(RdW_3),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+     .RdM_1(RdM), .RdM_2(RdM_1), .RdM_3(RdM_3),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+     .ResultW_1(ResultW), .ResultW_2(ResultW_1), .ResultW_3(ResultW_3),                     // These inputs are the results from other FUs' WB Stage
+     .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_1), .IFResultM_3(IFResultM_3),         // These inputs are the results from other FUs' Mem Stage
+     .RegWriteMOut(RegWriteMOut_2), .RegWriteWOut(RegWriteWOut_2),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+     .ResultW(ResultW_2), .IFResultM(IFResultM_2)                                           // Results from this ieu instance
+     );
 
     ieu #(P)
     ieu_3(.clk, .reset,
@@ -378,7 +441,15 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
       .rd1_ieu(rd10), .rd2_ieu(rd11),
       .we3_ieu(we12),
       .a1_ieu(a10), .a2_ieu(a11), .a3_ieu(a12),
-      .wd3_ieu(wd12));
+      .wd3_ieu(wd12),
+      // VLIW STARBUG Signals (for forwarding between FUs)
+     .RdW_1(RdW), .RdW_2(RdW_1), .RdW_3(RdW_2),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+     .RdM_1(RdM), .RdM_2(RdM_1), .RdM_3(RdM_2),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+     .ResultW_1(ResultW), .ResultW_2(ResultW_1), .ResultW_3(ResultW_2),                     // These inputs are the results from other FUs' WB Stage
+     .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_1), .IFResultM_3(IFResultM_2),         // These inputs are the results from other FUs' Mem Stage
+     .RegWriteMOut(RegWriteMOut_3), .RegWriteWOut(RegWriteWOut_3),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+     .ResultW(ResultW_3), .IFResultM(IFResultM_3)                                           // Results from this ieu instance
+      );
 
 
   lsu #(P) 
@@ -567,20 +638,14 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   end
 
   // global stall and flush control:
-  // hazard unit inputs ORed for STARBUG VLIW implementation
-  logic CSRWriteFenceM_OR;
-  logic StructuralStallD_OR;
-  logic LSUStallM_OR;
-  logic FPUStallD_OR;
-  logic DivBusyE_OR;
-  logic FDivBusyE_OR;
+    // hazard unit inputs ORed for STARBUG VLIW implementation
+  logic CSRWriteFenceM_OR = CSRWriteFenceM | CSRWriteFenceM_1 | CSRWriteFenceM_2 | CSRWriteFenceM_3;
+  logic StructuralStallD_OR = StructuralStallD | StructuralStallD_1 | StructuralStallD_2 | StructuralStallD_3;
+  logic LSUStallM_OR = LSUStallM; //| LSUStallM_1 | LSUStallM_2 | LSUStallM_3;
+  logic FPUStallD_OR = FPUStallD | FPUStallD_1 | FPUStallD_2 | FPUStallD_3;
+  logic DivBusyE_OR = DivBusyE | DivBusyE_1 | DivBusyE_2 | DivBusyE_3;
+  logic FDivBusyE_OR = FDivBusyE | FDivBusyE_1 | FDivBusyE_2 | FDivBusyE_3;
 
-  assign CSRWriteFenceM_OR = CSRWriteFenceM | CSRWriteFenceM_1 | CSRWriteFenceM_2 | CSRWriteFenceM_3;
-  assign StructuralStallD_OR = StructuralStallD | StructuralStallD_1 | StructuralStallD_2 | StructuralStallD_3;
-  assign LSUStallM_OR = LSUStallM; // | LSUStallM_1 | LSUStallM_2 | LSUStallM_3;
-  assign FPUStallD_OR = FPUStallD | FPUStallD_1 | FPUStallD_2 | FPUStallD_3;
-  assign DivBusyE_OR = DivBusyE | DivBusyE_1 | DivBusyE_2 | DivBusyE_3;
-  assign FDivBusyE_OR = FDivBusyE | FDivBusyE_1 | FDivBusyE_2 | FDivBusyE_3;
 
   // hazard unit implementation with ORed signals from all 4 FU channels
   hazard hzu(

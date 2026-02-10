@@ -459,6 +459,50 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_2)        // WriteEnable status of other lanes insts in W stage
       );
 
+    ieu #(P)
+    ieu_3(.clk, .reset,
+      // Decode Stage interface
+      .InstrD(VLIWInstr3D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_3),
+      // Execute Stage interface
+      .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_3), .FCvtIntE(FCvtIntE_3), 
+        // .IEUAdrE, 
+      .IntDivE(IntDivE_3), .W64E(W64E_3),
+      .Funct3E(Funct3E_3), .ForwardedSrcAE(ForwardedSrcAE_3), .ForwardedSrcBE(ForwardedSrcBE_3), 
+      .MDUActiveE(MDUActiveE_3), .CMOpM(CMOpM_3), .IFUPrefetchE(IFUPrefetchE_3), .LSUPrefetchM(LSUPrefetchM_3),
+      // Memory stage interface
+      .SquashSCW(SquashSCW_3),  // from LSU
+      .MemRWE(MemRWE_3),     // read/write control goes to LSU
+      .MemRWM(MemRWM_3),     // read/write control goes to LSU
+      .AtomicM(AtomicM_3),    // atomic control goes to LSU
+      .WriteDataM(WriteDataM_3), // Write data to LSU
+      .Funct3M(Funct3M_3),    // size and signedness to LSU
+      .SrcAM(SrcAM_3),      // to privilege and fpu
+      .RdE(RdE_3), .RdM(RdM_3), .FIntResM(FIntResM_3), .FlushDCacheM(FlushDCacheM_3),
+      .BranchD(BranchD_3), .BranchE(BranchE_3), .JumpD(JumpD_3), .JumpE(JumpE_3),
+      // Writeback stage
+      .CSRReadValW, .MDUResultW(MDUResultW_3), .FIntDivResultW(FIntDivResultW_3), .RdW(RdW_3), .ReadDataW(ReadDataW_3[P.XLEN-1:0]),
+      .InstrValidM(InstrValidM_3), .InstrValidE(InstrValidE_3), .InstrValidD(InstrValidD_3), .FCvtIntResW(FCvtIntResW_3), .FCvtIntW(FCvtIntW_3),
+      // hazards
+      .StallD, .StallE, .StallM, .StallW, .FlushD, .FlushE, .FlushM, .FlushW,
+      .StructuralStallD(StructuralStallD_3), .LoadStallD(LoadStallD_3), .StoreStallD(StoreStallD_3), 
+      // .PCSrcE,
+      .CSRReadM(CSRReadM_3), .CSRWriteM(CSRWriteM_3), .PrivilegedM(PrivilegedM_3), .CSRWriteFenceM(CSRWriteFenceM_3), .InvalidateICacheM(InvalidateICacheM_3),
+       // VLIW STARBUG Signals (for widened regfile)
+      .rd1_ieu(rd10), .rd2_ieu(rd11),
+      .we3_ieu(we12),
+      .a1_ieu(a10), .a2_ieu(a11), .a3_ieu(a12),
+      .wd3_ieu(wd12),
+      // VLIW STARBUG Signals (for forwarding between FUs)
+     .RdW_1(RdW), .RdW_2(RdW_1), .RdW_3(RdW_2),                                             // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+     .RdM_1(RdM), .RdM_2(RdM_1), .RdM_3(RdM_2),                                             // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+     .ResultW_1(ResultW), .ResultW_2(ResultW_1), .ResultW_3(ResultW_2),                     // These inputs are the results from other FUs' WB Stage
+     .IFResultM_1(IFResultM), .IFResultM_2(IFResultM_1), .IFResultM_3(IFResultM_2),         // These inputs are the results from other FUs' Mem Stage
+     .RegWriteMOut(RegWriteMOut_3), .RegWriteWOut(RegWriteWOut_3),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+     .ResultW(ResultW_3), .IFResultM(IFResultM_3),                                          // Results from this ieu instance
+     .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_2),       // WriteEnable status of other lanes insts in M stage
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_2)        // WriteEnable status of other lanes insts in W stage
+      );
+
 
   lsu #(P) 
   lsu(
@@ -516,14 +560,20 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   end
 
   // global stall and flush control:
-    // hazard unit inputs ORed for STARBUG VLIW implementation
-  logic CSRWriteFenceM_OR = CSRWriteFenceM | CSRWriteFenceM_1 | CSRWriteFenceM_2 | CSRWriteFenceM_3;
-  logic StructuralStallD_OR = StructuralStallD | StructuralStallD_1 | StructuralStallD_2 | StructuralStallD_3;
-  logic LSUStallM_OR = LSUStallM; //| LSUStallM_1 | LSUStallM_2 | LSUStallM_3;
-  logic FPUStallD_OR = FPUStallD | FPUStallD_1 | FPUStallD_2 | FPUStallD_3;
-  logic DivBusyE_OR = DivBusyE | DivBusyE_1 | DivBusyE_2 | DivBusyE_3;
-  logic FDivBusyE_OR = FDivBusyE | FDivBusyE_1 | FDivBusyE_2 | FDivBusyE_3;
+  // hazard unit inputs ORed for STARBUG VLIW implementation
+  logic CSRWriteFenceM_OR;
+  logic StructuralStallD_OR;
+  logic LSUStallM_OR;
+  logic FPUStallD_OR;
+  logic DivBusyE_OR;
+  logic FDivBusyE_OR;
 
+  assign CSRWriteFenceM_OR = CSRWriteFenceM | CSRWriteFenceM_1 | CSRWriteFenceM_2 | CSRWriteFenceM_3;
+  assign StructuralStallD_OR = StructuralStallD | StructuralStallD_1 | StructuralStallD_2 | StructuralStallD_3;
+  assign LSUStallM_OR = LSUStallM; //| LSUStallM_1 | LSUStallM_2 | LSUStallM_3;
+  assign FPUStallD_OR = FPUStallD | FPUStallD_1 | FPUStallD_2 | FPUStallD_3;
+  assign DivBusyE_OR = DivBusyE | DivBusyE_1 | DivBusyE_2 | DivBusyE_3;
+  assign FDivBusyE_OR = FDivBusyE | FDivBusyE_1 | FDivBusyE_2 | FDivBusyE_3;
 
   // hazard unit implementation with ORed signals from all 4 FU channels
   hazard hzu(

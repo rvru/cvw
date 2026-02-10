@@ -2,7 +2,7 @@
 // ieu.sv
 //
 // Written: David_Harris@hmc.edu 9 January 2021
-// Modified: jc165@rice.edu 24 November 2025
+// Modified: jc165@rice.edu 28 January 2026
 //
 // Purpose: Integer Execution Unit: datapath and controller
 // 
@@ -71,6 +71,7 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
   input  logic              FCvtIntW,                        // FPU converts float to int
   output logic [4:0]        RdW,                             // Destination register
   input  logic [P.XLEN-1:0] ReadDataW,                       // LSU's read data
+
   // Hazard unit signals
   input  logic              StallD, StallE, StallM, StallW,  // Stall signals from hazard unit
   input  logic              FlushD, FlushE, FlushM, FlushW,  // Flush signals
@@ -81,10 +82,23 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
   output logic              CSRWriteFenceM,                  // CSR write or fence instruction needs to flush subsequent instructions
 
   // Widened Regfile Signals (relay from inside datapath to outside IEU)
-  input  logic [P.XLEN-1:0]  rd1_ieu, rd2_ieu,                 // Read data for ports 1, 2
+  input  logic [P.XLEN-1:0]  rd1_ieu, rd2_ieu,               // Read data for ports 1, 2
   output logic             we3_ieu,                          // Write enable
   output logic [4:0]       a1_ieu, a2_ieu, a3_ieu,           // Source registers to read (a1, a2), destination register to write (a3)
-  output logic [P.XLEN-1:0]  wd3_ieu                           // Write data for port 3
+  output logic [P.XLEN-1:0]  wd3_ieu,                        // Write data for port 3
+
+  // Modified STARBUG Signals for Forwarding -----------------------------------------
+
+  input  logic [4:0] RdW_1, RdW_2, RdW_3,                                  // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+  input  logic [4:0] RdM_1, RdM_2, RdM_3,                                  // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+  input  logic [P.XLEN-1:0] ResultW_1, ResultW_2, ResultW_3,               // These inputs are the results from other FUs' WB Stage
+  input  logic [P.XLEN-1:0] IFResultM_1, IFResultM_2, IFResultM_3,         // These inputs are the results from other FUs' Mem Stage
+  output logic RegWriteMOut, RegWriteWOut,                                 // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+  output logic [P.XLEN-1:0] ResultW, IFResultM,                                         // These outputs are WB and Mem stage results of this ieu instance
+  input  logic RegWriteM_1, RegWriteM_2, RegWriteM_3,                      // These inpits are WriteEnable status of other lanes insts in M stage
+  input  logic RegWriteW_1, RegWriteW_2, RegWriteW_3                       // These inpits are WriteEnable status of other lanes insts in W stage,
+  
+  // ---------------------------------------------------------------------------------
 );
 
   logic [2:0] ImmSrcD;                                       // Select type of immediate extension 
@@ -104,7 +118,12 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
   logic [6:0] Funct7E;
 
   // Forwarding signals
-  logic [4:0] Rs1D, Rs2D;
+  logic [4:0] Rs1D, Rs2D;                                    // These are the D stage source regs of this ieu istance (treat as instance 0)
+  logic [4:0] Rs1D_1, Rs2D_1;                                // These are the D stage source regs of connected instance 1
+  logic [4:0] Rs1D_2, Rs2D_2;                                // These are the D stage source regs of connected instance 2
+  logic [4:0] Rs1D_3, Rs2D_3;                                // These are the D stage source regs of connected instance 3
+
+
   logic [4:0] Rs2E;                                          // Source registers
   logic [1:0] ForwardAE, ForwardBE;                          // Select signals for forwarding multiplexers
   logic       RegWriteW;                                     // Register will be written in Writeback stage
@@ -124,6 +143,9 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
   assign a3_ieu = a3;
   assign wd3_ieu = wd3;
 
+  logic [1:0] ForwardSelectControllerToDatapath_Rs1;
+  logic [1:0] ForwardSelectControllerToDatapath_Rs2;
+
   controller #(P) c(
     .clk, .reset, .StallD, .FlushD, .InstrD, .STATUS_FS, .ENVCFG_CBE, .ImmSrcD,
     .IllegalIEUFPUInstrD, .IllegalBaseInstrD, 
@@ -136,7 +158,21 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
     .StallM, .FlushM, .MemRWE, .MemRWM, .CSRReadM, .CSRWriteM, .PrivilegedM, .AtomicM, .Funct3M,
     .FlushDCacheM, .InstrValidM, .InstrValidE, .InstrValidD, .FWriteIntM,
     .StallW, .FlushW, .RegWriteW, .IntDivW, .ResultSrcW, .CSRWriteFenceM, .InvalidateICacheM,
-    .RdW, .RdE, .RdM);
+    
+    // RdW and RdM Also to be sent out to other FUs for forwarding (constituting the RdW_X and RdM_X inputs of another FU's controller module)
+    .RdW, .RdE, .RdM,
+
+    // New VLIW Forwarding ports
+    .RegWriteMOut(RegWriteMOut), .RegWriteWOut(RegWriteWOut),   // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
+
+    .RegWriteM_1(RegWriteM_1), .RegWriteM_2(RegWriteM_2), .RegWriteM_3(RegWriteM_3),    // WriteEnable status of other lanes insts in M stage
+    .RegWriteW_1(RegWriteW_1), .RegWriteW_2(RegWriteW_2), .RegWriteW_3(RegWriteW_3),    // WriteEnable status of other lanes insts in W stage
+
+    .RdW_1(RdW_1), .RdW_2(RdW_2), .RdW_3(RdW_3),                // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
+    .RdM_1(RdM_1), .RdM_2(RdM_2), .RdM_3(RdM_3),                // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
+    .ForwardSelect_Rs1(ForwardSelectControllerToDatapath_Rs1),  // This output is a 2-bit internal signal indicating which FU this ieu has decided to accept forwarded results from (0 indicates itself)
+    .ForwardSelect_Rs2(ForwardSelectControllerToDatapath_Rs2)    // This output is a 2-bit internal signal indicating which FU this ieu has decided to accept forwarded results from (0 indicates itself)
+    );
 
   datapath #(P) dp(
     .clk, .reset, .ImmSrcD, .InstrD, .Rs1D, .Rs2D, .Rs2E, .StallE, .FlushE, .ForwardAE, .ForwardBE, .W64E, .UW64E, .SubArithE,
@@ -146,8 +182,17 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
     .StallW, .FlushW, .RegWriteW, .IntDivW, .SquashSCW, .ResultSrcW, .ReadDataW, .FCvtIntResW,
     .CSRReadValW, .MDUResultW, .FIntDivResultW, .RdW
     ,.rd1, .rd2, .we3, 
-    .a1, .a2, .a3, .wd3
+    .a1, .a2, .a3, .wd3,
+
+    // New VLIW Forwarding Ports
+    .ForwardSelect_Rs1(ForwardSelectControllerToDatapath_Rs1),                               // This input is the forward select signal from this ieu instance's controller module
+    .ForwardSelect_Rs2(ForwardSelectControllerToDatapath_Rs2),                               // This input is the forward select signal from this ieu instance's controller module
+    .ResultW_1(ResultW_1), .ResultW_2(ResultW_2), .ResultW_3(ResultW_3),                     // These inputs are the results from other FUs' WB Stage
+    .IFResultM_1(IFResultM_1), .IFResultM_2(IFResultM_2), .IFResultM_3(IFResultM_3),         // These inputs are the results from other FUs' Mem Stage
+    .ResultW(ResultW), .IFResultM_0(IFResultM)                                               // These are the Mem and WB stage results of this ieu instance
     );      
 
+
+// TODO: adjust wallypipelinedcore to connect inter-ieu wires, also result outputs need to be brought out from datapath
 
 endmodule

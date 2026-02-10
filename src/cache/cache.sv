@@ -46,6 +46,7 @@ module cache import cvw::*; #(parameter cvw_t P,
   output logic                   CacheCommitted,    // Cache has started bus operation that shouldn't be interrupted
   output logic                   CacheStall,        // Cache stalls pipeline during multicycle operation
   output logic [WORDLEN-1:0]     ReadDataWord,      // Word read from cache (goes to CPU and bus)
+  output logic [LINELEN-1:0]     ReadDataLine,
   // to performance counters to cpu
   output logic                   CacheMiss,         // Cache miss
   output logic                   CacheAccess,       // Cache access
@@ -56,6 +57,7 @@ module cache import cvw::*; #(parameter cvw_t P,
   input  logic                   SelBusBeat,        // Word in cache line comes from BeatCount
   input  logic [LOGBWPL-1:0]     BeatCount,         // Beat in burst
   input  logic [LINELEN-1:0]     FetchBuffer,       // Buffer long enough to hold entire cache line arriving from bus
+  // input  logic [LINELEN-1:0]     ReadDataLine,      // 
   output logic [1:0]             CacheBusRW,        // [1] Read (cache line fetch) or [0] write bus (cache line writeback)
   output logic [PA_BITS-1:0]     CacheBusAdr        // Address for bus access
 );
@@ -74,7 +76,7 @@ module cache import cvw::*; #(parameter cvw_t P,
   logic [1:0]                    AdrSelMuxSelTag, AdrSelMuxSelLRU;
   logic [SETLEN-1:0]             CacheSetData;
   logic [SETLEN-1:0]             CacheSetTag, CacheSetLRU;
-  logic [LINELEN-1:0]            LineWriteData;
+  logic [LINELEN-1:0]            LineWriteData, ReadDataLine;
   logic                          ClearDirty, SetDirty, SetValid, ClearValid;
   logic [LINELEN-1:0]            ReadDataLineWay [NUMWAYS-1:0];
   logic [NUMWAYS-1:0]            HitWay, ValidWay;
@@ -90,7 +92,7 @@ module cache import cvw::*; #(parameter cvw_t P,
   logic                          FlushWayCntEn;
   logic                          SelWriteback;
   logic                          LRUWriteEn;
-  logic [LINELEN-1:0]            ReadDataLine, ReadDataLineCache;
+  logic [LINELEN-1:0]            ReadDataLineCache;
   logic                          SelFetchBuffer;
   logic                          CacheEn;
   logic                          SelVictim;
@@ -151,6 +153,7 @@ module cache import cvw::*; #(parameter cvw_t P,
   
   // Bypass cache array to save a cycle when finishing a load miss
   mux2 #(LINELEN) EarlyReturnMux(ReadDataLineCache, FetchBuffer, SelFetchBuffer, ReadDataLine);
+  // TODO: EXPORT READDATALINE TO PEEK INTO ISNTEAD OF FETCHBUFFER
 
   // Select word from cache line
   subcachelineread #(LINELEN, WORDLEN, MUXINTERVAL) subcachelineread(

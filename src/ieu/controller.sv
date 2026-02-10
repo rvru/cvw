@@ -3,7 +3,7 @@
 //
 // Written: David_Harris@hmc.edu, Sarah.Harris@unlv.edu, kekim@hmc.edu
 // Created: 9 January 2021
-// Modified: 3 March 2023
+// Modified: jc165@rice.edu 28 January 2026
 //
 // Purpose: Top level controller module
 // 
@@ -89,7 +89,17 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   output logic        CSRWriteFenceM,          // CSR write or fence instruction; needs to flush the following instructions
   output logic [4:0]  RdE, RdM,                // Pipelined destination registers
   // Forwarding controls
-  output logic [4:0]  RdW                      // Register destinations in Execute, Memory, or Writeback stage
+  output logic [4:0]  RdW,                      // Register destinations in Execute, Memory, or Writeback stage
+  output logic        RegWriteMOut,            // WriteEnable status of instruction in Memory stage, used to relay to other FUs for VLIW forwarding
+  output logic        RegWriteWOut,            // WriteEnable status of instruction in Writeback stage, used to relay to other FUs for VLIW forwarding
+
+  input  logic        RegWriteM_1, RegWriteM_2, RegWriteM_3,    // WriteEnable status of other lanes insts in M stage
+  input  logic        RegWriteW_1, RegWriteW_2, RegWriteW_3,    // WriteEnable status of other lanes insts in W stage
+
+  input  logic [4:0]  RdW_1, RdW_2, RdW_3,      // RdW signals routed in from other ieu instances for VLIW forwarding
+  input  logic [4:0]  RdM_1, RdM_2, RdM_3,      // RdM signals routed in from other ieu instances for VLIW forwarding
+  output logic [1:0]  ForwardSelect_Rs1,         // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 1
+  output logic [1:0]  ForwardSelect_Rs2        // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 2
 );
 
   logic [4:0] Rs1E;                      // pipelined register sources
@@ -456,17 +466,104 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   // Flush F, D, and E stages on a CSR write or Fence.I or SFence.VMA
   assign CSRWriteFenceM = CSRWriteM | FenceM;
 
-  // Forwarding logic
+  // Assignments to relay this ieu instance's Mem and WB stage write enables to other instances
+  assign RegWriteMOut = RegWriteM;
+  assign RegWriteWOut = RegWriteW;
+
+  // This is the signal that indicates which FU this ieu should be recieving forwarded results from.
+  // If 0, it indicates the ieu's own Mem or WB stage will forward its results.
+  logic [1:0] ForwardSelectController_Rs1;
+  logic [1:0] ForwardSelectController_Rs2;
+  assign ForwardSelect_Rs1 = ForwardSelectController_Rs1;
+  assign ForwardSelect_Rs2 = ForwardSelectController_Rs2;
+
+
+  // Forwarding logic !To Do! Add cross ieu forwards
   always_comb begin
     ForwardAE = 2'b00;
     ForwardBE = 2'b00;
-    if (Rs1E != 5'b0)
-      if      ((Rs1E == RdM) & RegWriteM) ForwardAE = 2'b10;
-      else if ((Rs1E == RdW) & RegWriteW) ForwardAE = 2'b01;
+    ForwardSelectController_Rs1 = 2'b00;
+    ForwardSelectController_Rs2 = 2'b00;
+
+    // Following logic assumes that multiple instructions in STARBUG VLIW bundles cannot write to the same register.
+    // As such only one FU can be writing to this ieu's source register at any one time.
+
+    if (Rs1E != 5'b0) begin     // if current instance source reg 1 in E stage is not zero, check mem and wb stages
+      // Check all Mem stage destinations first
+      if      ((Rs1E == RdM) & RegWriteM) begin
+        ForwardAE = 2'b10;
+        ForwardSelectController_Rs1 = 2'b00;
+      end
+      else if ((Rs1E == RdM_1) & RegWriteM_1) begin
+        ForwardAE = 2'b10;
+        ForwardSelectController_Rs1 = 2'b01;
+      end
+      else if ((Rs1E == RdM_2) & RegWriteM_2) begin
+        ForwardAE = 2'b10;
+        ForwardSelectController_Rs1 = 2'b10;
+      end
+      else if ((Rs1E == RdM_3) & RegWriteM_3) begin
+        ForwardAE = 2'b10;
+        ForwardSelectController_Rs1 = 2'b11;
+      end
+
+      // Then check all WB stage destinations
+      else if ((Rs1E == RdW) & RegWriteW) begin
+        ForwardAE = 2'b01;
+        ForwardSelectController_Rs1 = 2'b00;
+      end
+      else if ((Rs1E == RdW_1) & RegWriteW_1) begin
+        ForwardAE = 2'b01;
+        ForwardSelectController_Rs1 = 2'b01;
+      end
+      else if ((Rs1E == RdW_2) & RegWriteW_2) begin
+        ForwardAE = 2'b01;
+        ForwardSelectController_Rs1 = 2'b10;
+      end
+      else if ((Rs1E == RdW_3) & RegWriteW_3) begin
+        ForwardAE = 2'b01;
+        ForwardSelectController_Rs1 = 2'b11;
+      end
+    end
+
  
-    if (Rs2E != 5'b0)
-      if      ((Rs2E == RdM) & RegWriteM) ForwardBE = 2'b10;
-      else if ((Rs2E == RdW) & RegWriteW) ForwardBE = 2'b01;
+    if (Rs2E != 5'b0) begin     // if current instance source reg 2 in E stage is not zero, check mem and wb stages
+    // Check all Mem stage destinations first
+      if      ((Rs2E == RdM) & RegWriteM) begin
+        ForwardBE = 2'b10;
+        ForwardSelectController_Rs2 = 2'b00;
+      end
+      else if ((Rs2E == RdM_1) & RegWriteM_1) begin
+        ForwardBE = 2'b10;
+        ForwardSelectController_Rs2 = 2'b01;
+      end
+      else if ((Rs2E == RdM_2) & RegWriteM_2) begin
+        ForwardBE = 2'b10;
+        ForwardSelectController_Rs2 = 2'b10;
+      end
+      else if ((Rs2E == RdM_3) & RegWriteM_3) begin
+        ForwardBE = 2'b10;
+        ForwardSelectController_Rs2 = 2'b11;
+      end
+
+      // Then check all WB stage destinations
+      else if ((Rs2E == RdW) & RegWriteW) begin
+        ForwardBE = 2'b01;
+        ForwardSelectController_Rs2 = 2'b00;
+      end
+      else if ((Rs2E == RdW_1) & RegWriteW_1) begin
+        ForwardBE = 2'b01;
+        ForwardSelectController_Rs2 = 2'b01;
+      end
+      else if ((Rs2E == RdW_2) & RegWriteW_2) begin
+        ForwardBE = 2'b01;
+        ForwardSelectController_Rs2 = 2'b10;
+      end
+      else if ((Rs2E == RdW_3) & RegWriteW_3) begin
+        ForwardBE = 2'b01;
+        ForwardSelectController_Rs2 = 2'b11;
+      end
+    end
   end
 
   // Stall on dependent operations that finish in Mem Stage and can't bypass in time

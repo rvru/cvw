@@ -1,3 +1,6 @@
+// MODIFED VLIW IFU
+
+
 ///////////////////////////////////////////
 // ifu.sv
 //
@@ -105,6 +108,9 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   output logic [31:0]          VLIWInstr2D,        // Third VLIW instruction (decoded)
   output logic [31:0]          VLIWInstr3D,        // Fourth VLIW instruction (decoded)
   output logic [3:0]           VLIWValidD,         // Valid bits for each VLIW instruction
+  output logic [31:0]          InstrM_1,
+  output logic [31:0]          InstrM_2,
+  output logic [31:0]          InstrM_3,
   output logic                 VLIWModeD          // Indicates VLIW mode is active so we can ignore 
   //InstrD as we know it is a HINT
   // ========================================
@@ -137,8 +143,11 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   logic                        IllegalIEUInstrD;                         // IEU Instruction (regular or compressed) is not good
   
   logic [1:0]                  IFURWF;                                   // IFU alreays read IFURWF = 10
-  logic [31:0]                 InstrE;                                   // Instruction in the Execution stage
+  logic [31:0]                 InstrE, InstrE_1, InstrE_2, InstrE_3;     // Instruction in the Execution stage
   logic [31:0]                 NextInstrD, NextInstrE;                   // Instruction into the next stage after possible stage flush
+  logic [31:0]                 NextInstrD_1, NextInstrE_1;                   // Instruction into the next stage after possible stage flush
+  logic [31:0]                 NextInstrD_2, NextInstrE_2;                   // Instruction into the next stage after possible stage flush
+  logic [31:0]                 NextInstrD_3, NextInstrE_3;                   // Instruction into the next stage after possible stage flush
 
   logic                        CacheableF;                               // PMA indicates instruction address is cacheable
   logic                        SelSpillNextF;                            // In a spill, stall pipeline and gate local stallF
@@ -151,6 +160,7 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   logic                        SelIROM;                                  // PMA indicates instruction address is in the IROM
   logic [15:0]                 InstrRawE, InstrRawM;
   logic [LINELEN-1:0]          FetchBuffer;
+  logic [LINELEN-1:0]          ReadDataLine;
   logic [31:0]                 ShiftUncachedInstr;
   logic 		       ITLBMissF;
   logic 		       InstrUpdateAF;                            // ITLB hit needs to update dirty or access bits
@@ -279,7 +289,7 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
               .NUMSETS(P.ICACHE_WAYSIZEINBYTES*8/P.ICACHE_LINELENINBITS),
               .NUMWAYS(P.ICACHE_NUMWAYS), .LOGBWPL(AHBWLOGBWPL), .WORDLEN(32), .MUXINTERVAL(16), .READ_ONLY_CACHE(1))
       icache(.clk, .reset, .FlushStage(FlushD), .Stall(GatedStallD),
-             .FetchBuffer, .CacheBusAck(ICacheBusAck),
+             .FetchBuffer, .ReadDataLine, .CacheBusAck(ICacheBusAck),
              .CacheBusAdr(ICacheBusAdr), .CacheStall(ICacheStallF), 
              .CacheBusRW,
              .ReadDataWord(ICacheInstrF),
@@ -337,10 +347,10 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
     VLIWModeF    = 1'b0;
     VLIWCountF   = 6'b0;
     VLIWValidF   = 4'b0;
-    VLIWInstr0F  = 32'b0;
-    VLIWInstr1F  = 32'b0;
-    VLIWInstr2F  = 32'b0;
-    VLIWInstr3F  = 32'b0;
+    VLIWInstr0F  = nop;
+    VLIWInstr1F  = nop;
+    VLIWInstr2F  = nop;
+    VLIWInstr3F  = nop;
 
     // Defaults for signals that were only conditionally assigned
     fetch_byte_offset = '0;
@@ -361,9 +371,9 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
       // Instruction 0
       if (imm_c >= 1 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
-        check_16bit0 = FetchBuffer[bit_offset +: 16];
+        check_16bit0 = ReadDataLine[bit_offset +: 16];
         if (check_16bit0[1:0] == 2'b11) begin
-          VLIWInstr0F = FetchBuffer[bit_offset +: 32];
+          VLIWInstr0F = ReadDataLine[bit_offset +: 32];
           VLIWValidF[0] = 1'b1;
           bit_offset = bit_offset + 32;
         end else begin
@@ -375,9 +385,9 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
       // Instruction 1
       if (imm_c >= 2 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
-        check_16bit1 = FetchBuffer[bit_offset +: 16];
+        check_16bit1 = ReadDataLine[bit_offset +: 16];
         if (check_16bit1[1:0] == 2'b11) begin
-          VLIWInstr1F = FetchBuffer[bit_offset +: 32];
+          VLIWInstr1F = ReadDataLine[bit_offset +: 32];
           VLIWValidF[1] = 1'b1;
           bit_offset = bit_offset + 32;
         end else begin
@@ -389,9 +399,9 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
       // Instruction 2
       if (imm_c >= 3 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
-        check_16bit2 = FetchBuffer[bit_offset +: 16];
+        check_16bit2 = ReadDataLine[bit_offset +: 16];
         if (check_16bit2[1:0] == 2'b11) begin
-          VLIWInstr2F = FetchBuffer[bit_offset +: 32];
+          VLIWInstr2F = ReadDataLine[bit_offset +: 32];
           VLIWValidF[2] = 1'b1;
           bit_offset = bit_offset + 32;
         end else begin
@@ -403,9 +413,9 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
       // Instruction 3
       if (imm_c >= 4 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
-        check_16bit3 = FetchBuffer[bit_offset +: 16];
+        check_16bit3 = ReadDataLine[bit_offset +: 16];
         if (check_16bit3[1:0] == 2'b11) begin
-          VLIWInstr3F = FetchBuffer[bit_offset +: 32];
+          VLIWInstr3F = ReadDataLine[bit_offset +: 32];
           VLIWValidF[3] = 1'b1;
           bit_offset = bit_offset + 32;
         end else begin
@@ -428,6 +438,7 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
     end else begin : passthrough
       assign IFUHADDR = PCPF;
+      assign VLIWModeF    = 1'b0;
       logic [1:0] BusRW;
       assign BusRW = ~ITLBMissF & ~SelIROM ? IFURWF : 0;
       assign IFUHSIZE = 3'b010;
@@ -590,9 +601,10 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   ///////////////////////////////////////////
   // VLIW Decode Stage Registers
   ///////////////////////////////////////////
+
+  flopenrc #(1)    VLIWModeDReg(clk, reset, FlushD, ~StallD, VLIWModeF, VLIWModeD);
   if (P.STARBUG_SUPPORTED) begin : vliw_decode_regs
     // Pipeline VLIW signals to Decode stage
-    flopenrc #(1)    VLIWModeDReg(clk, reset, FlushD, ~StallD, VLIWModeF, VLIWModeD);
     flopenrc #(4)    VLIWValidDReg(clk, reset, FlushD, ~StallD, VLIWValidF, VLIWValidD);
     flopenrc #(32)   VLIWInstr0DReg(clk, reset, FlushD, ~StallD, VLIWInstr0F, VLIWInstrRaw0D);
     flopenrc #(32)   VLIWInstr1DReg(clk, reset, FlushD, ~StallD, VLIWInstr1F, VLIWInstrRaw1D);
@@ -674,15 +686,36 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   flopenr #(1) InstrMisalignedReg(clk, reset, ~StallM, BranchMisalignedFaultE, InstrMisalignedFaultM);
 
   // Instruction and PC pipeline registers flush to NOP, not zero
-  mux2    #(32)     FlushInstrEMux(InstrD, nop, FlushE, NextInstrD);
+  mux2    #(32)     FlushInstrEMux(VLIWModeD ? VLIWInstr0D : InstrD, nop, FlushE, NextInstrD);
+  mux2    #(32)     FlushInstrE1Mux(VLIWInstr1D, nop, FlushE | !VLIWModeD, NextInstrD_1);
+  mux2    #(32)     FlushInstrE2Mux(VLIWInstr2D, nop, FlushE | !VLIWModeD, NextInstrD_2);
+  mux2    #(32)     FlushInstrE3Mux(VLIWInstr3D, nop, FlushE | !VLIWModeD, NextInstrD_3);
+
   flopenr #(32)     InstrEReg(clk, reset, ~StallE, NextInstrD, InstrE);
+  flopenr #(32)     InstrE1Reg(clk, reset, ~StallE, NextInstrD_1, InstrE_1);
+  flopenr #(32)     InstrE2Reg(clk, reset, ~StallE, NextInstrD_2, InstrE_2);
+  flopenr #(32)     InstrE3Reg(clk, reset, ~StallE, NextInstrD_3, InstrE_3);
+
   flopenr #(P.XLEN) PCEReg(clk, reset, ~StallE, PCD, PCE);
 
   // InstrM is only needed with CSRs or atomic operations
   if (P.ZICSR_SUPPORTED | P.ZAAMO_SUPPORTED | P.ZALRSC_SUPPORTED) begin
     mux2    #(32)     FlushInstrMMux(InstrE, nop, FlushM, NextInstrE);
+    mux2    #(32)     FlushInstrM1Mux(InstrE_1, nop, FlushM, NextInstrE_1);
+    mux2    #(32)     FlushInstrM2Mux(InstrE_2, nop, FlushM, NextInstrE_2);
+    mux2    #(32)     FlushInstrM3Mux(InstrE_3, nop, FlushM, NextInstrE_3);
+
     flopenr #(32)     InstrMReg(clk, reset, ~StallM, NextInstrE, InstrM);
-  end else assign InstrM = '0;
+    flopenr #(32)     InstrM1Reg(clk, reset, ~StallM, NextInstrE_1, InstrM_1);
+    flopenr #(32)     InstrM2Reg(clk, reset, ~StallM, NextInstrE_2, InstrM_2);
+    flopenr #(32)     InstrM3Reg(clk, reset, ~StallM, NextInstrE_3, InstrM_3);
+  end else begin
+    assign InstrM = '0;
+    assign InstrM_1 = '0;
+    assign InstrM_2 = '0;
+    assign InstrM_3 = '0;
+  end
+
   // PCM is only needed with CSRs or branch prediction
   if (P.ZICSR_SUPPORTED | P.BPRED_SUPPORTED) 
     flopenr #(P.XLEN) PCMReg(clk, reset, ~StallM, PCE, PCM);

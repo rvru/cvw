@@ -108,6 +108,8 @@ module datapath import cvw::*;  #(parameter cvw_t P) (
   logic [P.XLEN-1:0] IFCvtResultW;                   // Result from IEU, signle-cycle FPU op, or 2-cycle FCVT float to int 
   logic [P.XLEN-1:0] MulDivResultW;                  // Multiply always comes from MDU.  Divide could come from MDU or FPU (when using fdivsqrt for integer division)
 
+  assign ResultW_internal = ResultW;
+
   // Assignments to make for STARBUG VLIW
   assign we3 = RegWriteW;
   assign a1 = Rs1D;

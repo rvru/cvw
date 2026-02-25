@@ -94,9 +94,16 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
   input  logic [P.XLEN-1:0] ResultW_1, ResultW_2, ResultW_3,               // These inputs are the results from other FUs' WB Stage
   input  logic [P.XLEN-1:0] IFResultM_1, IFResultM_2, IFResultM_3,         // These inputs are the results from other FUs' Mem Stage
   output logic RegWriteMOut, RegWriteWOut,                                 // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
-  output logic [P.XLEN-1:0] ResultW, IFResultM,                                         // These outputs are WB and Mem stage results of this ieu instance
+  output logic [P.XLEN-1:0] ResultW, IFResultM,                            // These outputs are WB and Mem stage results of this ieu instance
   input  logic RegWriteM_1, RegWriteM_2, RegWriteM_3,                      // These inpits are WriteEnable status of other lanes insts in M stage
-  input  logic RegWriteW_1, RegWriteW_2, RegWriteW_3                       // These inpits are WriteEnable status of other lanes insts in W stage,
+  input  logic RegWriteW_1, RegWriteW_2, RegWriteW_3,                      // These inpits are WriteEnable status of other lanes insts in W stage,
+
+  // Extra RdEs for MatchDE checking across lanes
+  input  logic  [4:0]  RdE_1, RdE_2, RdE_3,                // Pipelined destination registers from other lanes
+  output logic MemReadE,                                  // Signal identifying whether a read of memory will happen for this lane
+  output logic SCE,                                       // Signal identifying whether result source E == 3'b100
+  input  logic MemReadE_1, MemReadE_2, MemReadE_3,        // Signals identifying whether a read of memory will happen for other lanes
+  input  logic SCE_1, SCE_2, SCE_3                        // Signals identifying whether result source E == 3'b100 for other lanes
   
   // ---------------------------------------------------------------------------------
 );
@@ -171,7 +178,12 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
     .RdW_1(RdW_1), .RdW_2(RdW_2), .RdW_3(RdW_3),                // These inputs are the WB stage dest reg selections from other FUs, to be used for forwarding check
     .RdM_1(RdM_1), .RdM_2(RdM_2), .RdM_3(RdM_3),                // These inputs are the Mem stage dest reg selections from other FUs, to be used for forwarding check
     .ForwardSelect_Rs1(ForwardSelectControllerToDatapath_Rs1),  // This output is a 2-bit internal signal indicating which FU this ieu has decided to accept forwarded results from (0 indicates itself)
-    .ForwardSelect_Rs2(ForwardSelectControllerToDatapath_Rs2)    // This output is a 2-bit internal signal indicating which FU this ieu has decided to accept forwarded results from (0 indicates itself)
+    .ForwardSelect_Rs2(ForwardSelectControllerToDatapath_Rs2),  // This output is a 2-bit internal signal indicating which FU this ieu has decided to accept forwarded results from (0 indicates itself)
+    .RdE_1(RdE_1), .RdE_2(RdE_2), .RdE_3(RdE_3),                // These are inputs to the controller that are used for MatchDE checking across lanes
+    .MemReadE(MemReadE),                                        // Output signal identifying whether a read of memory will happen for this lane
+    .SCE(SCE),                                                  // Output signal identifying whether result source E == 3'b100
+    .MemReadE_1(MemReadE_1), .MemReadE_2(MemReadE_2), .MemReadE_3(MemReadE_3),  // Input ignals identifying whether a read of memory will happen for other lanes
+    .SCE_1(SCE_1), .SCE_2(SCE_2), .SCE_3(SCE_3)                   // Input signals identifying whether result source E == 3'b100 for other lanes
     );
 
   datapath #(P) dp(

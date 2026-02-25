@@ -97,17 +97,17 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   // floating point unit signals
   logic [2:0]                    FRM_REGW;
   logic [4:0]                    RdE, RdE_1, RdE_2, RdE_3, RdM, RdM_1, RdM_2, RdM_3, RdW, RdW_1, RdW_2, RdW_3;
-  logic                          FPUStallD, FPUStallD_1, FPUStallD_2, FPUStallD_3;
-  logic                          FWriteIntE, FWriteIntE_1, FWriteIntE_2, FWriteIntE_3;
-  logic [P.FLEN-1:0]             FWriteDataM, FWriteDataM_1, FWriteDataM_2, FWriteDataM_3;
-  logic [P.XLEN-1:0]             FIntResM, FIntResM_1, FIntResM_2, FIntResM_3;
-  logic [P.XLEN-1:0]             FCvtIntResW, FCvtIntResW_1, FCvtIntResW_2, FCvtIntResW_3;
-  logic                          FCvtIntW, FCvtIntW_1, FCvtIntW_2, FCvtIntW_3;
-  logic                          FDivBusyE, FDivBusyE_1, FDivBusyE_2, FDivBusyE_3;
-  logic                          FRegWriteM, FRegWriteM_1, FRegWriteM_2, FRegWriteM_3;
-  logic                          FpLoadStoreM, FpLoadStoreM_1, FpLoadStoreM_2, FpLoadStoreM_3;
+  logic                          FPUStallD;
+  logic                          FWriteIntE;
+  logic [P.FLEN-1:0]             FWriteDataM;
+  logic [P.XLEN-1:0]             FIntResM;
+  logic [P.XLEN-1:0]             FCvtIntResW;
+  logic                          FCvtIntW;
+  logic                          FDivBusyE;
+  logic                          FRegWriteM;
+  logic                          FpLoadStoreM;
   logic [4:0]                    SetFflagsM;
-  logic [P.XLEN-1:0]             FIntDivResultW, FIntDivResultW_1, FIntDivResultW_2, FIntDivResultW_3;
+  logic [P.XLEN-1:0]             FIntDivResultW;
 
   // memory management unit signals
   logic                          ITLBWriteF, ITLBWriteF_1, ITLBWriteF_2, ITLBWriteF_3;
@@ -282,6 +282,10 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   logic [P.XLEN-1:0] IFResultM, IFResultM_1, IFResultM_2, IFResultM_3;         // These inputs are the results from other FUs' Mem Stage
   logic RegWriteMOut, RegWriteMOut_1, RegWriteMOut_2, RegWriteMOut_3;
   logic RegWriteWOut, RegWriteWOut_1, RegWriteWOut_2, RegWriteWOut_3;
+
+  logic MemReadE, MemReadE_1, MemReadE_2, MemReadE_3;
+  logic SCE, SCE_1, SCE_2, SCE_3;
+
   //ieu_1
 
 
@@ -324,7 +328,13 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteMOut(RegWriteMOut), .RegWriteWOut(RegWriteWOut),                              // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
      .ResultW(ResultW), .IFResultM(IFResultM),                                              // Results from this ieu instance
      .RegWriteM_1(RegWriteMOut_1), .RegWriteM_2(RegWriteMOut_2), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
-     .RegWriteW_1(RegWriteWOut_1), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
+     .RegWriteW_1(RegWriteWOut_1), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3),       // WriteEnable status of other lanes insts in W stage
+     .RdE_1(RdE_1), .RdE_2(RdE_2), .RdE_3(RdE_3),                                           // These are inputs to the controller that are used for MatchDE checking across lanes
+     
+     .MemReadE(MemReadE),                                        // Output signal identifying whether a read of memory will happen for this lane
+     .SCE(SCE),                                                  // Output signal identifying whether result source E == 3'b100
+     .MemReadE_1(MemReadE_1), .MemReadE_2(MemReadE_2), .MemReadE_3(MemReadE_3),  // Input ignals identifying whether a read of memory will happen for other lanes
+     .SCE_1(SCE_1), .SCE_2(SCE_2), .SCE_3(SCE_3)                 // Input signals identifying whether result source E == 3'b100 for other lanes
      );
     
     ieu #(P)
@@ -368,7 +378,13 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteMOut(RegWriteMOut_1), .RegWriteWOut(RegWriteWOut_1),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
      .ResultW(ResultW_1), .IFResultM(IFResultM_1),                                          // Results from this ieu instance
      .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_2), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
-     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3),       // WriteEnable status of other lanes insts in W stage
+     .RdE_1(RdE), .RdE_2(RdE_2), .RdE_3(RdE_3),                                             // These are inputs to the controller that are used for MatchDE checking across lanes
+     
+     .MemReadE(MemReadE_1),                                       // Output signal identifying whether a read of memory will happen for this lane
+     .SCE(SCE_1),                                                 // Output signal identifying whether result source E == 3'b100
+     .MemReadE_1(MemReadE), .MemReadE_2(MemReadE_2), .MemReadE_3(MemReadE_3),   // Input ignals identifying whether a read of memory will happen for other lanes
+     .SCE_1(SCE), .SCE_2(SCE_2), .SCE_3(SCE_3)                    // Input signals identifying whether result source E == 3'b100 for other lanes
      );
 
     ieu #(P)
@@ -412,7 +428,13 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteMOut(RegWriteMOut_2), .RegWriteWOut(RegWriteWOut_2),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
      .ResultW(ResultW_2), .IFResultM(IFResultM_2),                                          // Results from this ieu instance
      .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
-     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_3)        // WriteEnable status of other lanes insts in W stage
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_3),       // WriteEnable status of other lanes insts in W stage
+     .RdE_1(RdE), .RdE_2(RdE_1), .RdE_3(RdE_3),                                             // These are inputs to the controller that are used for MatchDE checking across lanes
+     
+     .MemReadE(MemReadE_2),                                         // Output signal identifying whether a read of memory will happen for this lane
+     .SCE(SCE_2),                                                   // Output signal identifying whether result source E == 3'b100
+     .MemReadE_1(MemReadE), .MemReadE_2(MemReadE_1), .MemReadE_3(MemReadE_3),   // Input ignals identifying whether a read of memory will happen for other lanes
+     .SCE_1(SCE), .SCE_2(SCE_1), .SCE_3(SCE_3)                      // Input signals identifying whether result source E == 3'b100 for other lanes
      );
 
     ieu #(P)
@@ -456,8 +478,14 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteMOut(RegWriteMOut_3), .RegWriteWOut(RegWriteWOut_3),                          // These outputs are WB and Mem stage write enable signals for this ieu instance, to be sent out to other FUs
      .ResultW(ResultW_3), .IFResultM(IFResultM_3),                                          // Results from this ieu instance
      .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_2),       // WriteEnable status of other lanes insts in M stage
-     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_2)        // WriteEnable status of other lanes insts in W stage
-      );
+     .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_2),       // WriteEnable status of other lanes insts in W stage
+     .RdE_1(RdE), .RdE_2(RdE_1), .RdE_3(RdE_2),                                             // These are inputs to the controller that are used for MatchDE checking across lanes
+
+     .MemReadE(MemReadE_3),                                         // Output signal identifying whether a read of memory will happen for this lane
+     .SCE(SCE_3),                                                   // Output signal identifying whether result source E == 3'b100
+     .MemReadE_1(MemReadE), .MemReadE_2(MemReadE_1), .MemReadE_3(MemReadE_2),   // Input ignals identifying whether a read of memory will happen for other lanes
+     .SCE_1(SCE), .SCE_2(SCE_1), .SCE_3(SCE_2)                      // Input signals identifying whether result source E == 3'b100 for other lanes
+     );
 
 
   lsu #(P) 
@@ -495,138 +523,8 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
     .StoreAmoMisalignedFaultM,    // connects to privilege
     .StoreAmoAccessFaultM,        // connects to privilege
     .PCSpillF, .ITLBMissOrUpdateAF, .PTE, .PageType, .ITLBWriteF, .SelHPTW,
-    .LSUStallM);
+    .LSUStallM);    
 
-  lsu #(P)
-  lsu_1(
-    .clk, .reset, .StallM, .FlushM, .StallW, .FlushW,
-    // CPU interface
-    .MemRWE(MemRWE_1), .MemRWM(MemRWM_1), .Funct3M(Funct3M_1), .Funct7M(InstrM_1[31:25]), .AtomicM(AtomicM_1),
-    .CommittedM(CommittedM_1), .DCacheMiss(DCacheMiss_1), .DCacheAccess(DCacheAccess_1), .SquashSCW(SquashSCW_1),
-    .FpLoadStoreM(FpLoadStoreM_1), .FWriteDataM(FWriteDataM_1), 
-    // .IEUAdrE, 
-    // .IEUAdrM, 
-    .WriteDataM(WriteDataM_1),
-    .ReadDataW(ReadDataW_1), .FlushDCacheM(FlushDCacheM_1), .CMOpM(CMOpM_1), .LSUPrefetchM(LSUPrefetchM_1),
-    // connected to ahb (all stay the same)
-    // .LSUHADDR,  .HRDATA, .LSUHWDATA, .LSUHWSTRB, .LSUHSIZE,
-    // .LSUHBURST, .LSUHTRANS, .LSUHWRITE, .LSUHREADY,
-    // connect to csr or privilege and stay the same.
-    .PrivilegeModeW, .BigEndianM, // connects to csr
-    .PMPCFG_ARRAY_REGW,           // connects to csr
-    .PMPADDR_ARRAY_REGW,          // connects to csr
-    // hptw keep i/o
-    .SATP_REGW,                   // from csr
-    .STATUS_MXR,                  // from csr
-    .STATUS_SUM,                  // from csr
-    .STATUS_MPRV,                 // from csr
-    .STATUS_MPP,                  // from csr
-    .ENVCFG_PBMTE,                // from csr
-    .ENVCFG_ADUE,                 // from csr
-    .sfencevmaM,                  // connects to privilege
-    .DCacheStallM(DCacheStallM_1),                // connects to privilege
-    // .IEUAdrxTvalM,                // connects to privilege
-    .LoadPageFaultM(LoadPageFaultM_1),              // connects to privilege
-    .StoreAmoPageFaultM(StoreAmoPageFaultM_1),          // connects to privilege
-    .LoadMisalignedFaultM(LoadMisalignedFaultM_1),        // connects to privilege
-    .LoadAccessFaultM(LoadAccessFaultM_1),            // connects to privilege
-    .HPTWInstrAccessFaultF(HPTWInstrAccessFaultF_1),       // connects to privilege
-    .HPTWInstrPageFaultF(HPTWInstrPageFaultF_1),         // connects to privilege
-    .StoreAmoMisalignedFaultM(StoreAmoMisalignedFaultM_1),    // connects to privilege
-    .StoreAmoAccessFaultM(StoreAmoAccessFaultM_1),        // connects to privilege
-    .PCSpillF, .ITLBMissOrUpdateAF, 
-    // .PTE, 
-    // .PageType, 
-    .ITLBWriteF(ITLBWriteF_1), .SelHPTW(SelHPTW_1),
-    .LSUStallM(LSUStallM_1));
-
-    lsu #(P)
-    lsu_2(
-      .clk, .reset, .StallM, .FlushM, .StallW, .FlushW,
-      // CPU interface
-      .MemRWE(MemRWE_2), .MemRWM(MemRWM_2), .Funct3M(Funct3M_2), .Funct7M(InstrM_2[31:25]), .AtomicM(AtomicM_2),
-      .CommittedM(CommittedM_2), .DCacheMiss(DCacheMiss_2), .DCacheAccess(DCacheAccess_2), .SquashSCW(SquashSCW_2),
-      .FpLoadStoreM(FpLoadStoreM_2), .FWriteDataM(FWriteDataM_2), 
-      // .IEUAdrE, 
-      // .IEUAdrM, 
-      .WriteDataM(WriteDataM_2),
-      .ReadDataW(ReadDataW_2), .FlushDCacheM(FlushDCacheM_2), .CMOpM(CMOpM_2), .LSUPrefetchM(LSUPrefetchM_2),
-      // connected to ahb (all stay the same)
-      // .LSUHADDR,  .HRDATA, .LSUHWDATA, .LSUHWSTRB, .LSUHSIZE,
-      // .LSUHBURST, .LSUHTRANS, .LSUHWRITE, .LSUHREADY,
-      // connect to csr or privilege and stay the same.
-      .PrivilegeModeW, .BigEndianM, // connects to csr
-      .PMPCFG_ARRAY_REGW,           // connects to csr
-      .PMPADDR_ARRAY_REGW,          // connects to csr
-      // hptw keep i/o
-      .SATP_REGW,                   // from csr
-      .STATUS_MXR,                  // from csr
-      .STATUS_SUM,                  // from csr
-      .STATUS_MPRV,                 // from csr
-      .STATUS_MPP,                  // from csr
-      .ENVCFG_PBMTE,                // from csr
-      .ENVCFG_ADUE,                 // from csr
-      .sfencevmaM,                  // connects to privilege
-      .DCacheStallM(DCacheStallM_2),                // connects to privilege
-      // .IEUAdrxTvalM,                // connects to privilege
-      .LoadPageFaultM(LoadPageFaultM_2),              // connects to privilege
-      .StoreAmoPageFaultM(StoreAmoPageFaultM_2),          // connects to privilege
-      .LoadMisalignedFaultM(LoadMisalignedFaultM_2),        // connects to privilege
-      .LoadAccessFaultM(LoadAccessFaultM_2),            // connects to privilege
-      .HPTWInstrAccessFaultF(HPTWInstrAccessFaultF_2),       // connects to privilege
-      .HPTWInstrPageFaultF(HPTWInstrPageFaultF_2),         // connects to privilege
-      .StoreAmoMisalignedFaultM(StoreAmoMisalignedFaultM_2),    // connects to privilege
-      .StoreAmoAccessFaultM(StoreAmoAccessFaultM_2),        // connects to privilege
-      .PCSpillF, .ITLBMissOrUpdateAF, 
-      // .PTE, 
-      // .PageType, 
-      .ITLBWriteF(ITLBWriteF_2), .SelHPTW(SelHPTW_2),
-      .LSUStallM(LSUStallM_2));
-  
-    lsu #(P)
-    lsu_3(
-      .clk, .reset, .StallM, .FlushM, .StallW, .FlushW,
-      // CPU interface
-      .MemRWE(MemRWE_3), .MemRWM(MemRWM_3), .Funct3M(Funct3M_3), .Funct7M(InstrM_3[31:25]), .AtomicM(AtomicM_3),
-      .CommittedM(CommittedM_3), .DCacheMiss(DCacheMiss_3), .DCacheAccess(DCacheAccess_3), .SquashSCW(SquashSCW_3),
-      .FpLoadStoreM(FpLoadStoreM_3), .FWriteDataM(FWriteDataM_3), 
-      // .IEUAdrE, 
-      // .IEUAdrM, 
-      .WriteDataM(WriteDataM_3),
-      .ReadDataW(ReadDataW_3), .FlushDCacheM(FlushDCacheM_3), .CMOpM(CMOpM_3), .LSUPrefetchM(LSUPrefetchM_3),
-      // connected to ahb (all stay the same)
-      // .LSUHADDR,  .HRDATA, .LSUHWDATA, .LSUHWSTRB, .LSUHSIZE,
-      // .LSUHBURST, .LSUHTRANS, .LSUHWRITE, .LSUHREADY,
-      // connect to csr or privilege and stay the same.
-      .PrivilegeModeW, .BigEndianM, // connects to csr
-      .PMPCFG_ARRAY_REGW,           // connects to csr
-      .PMPADDR_ARRAY_REGW,          // connects to csr
-      // hptw keep i/o
-      .SATP_REGW,                   // from csr
-      .STATUS_MXR,                  // from csr
-      .STATUS_SUM,                  // from csr
-      .STATUS_MPRV,                 // from csr
-      .STATUS_MPP,                  // from csr
-      .ENVCFG_PBMTE,                // from csr
-      .ENVCFG_ADUE,                 // from csr
-      .sfencevmaM,                  // connects to privilege
-      .DCacheStallM(DCacheStallM_3),                // connects to privilege
-      // .IEUAdrxTvalM,                // connects to privilege
-      .LoadPageFaultM(LoadPageFaultM_3),              // connects to privilege
-      .StoreAmoPageFaultM(StoreAmoPageFaultM_3),          // connects to privilege
-      .LoadMisalignedFaultM(LoadMisalignedFaultM_3),        // connects to privilege
-      .LoadAccessFaultM(LoadAccessFaultM_3),            // connects to privilege
-      .HPTWInstrAccessFaultF(HPTWInstrAccessFaultF_3),       // connects to privilege
-      .HPTWInstrPageFaultF(HPTWInstrPageFaultF_3),         // connects to privilege
-      .StoreAmoMisalignedFaultM(StoreAmoMisalignedFaultM_3),    // connects to privilege
-      .StoreAmoAccessFaultM(StoreAmoAccessFaultM_3),        // connects to privilege
-      .PCSpillF, .ITLBMissOrUpdateAF, 
-      // .PTE, 
-      // .PageType, 
-      .ITLBWriteF(ITLBWriteF_3), .SelHPTW(SelHPTW_3),
-      .LSUStallM(LSUStallM_3));
-    
-  
 
   if(P.BUS_SUPPORTED) begin : ebu
     ebu #(P) ebu(// IFU connections
@@ -655,9 +553,6 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
     // hazard unit inputs ORed for STARBUG VLIW implementation
   assign CSRWriteFenceM_OR = CSRWriteFenceM | CSRWriteFenceM_1 | CSRWriteFenceM_2 | CSRWriteFenceM_3;
   assign StructuralStallD_OR = StructuralStallD | StructuralStallD_1 | StructuralStallD_2 | StructuralStallD_3;
-  assign FPUStallD_OR = FPUStallD | FPUStallD_1 | FPUStallD_2 | FPUStallD_3;
-  assign DivBusyE_OR = DivBusyE | DivBusyE_1 | DivBusyE_2 | DivBusyE_3;
-  assign FDivBusyE_OR = FDivBusyE | FDivBusyE_1 | FDivBusyE_2 | FDivBusyE_3;
 
 
   // hazard unit implementation with ORed signals from all 4 FU channels
@@ -665,8 +560,8 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
     .BPWrongE, .CSRWriteFenceM(CSRWriteFenceM_OR), .RetM, .TrapM,
     .StructuralStallD(StructuralStallD_OR),
     .LSUStallM, .IFUStallF,
-    .FPUStallD(FPUStallD_OR), .ExternalStall,
-    .DivBusyE(DivBusyE_OR), .FDivBusyE(FDivBusyE_OR),
+    .FPUStallD, .ExternalStall,
+    .DivBusyE, .FDivBusyE,
     .wfiM, .IntPendingM,
     // Stall & flush outputs
     .StallF, .StallD, .StallE, .StallM, .StallW,
@@ -779,100 +674,6 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
             IllegalFPUInstrD, SetFflagsM, FpLoadStoreM,
             FWriteDataM, FCvtIntResW, FIntDivResultW, FDivBusyE} = '0;
   end
-
-  if (P.F_SUPPORTED) begin:fpu_1
-    fpu #(P) 
-    fpu_1(
-      .clk, .reset,
-      .FRM_REGW,                           // Rounding mode from CSR
-      .InstrD,                             // instruction from IFU
-      .ReadDataW(ReadDataW_1[P.FLEN-1:0]),   // Read data from memory
-      .ForwardedSrcAE(ForwardedSrcAE_1),                     // Integer input being processed (from IEU)
-      .StallE, .StallM, .StallW, .FlushE, .FlushM, .FlushW,
-      .RdE(RdE_1), .RdM(RdM_1), .RdW(RdW_1),                    // which FP register to write to (from IEU)
-      .STATUS_FS,                          // is floating-point enabled?
-      .FRegWriteM(FRegWriteM_1),                         // FP register write enable
-      .FpLoadStoreM(FpLoadStoreM_1),
-      .ForwardedSrcBE(ForwardedSrcBE_1),                     // Integer input for intdiv
-      .Funct3E(Funct3E_1), .Funct3M(Funct3M_1), .IntDivE(IntDivE_1), .W64E(W64E_1), // Integer flags and functions
-      .FPUStallD(FPUStallD_1),                          // Stall the decode stage
-      .FWriteIntE(FWriteIntE_1), .FCvtIntE(FCvtIntE_1),              // integer register write enable, conversion operation
-      .FWriteDataM(FWriteDataM_1),                        // Data to be written to memory
-      .FIntResM(FIntResM_1),                           // data to be written to integer register
-      .FCvtIntResW(FCvtIntResW_1),                        // fp -> int conversion result to be stored in int register
-      .FCvtIntW(FCvtIntW_1),                           // fpu result selection
-      .FDivBusyE(FDivBusyE_1),                          // Is the divide/sqrt unit busy (stall execute stage)
-      .IllegalFPUInstrD(IllegalFPUInstrD_1),                   // Is the instruction an illegal fpu instruction
-      // .SetFflagsM,                         // FPU flags (to privileged unit)
-      .FIntDivResultW(FIntDivResultW_1));
-  end else begin                           // no F_SUPPORTED or D_SUPPORTED; tie outputs low
-    assign {FPUStallD_1, FWriteIntE_1, FCvtIntE_1, FIntResM_1, FCvtIntW_1, FRegWriteM_1,
-            IllegalFPUInstrD_1, FpLoadStoreM_1,
-            FWriteDataM_1, FCvtIntResW_1, FIntDivResultW_1, FDivBusyE_1} = '0;
-  end
-
-  if (P.F_SUPPORTED) begin:fpu_2
-    fpu #(P) 
-    fpu_2(
-      .clk, .reset,
-      .FRM_REGW,                           // Rounding mode from CSR
-      .InstrD,                             // instruction from IFU
-      .ReadDataW(ReadDataW_2[P.FLEN-1:0]),   // Read data from memory
-      .ForwardedSrcAE(ForwardedSrcAE_2),                     // Integer input being processed (from IEU)
-      .StallE, .StallM, .StallW, .FlushE, .FlushM, .FlushW,
-      .RdE(RdE_2), .RdM(RdM_2), .RdW(RdW_2),                    // which FP register to write to (from IEU)
-      .STATUS_FS,                          // is floating-point enabled?
-      .FRegWriteM(FRegWriteM_2),                         // FP register write enable
-      .FpLoadStoreM(FpLoadStoreM_2),
-      .ForwardedSrcBE(ForwardedSrcBE_2),                     // Integer input for intdiv
-      .Funct3E(Funct3E_2), .Funct3M(Funct3M_2), .IntDivE(IntDivE_2), .W64E(W64E_2), // Integer flags and functions
-      .FPUStallD(FPUStallD_2),                          // Stall the decode stage
-      .FWriteIntE(FWriteIntE_2), .FCvtIntE(FCvtIntE_2),              // integer register write enable, conversion operation
-      .FWriteDataM(FWriteDataM_2),                        // Data to be written to memory
-      .FIntResM(FIntResM_2),                           // data to be written to integer register
-      .FCvtIntResW(FCvtIntResW_2),                        // fp -> int conversion result to be stored in int register
-      .FCvtIntW(FCvtIntW_2),                           // fpu result selection
-      .FDivBusyE(FDivBusyE_2),                          // Is the divide/sqrt unit busy (stall execute stage)
-      .IllegalFPUInstrD(IllegalFPUInstrD_2),                   // Is the instruction an illegal fpu instruction
-      // .SetFflagsM,                         // FPU flags (to privileged unit)
-      .FIntDivResultW(FIntDivResultW_2));
-  end else begin                           // no F_SUPPORTED or D_SUPPORTED; tie outputs low
-    assign {FPUStallD_2, FWriteIntE_2, FCvtIntE_2, FIntResM_2, FCvtIntW_2, FRegWriteM_2,
-            IllegalFPUInstrD_2, FpLoadStoreM_2,
-            FWriteDataM_2, FCvtIntResW_2, FIntDivResultW_2, FDivBusyE_2} = '0;
-  end
-
-  if (P.F_SUPPORTED) begin:fpu_3
-    fpu #(P) 
-    fpu_3(
-      .clk, .reset,
-      .FRM_REGW,                           // Rounding mode from CSR
-      .InstrD,                             // instruction from IFU
-      .ReadDataW(ReadDataW_3[P.FLEN-1:0]),   // Read data from memory
-      .ForwardedSrcAE(ForwardedSrcAE_3),                     // Integer input being processed (from IEU)
-      .StallE, .StallM, .StallW, .FlushE, .FlushM, .FlushW,
-      .RdE(RdE_3), .RdM(RdM_3), .RdW(RdW_3),                    // which FP register to write to (from IEU)
-      .STATUS_FS,                          // is floating-point enabled?
-      .FRegWriteM(FRegWriteM_3),                         // FP register write enable
-      .FpLoadStoreM(FpLoadStoreM_3),
-      .ForwardedSrcBE(ForwardedSrcBE_3),                     // Integer input for intdiv
-      .Funct3E(Funct3E_3), .Funct3M(Funct3M_3), .IntDivE(IntDivE_3), .W64E(W64E_3), // Integer flags and functions
-      .FPUStallD(FPUStallD_3),                          // Stall the decode stage
-      .FWriteIntE(FWriteIntE_3), .FCvtIntE(FCvtIntE_3),              // integer register write enable, conversion operation
-      .FWriteDataM(FWriteDataM_3),                        // Data to be written to memory
-      .FIntResM(FIntResM_3),                           // data to be written to integer register
-      .FCvtIntResW(FCvtIntResW_3),                        // fp -> int conversion result to be stored in int register
-      .FCvtIntW(FCvtIntW_3),                           // fpu result selection
-      .FDivBusyE(FDivBusyE_3),                          // Is the divide/sqrt unit busy (stall execute stage)
-      .IllegalFPUInstrD(IllegalFPUInstrD_3),                   // Is the instruction an illegal fpu instruction
-      // .SetFflagsM,                         // FPU flags (to privileged unit)
-      .FIntDivResultW(FIntDivResultW_3));
-  end else begin                           // no F_SUPPORTED or D_SUPPORTED; tie outputs low
-    assign {FPUStallD_3, FWriteIntE_3, FCvtIntE_3, FIntResM_3, FCvtIntW_3, FRegWriteM_3,
-            IllegalFPUInstrD_3, FpLoadStoreM_3,
-            FWriteDataM_3, FCvtIntResW_3, FIntDivResultW_3, FDivBusyE_3} = '0;
-  end
-
   
   // WIDENED STARBUG REGFILE
     // Instantiate Widened regfile

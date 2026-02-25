@@ -87,7 +87,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   output logic [2:0]  ResultSrcW,              // Select source of result to write back to register file
   // Stall during CSRs
   output logic        CSRWriteFenceM,          // CSR write or fence instruction; needs to flush the following instructions
-  output logic [4:0]  RdE, RdM,                // Pipelined destination registers
+  output logic [4:0]  RdE, RdM,                // Pipelined destination registers from own lane
   // Forwarding controls
   output logic [4:0]  RdW,                      // Register destinations in Execute, Memory, or Writeback stage
   output logic        RegWriteMOut,            // WriteEnable status of instruction in Memory stage, used to relay to other FUs for VLIW forwarding
@@ -96,10 +96,17 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   input  logic        RegWriteM_1, RegWriteM_2, RegWriteM_3,    // WriteEnable status of other lanes insts in M stage
   input  logic        RegWriteW_1, RegWriteW_2, RegWriteW_3,    // WriteEnable status of other lanes insts in W stage
 
-  input  logic [4:0]  RdW_1, RdW_2, RdW_3,      // RdW signals routed in from other ieu instances for VLIW forwarding
-  input  logic [4:0]  RdM_1, RdM_2, RdM_3,      // RdM signals routed in from other ieu instances for VLIW forwarding
+  input  logic [4:0]  RdW_1, RdW_2, RdW_3,       // RdW signals routed in from other ieu instances for VLIW forwarding
+  input  logic [4:0]  RdM_1, RdM_2, RdM_3,       // RdM signals routed in from other ieu instances for VLIW forwarding
   output logic [1:0]  ForwardSelect_Rs1,         // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 1
-  output logic [1:0]  ForwardSelect_Rs2        // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 2
+  output logic [1:0]  ForwardSelect_Rs2,         // This signal indicates which FU this ieu should be recieving forwarded results from for source reg 2
+
+  // Extra RdEs for MatchDE checking across lanes
+  input  logic  [4:0]  RdE_1, RdE_2, RdE_3,       // Pipelined destination registers from other lanes
+  output logic MemReadE,                          // Signal identifying whether a read of memory will happen for this lane
+  output logic SCE,                               // Signal identifying whether result source E == 3'b100
+  input  logic MemReadE_1, MemReadE_2, MemReadE_3,// Signals identifying whether a read of memory will happen for other lanes
+  input  logic SCE_1, SCE_2, SCE_3                // Signals identifying whether result source E == 3'b100 for other lanes
 );
 
   logic [4:0] Rs1E;                      // pipelined register sources
@@ -128,9 +135,10 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   logic        FenceXD;                        // Fence instruction
   logic        CMOD;                           // Cache management instruction
   logic        InvalidateICacheD, FlushDCacheD;// Invalidate I$, flush D$
-  logic        MemReadE, CSRReadE;             // Instruction reads memory, reads a CSR (needed for Hazard unit)
+//logic        MemReadE;                       // Instruction reads memory
+  logic        CSRReadE;                       // Instruction reads a CSR (needed for Hazard unit)
   logic        MDUE;                           // MDU (multiply/divide) operation
-  logic        SCE;                            // Store Conditional instruction
+//logic        SCE;                            // Store Conditional instruction
   logic        CSRWriteD, CSRWriteE;           // CSR write
   logic        PrivilegedD, PrivilegedE;       // Privileged instruction
   logic        InvalidateICacheE, FlushDCacheE;// Invalidate I$, flush D$
@@ -166,6 +174,10 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   logic        IFUPrefetchD;                   // instruction prefetch
   logic        LSUPrefetchD, LSUPrefetchE;     // data prefetch
   logic        MatchDE;                        // Match between a source register in Decode stage and destination register in Execute stage
+  logic        MatchDE_0;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
+  logic        MatchDE_1;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
+  logic        MatchDE_2;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
+  logic        MatchDE_3;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
   logic        FCvtIntStallD, MDUStallD, CSRRdStallD; // Stall due to conversion, load, multiply/divide, CSR read 
   logic        FunctCZeroD;                    // Funct7 and Funct3 indicate czero.* (not including Op check)
   logic        BUW64D;                         // Indicates if it is a .uw type B instruction in Decode Stage
@@ -568,8 +580,18 @@ module controller import cvw::*;  #(parameter cvw_t P) (
 
   // Stall on dependent operations that finish in Mem Stage and can't bypass in time
   // Structural hazard causes stall if any of these events occur
-  assign MatchDE = ((Rs1D == RdE) | (Rs2D == RdE)) & (RdE != 5'b0); // Decode-stage instruction source depends on result from execute stage instruction
-  assign LoadStallD = (MemReadE|SCE) & MatchDE;  
+
+  // logic for forwarding which will require cross-lane MatchDE checks
+  assign MatchDE_0 = ((Rs1D == RdE) | (Rs2D == RdE)) & (RdE != 5'b0); // Decode-stage instruction source depends on result from execute stage instruction
+  assign MatchDE_1 = ((Rs1D == RdE_1) | (Rs2D == RdE_1)) & (RdE_1 != 5'b0); 
+  assign MatchDE_2 = ((Rs1D == RdE_2) | (Rs2D == RdE_2)) & (RdE_2 != 5'b0); 
+  assign MatchDE_3 = ((Rs1D == RdE_3) | (Rs2D == RdE_3)) & (RdE_3 != 5'b0); 
+  assign MatchDE = MatchDE_0 | MatchDE_1 | MatchDE_2 | MatchDE_3; 
+
+  logic LoadStallD_helper;
+  assign LoadStallD_helper = (MemReadE|SCE) | (MemReadE_1|SCE_1) | (MemReadE_2|SCE_2) | (MemReadE_3|SCE_3);
+  assign LoadStallD = LoadStallD_helper & MatchDE;
+
   assign StoreStallD = MemRWD[1] & MemRWE[0];   // Store or AMO followed by load or AMO
   assign CSRRdStallD = CSRReadE & MatchDE;
   assign MDUStallD = MDUE & MatchDE; // Int mult/div is at least two cycle latency, even when coming from the FDIV

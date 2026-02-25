@@ -106,7 +106,8 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   output logic MemReadE,                          // Signal identifying whether a read of memory will happen for this lane
   output logic SCE,                               // Signal identifying whether result source E == 3'b100
   input  logic MemReadE_1, MemReadE_2, MemReadE_3,// Signals identifying whether a read of memory will happen for other lanes
-  input  logic SCE_1, SCE_2, SCE_3                // Signals identifying whether result source E == 3'b100 for other lanes
+  input  logic SCE_1, SCE_2, SCE_3,               // Signals identifying whether result source E == 3'b100 for other lanes
+  input  logic MDUActiveE_1, MDUActiveE_2, MDUActiveE_3 // MDU-active flags from other lanes (for cross-lane RAW stalls)
 );
 
   logic [4:0] Rs1E;                      // pipelined register sources
@@ -594,7 +595,12 @@ module controller import cvw::*;  #(parameter cvw_t P) (
 
   assign StoreStallD = MemRWD[1] & MemRWE[0];   // Store or AMO followed by load or AMO
   assign CSRRdStallD = CSRReadE & MatchDE;
-  assign MDUStallD = MDUE & MatchDE; // Int mult/div is at least two cycle latency, even when coming from the FDIV
+  // MDU result is not available on M-stage forwarding paths; stall if the dependency points to
+  // any lane currently executing an MDU instruction in E.
+  assign MDUStallD = (MDUActiveE   & MatchDE_0) |
+                     (MDUActiveE_1 & MatchDE_1) |
+                     (MDUActiveE_2 & MatchDE_2) |
+                     (MDUActiveE_3 & MatchDE_3);
   assign FCvtIntStallD = FCvtIntE & MatchDE; // FPU to Integer transfers have single-cycle latency except fcvt
   assign StructuralStallD = LoadStallD | StoreStallD | CSRRdStallD | MDUStallD | FCvtIntStallD;
 endmodule

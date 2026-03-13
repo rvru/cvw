@@ -179,6 +179,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   logic        MatchDE_1;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
   logic        MatchDE_2;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
   logic        MatchDE_3;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
+  logic        UsesRs1D, UsesRs2D;            // Decode-stage source usage (prevents false hazard matches on immediate fields)
   logic        FCvtIntStallD, MDUStallD, CSRRdStallD; // Stall due to conversion, load, multiply/divide, CSR read 
   logic        FunctCZeroD;                    // Funct7 and Funct3 indicate czero.* (not including Op check)
   logic        BUW64D;                         // Indicates if it is a .uw type B instruction in Decode Stage
@@ -582,11 +583,54 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   // Stall on dependent operations that finish in Mem Stage and can't bypass in time
   // Structural hazard causes stall if any of these events occur
 
+  // Determine which architectural sources are actually consumed in Decode, so immediate bits
+  // sitting in rs fields don't create false RAW hazards.
+  always_comb begin
+    UsesRs1D = 1'b0;
+    UsesRs2D = 1'b0;
+    unique case (OpD)
+      // rs1 only
+      7'b0000011, // loads
+      7'b0010011, // I-type ALU (also prefetch hints)
+      7'b0011011, // IW-type ALU
+      7'b1100111: // jalr
+        UsesRs1D = 1'b1;
+
+      // rs1 + rs2
+      7'b0100011, // stores
+      7'b0110011, // R/M-type
+      7'b0111011, // RW/MW-type
+      7'b1100011: begin // branches
+        UsesRs1D = 1'b1;
+        UsesRs2D = 1'b1;
+      end
+
+      // Atomics: LR uses rs1 only; other AMOs use rs1 + rs2
+      7'b0101111: begin
+        UsesRs1D = 1'b1;
+        UsesRs2D = (InstrD[31:27] != 5'b00010);
+      end
+
+      // fence/cbo: cbo.* uses rs1 as address base; fence/fence.i do not
+      7'b0001111:
+        UsesRs1D = (Funct3D == 3'b010);
+
+      // CSR reg forms consume rs1; CSR immediate forms encode zimm in rs1 field
+      7'b1110011:
+        UsesRs1D = (Funct3D[1:0] != 2'b00) & ~Funct3D[2];
+
+      default: begin
+        UsesRs1D = 1'b0;
+        UsesRs2D = 1'b0;
+      end
+    endcase
+  end
+
   // logic for forwarding which will require cross-lane MatchDE checks
-  assign MatchDE_0 = ((Rs1D == RdE) | (Rs2D == RdE)) & (RdE != 5'b0); // Decode-stage instruction source depends on result from execute stage instruction
-  assign MatchDE_1 = ((Rs1D == RdE_1) | (Rs2D == RdE_1)) & (RdE_1 != 5'b0); 
-  assign MatchDE_2 = ((Rs1D == RdE_2) | (Rs2D == RdE_2)) & (RdE_2 != 5'b0); 
-  assign MatchDE_3 = ((Rs1D == RdE_3) | (Rs2D == RdE_3)) & (RdE_3 != 5'b0); 
+  assign MatchDE_0 = ((UsesRs1D & (Rs1D == RdE))   | (UsesRs2D & (Rs2D == RdE)))   & (RdE != 5'b0);   // Decode-stage source depends on lane-0 execute destination
+  assign MatchDE_1 = ((UsesRs1D & (Rs1D == RdE_1)) | (UsesRs2D & (Rs2D == RdE_1))) & (RdE_1 != 5'b0);
+  assign MatchDE_2 = ((UsesRs1D & (Rs1D == RdE_2)) | (UsesRs2D & (Rs2D == RdE_2))) & (RdE_2 != 5'b0);
+  assign MatchDE_3 = ((UsesRs1D & (Rs1D == RdE_3)) | (UsesRs2D & (Rs2D == RdE_3))) & (RdE_3 != 5'b0);
   assign MatchDE = MatchDE_0 | MatchDE_1 | MatchDE_2 | MatchDE_3; 
 
   logic LoadStallD_helper;

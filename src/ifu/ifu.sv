@@ -318,13 +318,18 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
                                   .s({SelIROM, ~CacheableF}), .y(InstrRawF[31:0]));
 
 
-    // Detect 16-bit HINT (C.LI x0, imm) *before* decompression
-    // This is encoded as C.ADDI with rd=x0, rs1=x0, imm!=0
-    // --- Use F-stage signal InstrRawF ---
-    wire [1:0]   op_c     = InstrRawF[1:0];   
-    wire [2:0]   funct3_c = InstrRawF[15:13];
-    wire [4:0]   rd_c     = InstrRawF[11:7];  
-    wire [5:0]   imm_c    = {InstrRawF[12], InstrRawF[6:2]};
+    // Detect the VLIW hint at the current instruction boundary.
+    // During a spill, InstrRawF can point at the upper half of a 32-bit
+    // instruction; PostSpillInstrRawF reconstructs the real instruction word.
+    logic [31:0] HintInstrRawF;
+    assign HintInstrRawF = PostSpillInstrRawF;
+
+    // Detect 16-bit HINT (C.LI x0, imm) *before* decompression.
+    // This is encoded as C.ADDI with rd=x0, rs1=x0, imm!=0.
+    wire [1:0]   op_c     = HintInstrRawF[1:0];
+    wire [2:0]   funct3_c = HintInstrRawF[15:13];
+    wire [4:0]   rd_c     = HintInstrRawF[11:7];
+    wire [5:0]   imm_c    = {HintInstrRawF[12], HintInstrRawF[6:2]};
 
     wire is_vliw_hint = (op_c == 2'b01) && 
                         (funct3_c == 3'b010) && 

@@ -98,16 +98,16 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   logic [2:0]                    FRM_REGW;
   logic [4:0]                    RdE, RdE_1, RdE_2, RdE_3, RdM, RdM_1, RdM_2, RdM_3, RdW, RdW_1, RdW_2, RdW_3;
   logic                          FPUStallD;
-  logic                          FWriteIntE;
+  logic                          FWriteIntE, FWriteIntE_1, FWriteIntE_2, FWriteIntE_3;
   logic [P.FLEN-1:0]             FWriteDataM;
-  logic [P.XLEN-1:0]             FIntResM;
-  logic [P.XLEN-1:0]             FCvtIntResW;
-  logic                          FCvtIntW;
+  logic [P.XLEN-1:0]             FIntResM, FIntResM_1, FIntResM_2, FIntResM_3;
+  logic [P.XLEN-1:0]             FCvtIntResW, FCvtIntResW_1, FCvtIntResW_2, FCvtIntResW_3;
+  logic                          FCvtIntW, FCvtIntW_1, FCvtIntW_2, FCvtIntW_3;
   logic                          FDivBusyE;
   logic                          FRegWriteM;
   logic                          FpLoadStoreM;
   logic [4:0]                    SetFflagsM;
-  logic [P.XLEN-1:0]             FIntDivResultW;
+  logic [P.XLEN-1:0]             FIntDivResultW, FIntDivResultW_1, FIntDivResultW_2, FIntDivResultW_3;
 
   // memory management unit signals
   logic                          ITLBWriteF, ITLBWriteF_1, ITLBWriteF_2, ITLBWriteF_3;
@@ -677,6 +677,13 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
     assign {FPUStallD, FWriteIntE, FCvtIntE, FIntResM, FCvtIntW, FRegWriteM,
             IllegalFPUInstrD, SetFflagsM, FpLoadStoreM,
             FWriteDataM, FCvtIntResW, FIntDivResultW, FDivBusyE} = '0;
+    assign {FWriteIntE_1, FWriteIntE_2, FWriteIntE_3,
+            FCvtIntE_1, FCvtIntE_2, FCvtIntE_3,
+            FIntResM_1, FIntResM_2, FIntResM_3,
+            FCvtIntResW_1, FCvtIntResW_2, FCvtIntResW_3,
+            FCvtIntW_1, FCvtIntW_2, FCvtIntW_3,
+            FIntDivResultW_1, FIntDivResultW_2, FIntDivResultW_3,
+            IllegalFPUInstrD_1, IllegalFPUInstrD_2, IllegalFPUInstrD_3} = '0;
   end
   
   // WIDENED STARBUG REGFILE

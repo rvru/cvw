@@ -2,7 +2,7 @@ dst := IP
 
 all: ArtyA7
 
-.PHONY: ArtyA7 vcu118 vcu108 genesys2 fpga32
+.PHONY: ArtyA7 vcu118 vcu108 genesys2 fpga32 starbug
 
 ArtyA7: export XILINX_PART := xc7a100tcsg324-1
 ArtyA7: export XILINX_BOARD := digilentinc.com:arty-a7-100:part0:1.1
@@ -12,8 +12,13 @@ ArtyA7: export SYSTEMCLOCK := 20000000
 ArtyA7: export MAXSDCCLOCK  :=  5000000
 ArtyA7: FPGA_Arty
 
-
-
+starbug: export XILINX_PART := xcvu095-ffva2104-2-e
+starbug: export XILINX_BOARD := xilinx.com:vcu108:part0:1.7
+starbug: export board := vcu108
+starbug: export version := vcu108
+starbug: export SYSTEMCLOCK := 50000000
+starbug: export MAXSDCCLOCK  := 12500000
+starbug: FPGA_Starbug_VCU
 
 fpga32: export XILINX_PART := xc7a100tcsg324-1
 fpga32: export XILINX_BOARD := digilentinc.com:arty-a7-100:part0:1.1
@@ -70,6 +75,8 @@ FPGA_VCU: PreProcessFiles IP_VCU zsbl
 FPGA_Arty_32: PreProcessFiles IP_Arty code
 	vivado -mode tcl -source wally.tcl 2>&1 | tee wally.log
 FPGA_GENESYS2: PreProcessFiles IP_GENESYS2 zsbl
+	vivado -mode tcl -source wally.tcl 2>&1 | tee wally.log
+FPGA_Starbug_VCU: PreProcessFiles IP_VCU code
 	vivado -mode tcl -source wally.tcl 2>&1 | tee wally.log
 
 # Generate IP Blocks

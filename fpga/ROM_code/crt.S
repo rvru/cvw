@@ -61,11 +61,13 @@ _start:
   j 2b
 1:
 
-#ifdef __riscv_flen
-  # initialize FPU if we have one
+  # Always initialize mtvec so early traps have a defined machine-mode handler,
+  # even in non-FPU builds where the old code skipped this setup.
   la t0, 1f
   csrw mtvec, t0
 
+#ifdef __riscv_flen
+  # initialize FPU if we have one
   fssr    x0
   fmv.s.x f0, x0
   fmv.s.x f1, x0
@@ -112,30 +114,13 @@ _start:
   la  tp, _end + 63
   and tp, tp, -64
 
-  # for now, assume only 1 core
-	li a1, 1
-  csrr a0, mhartid	
-1:bgeu a0, a1, 1b
-#define STKSHIFT 17
-	
-  add sp, a0, 1
-  slli sp, sp, STKSHIFT
-  add sp, sp, tp
-  slli a2, a0, STKSHIFT
-  add tp, tp, a2	
-
-  # give each core 128KB of stack + TLS
-#define STKSHIFT 17
-  addi sp, a0, 1
-  slli sp, sp, STKSHIFT
-  add sp, sp, tp
-  sll a2, a0, STKSHIFT
-  add tp, tp, a2
+  # Set stack pointer to top of DTIM.
+  li sp, 0x30000
 
 	call main
 1:	j 1b
 
- 
+
 
 .section ".tohost","aw",@progbits
 .align 6

@@ -104,7 +104,8 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
   output logic SCE,                                       // Signal identifying whether result source E == 3'b100
   input  logic MemReadE_1, MemReadE_2, MemReadE_3,        // Signals identifying whether a read of memory will happen for other lanes
   input  logic SCE_1, SCE_2, SCE_3,                       // Signals identifying whether result source E == 3'b100 for other lanes
-  input  logic MDUActiveE_1, MDUActiveE_2, MDUActiveE_3  // MDU-active flags from other lanes
+  input  logic MDUActiveE_1, MDUActiveE_2, MDUActiveE_3,  // MDU-active flags from other lanes
+  input  logic VLIWModeD                                  // Decode-stage VLIW mode flag
   
   // ---------------------------------------------------------------------------------
 );
@@ -185,7 +186,8 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
     .SCE(SCE),                                                  // Output signal identifying whether result source E == 3'b100
     .MemReadE_1(MemReadE_1), .MemReadE_2(MemReadE_2), .MemReadE_3(MemReadE_3),  // Input ignals identifying whether a read of memory will happen for other lanes
     .SCE_1(SCE_1), .SCE_2(SCE_2), .SCE_3(SCE_3),                   // Input signals identifying whether result source E == 3'b100 for other lanes
-    .MDUActiveE_1(MDUActiveE_1), .MDUActiveE_2(MDUActiveE_2), .MDUActiveE_3(MDUActiveE_3)
+    .MDUActiveE_1(MDUActiveE_1), .MDUActiveE_2(MDUActiveE_2), .MDUActiveE_3(MDUActiveE_3),
+    .VLIWModeD(VLIWModeD)
     );
 
   datapath #(P) dp(

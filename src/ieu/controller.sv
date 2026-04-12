@@ -107,7 +107,8 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   output logic SCE,                               // Signal identifying whether result source E == 3'b100
   input  logic MemReadE_1, MemReadE_2, MemReadE_3,// Signals identifying whether a read of memory will happen for other lanes
   input  logic SCE_1, SCE_2, SCE_3,               // Signals identifying whether result source E == 3'b100 for other lanes
-  input  logic MDUActiveE_1, MDUActiveE_2, MDUActiveE_3 // MDU-active flags from other lanes (for cross-lane RAW stalls)
+  input  logic MDUActiveE_1, MDUActiveE_2, MDUActiveE_3, // MDU-active flags from other lanes (for cross-lane RAW stalls)
+  input  logic VLIWModeD                           // Decode-stage VLIW mode flag
 );
 
   logic [4:0] Rs1E;                      // pipelined register sources
@@ -183,6 +184,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   logic        FCvtIntStallD, MDUStallD, CSRRdStallD; // Stall due to conversion, load, multiply/divide, CSR read 
   logic        FunctCZeroD;                    // Funct7 and Funct3 indicate czero.* (not including Op check)
   logic        BUW64D;                         // Indicates if it is a .uw type B instruction in Decode Stage
+  logic        VLIWModeDActive;                // Treat X as inactive so non-VLIW code cannot poison hazards
   
   // Extract fields
   assign OpD     = InstrD[6:0];
@@ -191,6 +193,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   assign Rs1D    = InstrD[19:15];
   assign Rs2D    = InstrD[24:20];
   assign RdD     = InstrD[11:7];
+  assign VLIWModeDActive = (VLIWModeD === 1'b1);
 
   // Funct 7 checking
   // Be rigorous about detecting illegal instructions if CSRs or bit manipulation or conditional ops are supported
@@ -508,15 +511,15 @@ module controller import cvw::*;  #(parameter cvw_t P) (
         ForwardAE = 2'b10;
         ForwardSelectController_Rs1 = 2'b00;
       end
-      else if ((Rs1E == RdM_1) & RegWriteM_1) begin
+      else if (VLIWModeDActive && ((Rs1E == RdM_1) & RegWriteM_1)) begin
         ForwardAE = 2'b10;
         ForwardSelectController_Rs1 = 2'b01;
       end
-      else if ((Rs1E == RdM_2) & RegWriteM_2) begin
+      else if (VLIWModeDActive && ((Rs1E == RdM_2) & RegWriteM_2)) begin
         ForwardAE = 2'b10;
         ForwardSelectController_Rs1 = 2'b10;
       end
-      else if ((Rs1E == RdM_3) & RegWriteM_3) begin
+      else if (VLIWModeDActive && ((Rs1E == RdM_3) & RegWriteM_3)) begin
         ForwardAE = 2'b10;
         ForwardSelectController_Rs1 = 2'b11;
       end
@@ -526,15 +529,15 @@ module controller import cvw::*;  #(parameter cvw_t P) (
         ForwardAE = 2'b01;
         ForwardSelectController_Rs1 = 2'b00;
       end
-      else if ((Rs1E == RdW_1) & RegWriteW_1) begin
+      else if (VLIWModeDActive && ((Rs1E == RdW_1) & RegWriteW_1)) begin
         ForwardAE = 2'b01;
         ForwardSelectController_Rs1 = 2'b01;
       end
-      else if ((Rs1E == RdW_2) & RegWriteW_2) begin
+      else if (VLIWModeDActive && ((Rs1E == RdW_2) & RegWriteW_2)) begin
         ForwardAE = 2'b01;
         ForwardSelectController_Rs1 = 2'b10;
       end
-      else if ((Rs1E == RdW_3) & RegWriteW_3) begin
+      else if (VLIWModeDActive && ((Rs1E == RdW_3) & RegWriteW_3)) begin
         ForwardAE = 2'b01;
         ForwardSelectController_Rs1 = 2'b11;
       end
@@ -547,15 +550,15 @@ module controller import cvw::*;  #(parameter cvw_t P) (
         ForwardBE = 2'b10;
         ForwardSelectController_Rs2 = 2'b00;
       end
-      else if ((Rs2E == RdM_1) & RegWriteM_1) begin
+      else if (VLIWModeDActive && ((Rs2E == RdM_1) & RegWriteM_1)) begin
         ForwardBE = 2'b10;
         ForwardSelectController_Rs2 = 2'b01;
       end
-      else if ((Rs2E == RdM_2) & RegWriteM_2) begin
+      else if (VLIWModeDActive && ((Rs2E == RdM_2) & RegWriteM_2)) begin
         ForwardBE = 2'b10;
         ForwardSelectController_Rs2 = 2'b10;
       end
-      else if ((Rs2E == RdM_3) & RegWriteM_3) begin
+      else if (VLIWModeDActive && ((Rs2E == RdM_3) & RegWriteM_3)) begin
         ForwardBE = 2'b10;
         ForwardSelectController_Rs2 = 2'b11;
       end
@@ -565,15 +568,15 @@ module controller import cvw::*;  #(parameter cvw_t P) (
         ForwardBE = 2'b01;
         ForwardSelectController_Rs2 = 2'b00;
       end
-      else if ((Rs2E == RdW_1) & RegWriteW_1) begin
+      else if (VLIWModeDActive && ((Rs2E == RdW_1) & RegWriteW_1)) begin
         ForwardBE = 2'b01;
         ForwardSelectController_Rs2 = 2'b01;
       end
-      else if ((Rs2E == RdW_2) & RegWriteW_2) begin
+      else if (VLIWModeDActive && ((Rs2E == RdW_2) & RegWriteW_2)) begin
         ForwardBE = 2'b01;
         ForwardSelectController_Rs2 = 2'b10;
       end
-      else if ((Rs2E == RdW_3) & RegWriteW_3) begin
+      else if (VLIWModeDActive && ((Rs2E == RdW_3) & RegWriteW_3)) begin
         ForwardBE = 2'b01;
         ForwardSelectController_Rs2 = 2'b11;
       end
@@ -628,13 +631,13 @@ module controller import cvw::*;  #(parameter cvw_t P) (
 
   // logic for forwarding which will require cross-lane MatchDE checks
   assign MatchDE_0 = ((UsesRs1D & (Rs1D == RdE))   | (UsesRs2D & (Rs2D == RdE)))   & (RdE != 5'b0);   // Decode-stage source depends on lane-0 execute destination
-  assign MatchDE_1 = ((UsesRs1D & (Rs1D == RdE_1)) | (UsesRs2D & (Rs2D == RdE_1))) & (RdE_1 != 5'b0);
-  assign MatchDE_2 = ((UsesRs1D & (Rs1D == RdE_2)) | (UsesRs2D & (Rs2D == RdE_2))) & (RdE_2 != 5'b0);
-  assign MatchDE_3 = ((UsesRs1D & (Rs1D == RdE_3)) | (UsesRs2D & (Rs2D == RdE_3))) & (RdE_3 != 5'b0);
+  assign MatchDE_1 = VLIWModeDActive & (((UsesRs1D & (Rs1D == RdE_1)) | (UsesRs2D & (Rs2D == RdE_1))) & (RdE_1 != 5'b0));
+  assign MatchDE_2 = VLIWModeDActive & (((UsesRs1D & (Rs1D == RdE_2)) | (UsesRs2D & (Rs2D == RdE_2))) & (RdE_2 != 5'b0));
+  assign MatchDE_3 = VLIWModeDActive & (((UsesRs1D & (Rs1D == RdE_3)) | (UsesRs2D & (Rs2D == RdE_3))) & (RdE_3 != 5'b0));
   assign MatchDE = MatchDE_0 | MatchDE_1 | MatchDE_2 | MatchDE_3; 
 
   logic LoadStallD_helper;
-  assign LoadStallD_helper = (MemReadE|SCE) | (MemReadE_1|SCE_1) | (MemReadE_2|SCE_2) | (MemReadE_3|SCE_3);
+  assign LoadStallD_helper = (MemReadE|SCE) | (VLIWModeDActive & (MemReadE_1|SCE_1)) | (VLIWModeDActive & (MemReadE_2|SCE_2)) | (VLIWModeDActive & (MemReadE_3|SCE_3));
   assign LoadStallD = LoadStallD_helper & MatchDE;
 
   assign StoreStallD = MemRWD[1] & MemRWE[0];   // Store or AMO followed by load or AMO
@@ -642,9 +645,9 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   // MDU result is not available on M-stage forwarding paths; stall if the dependency points to
   // any lane currently executing an MDU instruction in E.
   assign MDUStallD = (MDUActiveE   & MatchDE_0) |
-                     (MDUActiveE_1 & MatchDE_1) |
-                     (MDUActiveE_2 & MatchDE_2) |
-                     (MDUActiveE_3 & MatchDE_3);
+                     (VLIWModeDActive & MDUActiveE_1 & MatchDE_1) |
+                     (VLIWModeDActive & MDUActiveE_2 & MatchDE_2) |
+                     (VLIWModeDActive & MDUActiveE_3 & MatchDE_3);
   assign FCvtIntStallD = FCvtIntE & MatchDE; // FPU to Integer transfers have single-cycle latency except fcvt
   assign StructuralStallD = LoadStallD | StoreStallD | CSRRdStallD | MDUStallD | FCvtIntStallD;
 endmodule

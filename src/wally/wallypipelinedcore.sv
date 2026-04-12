@@ -197,6 +197,9 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   logic [31:0]          VLIWInstr3D;        // Fourth VLIW instruction (decoded)
   logic [3:0]           VLIWValidD;        // Valid bits for each VLIW instruction
   logic                 VLIWModeD;         // Indicates VLIW mode is active so we can ignore 
+  logic                 VLIWModeDActive;    // Treat X as inactive so setup code cannot poison decode
+
+  assign VLIWModeDActive = (VLIWModeD === 1'b1);
 
 
 
@@ -294,7 +297,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   ieu #(P) 
   ieu(.clk, .reset,
      // Decode Stage interface
-     .InstrD(VLIWModeD ? VLIWInstr0D : InstrD), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD,
+     .InstrD(VLIWModeDActive ? VLIWInstr0D : InstrD), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD,
      // Execute Stage interface
      .PCE, .PCLinkE, .FWriteIntE, .FCvtIntE, .IEUAdrE, .IntDivE, .W64E,
      .Funct3E, .ForwardedSrcAE, .ForwardedSrcBE, .MDUActiveE, .CMOpM, .IFUPrefetchE, .LSUPrefetchM,
@@ -335,7 +338,8 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .SCE(SCE),                                                  // Output signal identifying whether result source E == 3'b100
      .MemReadE_1(MemReadE_1), .MemReadE_2(MemReadE_2), .MemReadE_3(MemReadE_3),  // Input ignals identifying whether a read of memory will happen for other lanes
      .SCE_1(SCE_1), .SCE_2(SCE_2), .SCE_3(SCE_3),                // Input signals identifying whether result source E == 3'b100 for other lanes
-     .MDUActiveE_1(MDUActiveE_1), .MDUActiveE_2(MDUActiveE_2), .MDUActiveE_3(MDUActiveE_3)
+     .MDUActiveE_1(MDUActiveE_1), .MDUActiveE_2(MDUActiveE_2), .MDUActiveE_3(MDUActiveE_3),
+     .VLIWModeD(VLIWModeD)
      );
     
     ieu #(P)
@@ -386,7 +390,8 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .SCE(SCE_1),                                                 // Output signal identifying whether result source E == 3'b100
      .MemReadE_1(MemReadE), .MemReadE_2(MemReadE_2), .MemReadE_3(MemReadE_3),   // Input ignals identifying whether a read of memory will happen for other lanes
      .SCE_1(SCE), .SCE_2(SCE_2), .SCE_3(SCE_3),                   // Input signals identifying whether result source E == 3'b100 for other lanes
-     .MDUActiveE_1(MDUActiveE), .MDUActiveE_2(MDUActiveE_2), .MDUActiveE_3(MDUActiveE_3)
+     .MDUActiveE_1(MDUActiveE), .MDUActiveE_2(MDUActiveE_2), .MDUActiveE_3(MDUActiveE_3),
+     .VLIWModeD(VLIWModeD)
      );
 
     ieu #(P)
@@ -437,7 +442,8 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .SCE(SCE_2),                                                   // Output signal identifying whether result source E == 3'b100
      .MemReadE_1(MemReadE), .MemReadE_2(MemReadE_1), .MemReadE_3(MemReadE_3),   // Input ignals identifying whether a read of memory will happen for other lanes
      .SCE_1(SCE), .SCE_2(SCE_1), .SCE_3(SCE_3),                     // Input signals identifying whether result source E == 3'b100 for other lanes
-     .MDUActiveE_1(MDUActiveE), .MDUActiveE_2(MDUActiveE_1), .MDUActiveE_3(MDUActiveE_3)
+     .MDUActiveE_1(MDUActiveE), .MDUActiveE_2(MDUActiveE_1), .MDUActiveE_3(MDUActiveE_3),
+     .VLIWModeD(VLIWModeD)
      );
 
     ieu #(P)
@@ -488,7 +494,8 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .SCE(SCE_3),                                                   // Output signal identifying whether result source E == 3'b100
      .MemReadE_1(MemReadE), .MemReadE_2(MemReadE_1), .MemReadE_3(MemReadE_2),   // Input ignals identifying whether a read of memory will happen for other lanes
      .SCE_1(SCE), .SCE_2(SCE_1), .SCE_3(SCE_2),                     // Input signals identifying whether result source E == 3'b100 for other lanes
-     .MDUActiveE_1(MDUActiveE), .MDUActiveE_2(MDUActiveE_1), .MDUActiveE_3(MDUActiveE_2)
+     .MDUActiveE_1(MDUActiveE), .MDUActiveE_2(MDUActiveE_1), .MDUActiveE_3(MDUActiveE_2),
+     .VLIWModeD(VLIWModeD)
      );
 
 

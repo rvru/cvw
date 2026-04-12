@@ -171,6 +171,7 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   logic [31:0]   VLIWInstr0F, VLIWInstr1F, VLIWInstr2F, VLIWInstr3F;
   logic [3:0]    VLIWValidF;
   logic          VLIWModeF;
+  logic          VLIWModeDActive;
   logic [5:0]    VLIWCountF;  // Number of VLIW instructions (from hint immediate)
 
   // Raw VLIW instructions before decompression
@@ -608,6 +609,7 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   ///////////////////////////////////////////
 
   flopenrc #(1)    VLIWModeDReg(clk, reset, FlushD, ~StallD, VLIWModeF, VLIWModeD);
+  assign VLIWModeDActive = (VLIWModeD === 1'b1);
   if (P.STARBUG_SUPPORTED) begin : vliw_decode_regs
     // Pipeline VLIW signals to Decode stage
     flopenrc #(4)    VLIWValidDReg(clk, reset, FlushD, ~StallD, VLIWValidF, VLIWValidD);
@@ -691,10 +693,10 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   flopenr #(1) InstrMisalignedReg(clk, reset, ~StallM, BranchMisalignedFaultE, InstrMisalignedFaultM);
 
   // Instruction and PC pipeline registers flush to NOP, not zero
-  mux2    #(32)     FlushInstrEMux(VLIWModeD ? VLIWInstr0D : InstrD, nop, FlushE, NextInstrD);
-  mux2    #(32)     FlushInstrE1Mux(VLIWInstr1D, nop, FlushE | !VLIWModeD, NextInstrD_1);
-  mux2    #(32)     FlushInstrE2Mux(VLIWInstr2D, nop, FlushE | !VLIWModeD, NextInstrD_2);
-  mux2    #(32)     FlushInstrE3Mux(VLIWInstr3D, nop, FlushE | !VLIWModeD, NextInstrD_3);
+  mux2    #(32)     FlushInstrEMux(VLIWModeDActive ? VLIWInstr0D : InstrD, nop, FlushE, NextInstrD);
+  mux2    #(32)     FlushInstrE1Mux(VLIWInstr1D, nop, FlushE | !VLIWModeDActive, NextInstrD_1);
+  mux2    #(32)     FlushInstrE2Mux(VLIWInstr2D, nop, FlushE | !VLIWModeDActive, NextInstrD_2);
+  mux2    #(32)     FlushInstrE3Mux(VLIWInstr3D, nop, FlushE | !VLIWModeDActive, NextInstrD_3);
 
   flopenr #(32)     InstrEReg(clk, reset, ~StallE, NextInstrD, InstrE);
   flopenr #(32)     InstrE1Reg(clk, reset, ~StallE, NextInstrD_1, InstrE_1);

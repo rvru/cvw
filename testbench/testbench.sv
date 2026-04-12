@@ -213,6 +213,7 @@ module testbench;
                             else                  tests = {arch32c, arch32cpriv};
                           else                    tests = {arch32c};
         "arch32m":      if (P.M_SUPPORTED)        tests = arch32m;
+        "fpga":                                   tests = fpga;
         "arch32a_amo":      if (P.ZAAMO_SUPPORTED)  tests = arch32a_amo;
         "arch32f":      if (P.F_SUPPORTED)        tests = arch32f;
         "arch32d":      if (P.D_SUPPORTED)        tests = arch32d;
@@ -1071,4 +1072,3 @@ task automatic updateProgramAddrLabelArray;
   /* verilator lint_on WIDTHTRUNC */
   /* verilator lint_on WIDTHEXPAND */
 endtask
-

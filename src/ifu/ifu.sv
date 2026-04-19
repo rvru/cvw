@@ -171,7 +171,9 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   logic [31:0]   VLIWInstr0F, VLIWInstr1F, VLIWInstr2F, VLIWInstr3F;
   logic [3:0]    VLIWValidF;
   logic          VLIWModeF;
+  logic          BundleReadyF;
   logic [5:0]    VLIWCountF;  // Number of VLIW instructions (from hint immediate)
+  logic [P.XLEN-1:0] BundleBytesF;
 
   // Raw VLIW instructions before decompression
   logic [31:0]   VLIWInstrRaw0D, VLIWInstrRaw1D, VLIWInstrRaw2D, VLIWInstrRaw3D;
@@ -346,10 +348,13 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
   logic [OFFSETLEN-1:0] fetch_byte_offset;
   integer bit_offset;
+  logic bundle_ok;
   if (P.STARBUG_SUPPORTED) begin : vliw_extract
   always_comb begin
     // --- defaults so no latches are inferred ---
     VLIWModeF    = 1'b0;
+    BundleReadyF = 1'b0;
+    BundleBytesF = 'd2;
     VLIWCountF   = 6'b0;
     VLIWValidF   = 4'b0;
     VLIWInstr0F  = nop;
@@ -360,6 +365,7 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
     // Defaults for signals that were only conditionally assigned
     fetch_byte_offset = '0;
     bit_offset = 0;
+    bundle_ok = 1'b0;
 
     // Default temporaries (clear them so they are driven on all paths)
     check_16bit0 = 16'b0;
@@ -367,67 +373,120 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
     check_16bit2 = 16'b0;
     check_16bit3 = 16'b0;
 
-    if (is_vliw_hint && !IFUStallF && !reset) begin
-      VLIWModeF = 1'b1;
-      VLIWCountF = imm_c;
+    if (is_vliw_hint && !IFUStallF && !reset && CacheableF && !SelIROM && !SelSpillNextF &&
+        (imm_c >= 6'd1) && (imm_c <= 6'd4)) begin
+      bundle_ok = 1'b1;
 
       fetch_byte_offset = PCPF[OFFSETLEN-1:0];
       bit_offset = (fetch_byte_offset * 8) + 16; // Start after 16-bit hint
 
       // Instruction 0
-      if (imm_c >= 1 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
-        check_16bit0 = ReadDataLine[bit_offset +: 16];
-        if (check_16bit0[1:0] == 2'b11) begin
-          VLIWInstr0F = ReadDataLine[bit_offset +: 32];
-          VLIWValidF[0] = 1'b1;
-          bit_offset = bit_offset + 32;
+      if (imm_c >= 1) begin
+        if (bit_offset + 16 <= P.ICACHE_LINELENINBITS) begin
+          check_16bit0 = ReadDataLine[bit_offset +: 16];
+          if (check_16bit0[1:0] == 2'b11) begin
+            if (bit_offset + 32 <= P.ICACHE_LINELENINBITS) begin
+              VLIWInstr0F = ReadDataLine[bit_offset +: 32];
+              VLIWValidF[0] = 1'b1;
+              bit_offset = bit_offset + 32;
+              BundleBytesF = BundleBytesF + 'd4;
+            end else begin
+              bundle_ok = 1'b0;
+            end
+          end else begin
+            VLIWInstr0F = {16'b0, check_16bit0};
+            VLIWValidF[0] = 1'b1;
+            bit_offset = bit_offset + 16;
+            BundleBytesF = BundleBytesF + 'd2;
+          end
         end else begin
-          VLIWInstr0F = {16'b0, check_16bit0};
-          VLIWValidF[0] = 1'b1;
-          bit_offset = bit_offset + 16;
+          bundle_ok = 1'b0;
         end
       end
 
       // Instruction 1
-      if (imm_c >= 2 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
-        check_16bit1 = ReadDataLine[bit_offset +: 16];
-        if (check_16bit1[1:0] == 2'b11) begin
-          VLIWInstr1F = ReadDataLine[bit_offset +: 32];
-          VLIWValidF[1] = 1'b1;
-          bit_offset = bit_offset + 32;
+      if (bundle_ok && imm_c >= 2) begin
+        if (bit_offset + 16 <= P.ICACHE_LINELENINBITS) begin
+          check_16bit1 = ReadDataLine[bit_offset +: 16];
+          if (check_16bit1[1:0] == 2'b11) begin
+            if (bit_offset + 32 <= P.ICACHE_LINELENINBITS) begin
+              VLIWInstr1F = ReadDataLine[bit_offset +: 32];
+              VLIWValidF[1] = 1'b1;
+              bit_offset = bit_offset + 32;
+              BundleBytesF = BundleBytesF + 'd4;
+            end else begin
+              bundle_ok = 1'b0;
+            end
+          end else begin
+            VLIWInstr1F = {16'b0, check_16bit1};
+            VLIWValidF[1] = 1'b1;
+            bit_offset = bit_offset + 16;
+            BundleBytesF = BundleBytesF + 'd2;
+          end
         end else begin
-          VLIWInstr1F = {16'b0, check_16bit1};
-          VLIWValidF[1] = 1'b1;
-          bit_offset = bit_offset + 16;
+          bundle_ok = 1'b0;
         end
       end
 
       // Instruction 2
-      if (imm_c >= 3 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
-        check_16bit2 = ReadDataLine[bit_offset +: 16];
-        if (check_16bit2[1:0] == 2'b11) begin
-          VLIWInstr2F = ReadDataLine[bit_offset +: 32];
-          VLIWValidF[2] = 1'b1;
-          bit_offset = bit_offset + 32;
+      if (bundle_ok && imm_c >= 3) begin
+        if (bit_offset + 16 <= P.ICACHE_LINELENINBITS) begin
+          check_16bit2 = ReadDataLine[bit_offset +: 16];
+          if (check_16bit2[1:0] == 2'b11) begin
+            if (bit_offset + 32 <= P.ICACHE_LINELENINBITS) begin
+              VLIWInstr2F = ReadDataLine[bit_offset +: 32];
+              VLIWValidF[2] = 1'b1;
+              bit_offset = bit_offset + 32;
+              BundleBytesF = BundleBytesF + 'd4;
+            end else begin
+              bundle_ok = 1'b0;
+            end
+          end else begin
+            VLIWInstr2F = {16'b0, check_16bit2};
+            VLIWValidF[2] = 1'b1;
+            bit_offset = bit_offset + 16;
+            BundleBytesF = BundleBytesF + 'd2;
+          end
         end else begin
-          VLIWInstr2F = {16'b0, check_16bit2};
-          VLIWValidF[2] = 1'b1;
-          bit_offset = bit_offset + 16;
+          bundle_ok = 1'b0;
         end
       end
 
       // Instruction 3
-      if (imm_c >= 4 && (bit_offset + 32 <= P.ICACHE_LINELENINBITS)) begin
-        check_16bit3 = ReadDataLine[bit_offset +: 16];
-        if (check_16bit3[1:0] == 2'b11) begin
-          VLIWInstr3F = ReadDataLine[bit_offset +: 32];
-          VLIWValidF[3] = 1'b1;
-          bit_offset = bit_offset + 32;
+      if (bundle_ok && imm_c >= 4) begin
+        if (bit_offset + 16 <= P.ICACHE_LINELENINBITS) begin
+          check_16bit3 = ReadDataLine[bit_offset +: 16];
+          if (check_16bit3[1:0] == 2'b11) begin
+            if (bit_offset + 32 <= P.ICACHE_LINELENINBITS) begin
+              VLIWInstr3F = ReadDataLine[bit_offset +: 32];
+              VLIWValidF[3] = 1'b1;
+              bit_offset = bit_offset + 32;
+              BundleBytesF = BundleBytesF + 'd4;
+            end else begin
+              bundle_ok = 1'b0;
+            end
+          end else begin
+            VLIWInstr3F = {16'b0, check_16bit3};
+            VLIWValidF[3] = 1'b1;
+            bit_offset = bit_offset + 16;
+            BundleBytesF = BundleBytesF + 'd2;
+          end
         end else begin
-          VLIWInstr3F = {16'b0, check_16bit3};
-          VLIWValidF[3] = 1'b1;
-          bit_offset = bit_offset + 16;
+          bundle_ok = 1'b0;
         end
+      end
+
+      if (bundle_ok) begin
+        VLIWModeF = 1'b1;
+        BundleReadyF = 1'b1;
+        VLIWCountF = imm_c;
+      end else begin
+        BundleBytesF = 'd2;
+        VLIWValidF = 4'b0;
+        VLIWInstr0F = nop;
+        VLIWInstr1F = nop;
+        VLIWInstr2F = nop;
+        VLIWInstr3F = nop;
       end
 
     end
@@ -436,6 +495,8 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
     
     end else begin : no_vliw
       assign VLIWModeF = 1'b0;
+      assign BundleReadyF = 1'b0;
+      assign BundleBytesF = 'd2;
       assign VLIWCountF = 6'b0;
       assign VLIWValidF = 4'b0;
       assign {VLIWInstr0F, VLIWInstr1F, VLIWInstr2F, VLIWInstr3F} = '0;
@@ -444,6 +505,11 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
     end else begin : passthrough
       assign IFUHADDR = PCPF;
       assign VLIWModeF    = 1'b0;
+      assign BundleReadyF = 1'b0;
+      assign BundleBytesF = 'd2;
+      assign VLIWCountF   = 6'b0;
+      assign VLIWValidF   = 4'b0;
+      assign {VLIWInstr0F, VLIWInstr1F, VLIWInstr2F, VLIWInstr3F} = {4{nop}};
       logic [1:0] BusRW;
       assign BusRW = ~ITLBMissF & ~SelIROM ? IFURWF : 0;
       assign IFUHSIZE = 3'b010;
@@ -472,6 +538,12 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
             BusStall, CacheCommittedF, BusCommittedF, FetchBuffer} = '0;   
     assign {ICacheStallF, ICacheMiss, ICacheAccess} = '0;
     assign InstrRawF = IROMInstrF;
+    assign VLIWModeF = 1'b0;
+    assign BundleReadyF = 1'b0;
+    assign BundleBytesF = 'd2;
+    assign VLIWCountF = 6'b0;
+    assign VLIWValidF = 4'b0;
+    assign {VLIWInstr0F, VLIWInstr1F, VLIWInstr2F, VLIWInstr3F} = {4{nop}};
   end
   
   assign IFUCacheBusStallF = ICacheStallF | BusStall;
@@ -486,53 +558,8 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   ///////////////////////////////////////////
 
   if (P.STARBUG_SUPPORTED) begin : vliw_pc_logic
-    logic [P.XLEN-1:0] VLIWBundleSizeF;
-    logic [P.XLEN-1:0] PCPlusVLIWF;
-    // Calculate total size of VLIW bundle in bytes
-    // Start with 2 bytes for the HINT itself
-    always_comb begin
-      VLIWBundleSizeF = 'd2; // HINT is always 16-bit (2 bytes)
-      
-      // Add size of each valid instruction
-      if (VLIWValidF[0]) begin
-        // Check if instruction 0 is compressed (16-bit) or full (32-bit)
-        if (VLIWInstr0F[1:0] == 2'b11)
-          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
-        else
-          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
-      end
-      
-      if (VLIWValidF[1]) begin
-        if (VLIWInstr1F[1:0] == 2'b11)
-          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
-        else
-          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
-      end
-      
-      if (VLIWValidF[2]) begin
-        if (VLIWInstr2F[1:0] == 2'b11)
-          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
-        else
-          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
-      end
-      
-      if (VLIWValidF[3]) begin
-        if (VLIWInstr3F[1:0] == 2'b11)
-          VLIWBundleSizeF = VLIWBundleSizeF + 'd4;
-        else
-          VLIWBundleSizeF = VLIWBundleSizeF + 'd2;
-      end
-    end
-    
-    // Calculate PC + VLIW bundle size
-    assign PCPlusVLIWF = PCF + VLIWBundleSizeF;
-    
-    // Select between normal PC increment and VLIW bundle increment
-    // When in VLIW mode, use PCPlusVLIWF instead of PCPlus2or4F
-    assign AdjustedPCPlus2or4F = VLIWModeF ? PCPlusVLIWF : PCPlus2or4F;
-    
+    assign AdjustedPCPlus2or4F = BundleReadyF ? (PCF + BundleBytesF) : PCPlus2or4F;
   end else begin : no_vliw_pc_logic
-    // When VLIW is not supported, just pass through normal PC increment
     assign AdjustedPCPlus2or4F = PCPlus2or4F;
   end
 

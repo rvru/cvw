@@ -249,6 +249,7 @@ module testbench;
         "arch32zknh":    if (P.ZKNH_SUPPORTED)    tests = arch32zknh;
         "arch32pmp":     if (P.PMP_ENTRIES > 0)   tests = arch32pmp;
         "arch32vm_sv32": if (P.VIRTMEM_SUPPORTED) tests = arch32vm_sv32;
+        "fpga":                                   tests = fpga;
       endcase
     end
     if (tests.size() == 0 & ElfFile == "none") begin

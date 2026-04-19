@@ -34,6 +34,7 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
   input  logic [1:0]        STATUS_FS,                       // is FPU enabled?
   input  logic [3:0]        ENVCFG_CBE,                      // Cache block operation enables
   input  logic              IllegalIEUFPUInstrD,             // Illegal instruction
+  input  logic              LaneValidD,                      // Decode-stage lane is active
   output logic              IllegalBaseInstrD,               // Illegal I-type instruction, or illegal RV32 access to upper 16 registers
   // Execute stage signals
   input  logic [P.XLEN-1:0] PCE,                             // PC
@@ -100,6 +101,7 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
 
   // Extra RdEs for MatchDE checking across lanes
   input  logic  [4:0]  RdE_1, RdE_2, RdE_3,                // Pipelined destination registers from other lanes
+  input  logic         InstrValidE_1, InstrValidE_2, InstrValidE_3, // Execute-stage validity from other lanes
   output logic MemReadE,                                  // Signal identifying whether a read of memory will happen for this lane
   output logic SCE,                                       // Signal identifying whether result source E == 3'b100
   input  logic MemReadE_1, MemReadE_2, MemReadE_3,        // Signals identifying whether a read of memory will happen for other lanes
@@ -156,6 +158,7 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
 
   controller #(P) c(
     .clk, .reset, .StallD, .FlushD, .InstrD, .STATUS_FS, .ENVCFG_CBE, .ImmSrcD,
+    .LaneValidD,
     .IllegalIEUFPUInstrD, .IllegalBaseInstrD, 
     .StructuralStallD, .LoadStallD, .StoreStallD, .Rs1D, .Rs2D,  .Rs2E,
     .StallE, .FlushE, .FlagsE, .FWriteIntE,
@@ -181,6 +184,7 @@ module ieu import cvw::*;  #(parameter cvw_t P) (
     .ForwardSelect_Rs1(ForwardSelectControllerToDatapath_Rs1),  // This output is a 2-bit internal signal indicating which FU this ieu has decided to accept forwarded results from (0 indicates itself)
     .ForwardSelect_Rs2(ForwardSelectControllerToDatapath_Rs2),  // This output is a 2-bit internal signal indicating which FU this ieu has decided to accept forwarded results from (0 indicates itself)
     .RdE_1(RdE_1), .RdE_2(RdE_2), .RdE_3(RdE_3),                // These are inputs to the controller that are used for MatchDE checking across lanes
+    .InstrValidE_1(InstrValidE_1), .InstrValidE_2(InstrValidE_2), .InstrValidE_3(InstrValidE_3),
     .MemReadE(MemReadE),                                        // Output signal identifying whether a read of memory will happen for this lane
     .SCE(SCE),                                                  // Output signal identifying whether result source E == 3'b100
     .MemReadE_1(MemReadE_1), .MemReadE_2(MemReadE_2), .MemReadE_3(MemReadE_3),  // Input ignals identifying whether a read of memory will happen for other lanes

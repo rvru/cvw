@@ -23,7 +23,7 @@ coveragetests:
 	$(MAKE) -C ${TESTS}/coverage
 
 deriv:
-	derivgen.pl
+	../bin/derivgen.pl
 
 
 

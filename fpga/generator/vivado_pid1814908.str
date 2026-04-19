@@ -1,0 +1,1034 @@
+/*
+
+AMD Vivado v2025.1 (64-bit) [Major: 2025, Minor: 1]
+SW Build: 6140274 on Wed May 21 22:58:25 MDT 2025
+IP Build: 6138677 on Thu May 22 03:10:11 MDT 2025
+IP Build: 6138677 on Thu May 22 03:10:11 MDT 2025
+
+Process ID (PID): 1814908
+License: Customer
+Mode: GUI Mode
+
+Current time: 	Sun Apr 12 16:30:04 CDT 2026
+Time zone: 	Central Standard Time (America/Chicago)
+
+OS: Ubuntu
+OS Version: 5.15.0-97-generic
+OS Architecture: amd64
+Available processors (cores): 8
+LSB Release Description: Ubuntu 22.04.5 LTS
+
+Display: localhost:10.0
+Screen size: 1536x864
+Local screen bounds: x = 0, y = 0, width = 1536, height = 864
+Screen resolution (DPI): 100
+Available screens: 1
+Default font: family=Dialog,name=Dialog,style=plain,size=12
+Scale size: 12
+OS font scaling: 100%
+Anti-Alias Enabled: false
+
+Java version: 	21.0.1 64-bit
+
+Java home: 	/rs23/lnm7/vcu/Xilinx/2025.1/tps/lnx64/jre21.0.1_12
+Java executable: 	/rs23/lnm7/vcu/Xilinx/2025.1/tps/lnx64/jre21.0.1_12/bin/java
+Java arguments: 	[-Dsun.java2d.pmoffscreen=false, -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2, -Dsun.java2d.xrender=false, -Dsun.java2d.uiScale.enabled=false, -Dswing.aatext=true, -XX:-UsePerfData, -Djdk.map.althashing.threshold=512, -XX:StringTableSize=4072, -XX:+UseStringDeduplication, -XX:MaxGCPauseMillis=200, -XX:ParallelGCThreads=4, -XX:+ParallelRefProcEnabled, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.desktop/sun.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/java.awt.event=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.base/java.nio=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.table=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.desktop/sun.awt.shell=ALL-UNNAMED, --add-exports=java.base/sun.security.action=ALL-UNNAMED, --add-exports=java.desktop/sun.font=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, -XX:NewSize=80m, -XX:MaxNewSize=80m, -Xms812m, -Xmx6144m, -Xss10m, -Xrs]
+Java initial memory (-Xms): 	812 MB
+Java maximum memory (-Xmx):	 6 GB
+
+User name: 	lnm7
+User home directory: /home/lnm7
+User working directory: /rs23/lnm7/open_hw/cvw/fpga/generator
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /rs23/lnm7/vcu/Xilinx/2025.1
+HDI_APPROOT: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+RDI_DATADIR: /rs23/lnm7/vcu/Xilinx/2025.1/data
+RDI_BINDIR: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/bin
+
+Vivado preferences file: /home/lnm7/.Xilinx/Vivado/2025.1/vivado.xml
+Vivado preferences directory: /home/lnm7/.Xilinx/Vivado/2025.1/
+Vivado layouts directory: /home/lnm7/.Xilinx/Vivado/2025.1/data/layouts
+PlanAhead jar file: 	/rs23/lnm7/vcu/Xilinx/2025.1/Vivado/lib/classes/planAhead.jar
+Vivado log file: 	/rs23/lnm7/open_hw/cvw/fpga/generator/vivado.log
+Vivado journal file: 	/rs23/lnm7/open_hw/cvw/fpga/generator/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-1814908-orion-196-205
+Non-Default Parameters:	[]
+
+Xilinx & AMD Environment Variables
+--------------------------------------------------------------------------------------------
+RDI_APPROOT: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+RDI_BASEROOT: /rs23/lnm7/vcu/Xilinx/2025.1
+RDI_BINROOT: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/bin
+RDI_BUILD: yes
+RDI_DATADIR: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/data
+RDI_INSTALLROOT: /rs23/lnm7/vcu/Xilinx
+RDI_INSTALLVER: Vivado
+RDI_JAVA_PLATFORM: 
+RDI_JAVA_VERSION: 21.0.1_12
+RDI_LIBDIR: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/lib/lnx64.o/Ubuntu/22:/rs23/lnm7/vcu/Xilinx/2025.1/Vivado/lib/lnx64.o/Ubuntu:/rs23/lnm7/vcu/Xilinx/2025.1/Vivado/lib/lnx64.o
+RDI_OPT_EXT: .o
+RDI_PATCHROOT: 
+RDI_PLATFORM: lnx64
+RDI_PREPEND_PATH: /rs23/lnm7/vcu/Xilinx/2025.1/Vitis/bin
+RDI_PROG: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/bin/unwrapped/lnx64.o/vivado
+RDI_SESSION_INFO: /rs23/lnm7/open_hw/cvw/fpga/generator:orion-196-205_1776029384_1814861
+RDI_SHARED_DATA: /rs23/lnm7/vcu/Xilinx/SharedData/Vivado/data
+RDI_TPS_ROOT: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/tps/lnx64
+RDI_USE_JDK21: True
+SHELL: /bin/bash
+VIVADO_HOME: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+XILINX_DSP: 
+XILINX_HLS: /rs23/lnm7/vcu/Xilinx/2025.1/Vitis
+XILINX_PLANAHEAD: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+XILINX_SDK: /rs23/lnm7/vcu/Xilinx/2025.1/Vitis
+XILINX_VITIS: /rs23/lnm7/vcu/Xilinx/2025.1/Vitis
+XILINX_VIVADO: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+
+
+GUI allocated memory:	812 MB
+GUI max memory:		6,144 MB
+Engine allocated memory: 1,825 MB
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// WARNING: HEventQueue.dispatchEvent() is taking  1122 ms.
+selectButton(PAResourceEtoH.GettingStartedView_OPEN_PROJECT, "Open Project"); // t (PAResourceEtoH.GettingStartedView_OPEN_PROJECT)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_PROJECT
+// HMemoryUtils.trashcanNow. Engine heap size: 1,832 MB. GUI used memory: 74 MB. Current time: 4/12/26, 4:30:06 PM CDT
+setFileChooser("/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.xpr");
+// Opening Vivado Project: /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.xpr. Version: Vivado v2025.1 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: FLOW_ADDED
+// TclEventType: MSGMGR_MOVEMSG
+// Tcl Message: open_project /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.xpr 
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: COMPOSITE_FILE_CHANGE
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 142 MB (+145908kb) [00:00:28]
+// [Engine Memory]: 1,938 MB (+1880553kb) [00:00:28]
+// [GUI Memory]: 164 MB (+16437kb) [00:00:28]
+// WARNING: HEventQueue.dispatchEvent() is taking  2307 ms.
+// Tcl Message: open_project /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/rs23/lnm7/vcu/Xilinx/2025.1/Vivado/data/ip'. 
+// HMemoryUtils.trashcanNow. Engine heap size: 2,039 MB. GUI used memory: 90 MB. Current time: 4/12/26, 4:30:21 PM CDT
+// [Engine Memory]: 2,039 MB (+4331kb) [00:00:30]
+// Project name: WallyFPGA; location: /rs23/lnm7/open_hw/cvw/fpga/generator; part: xcvu095-ffva2104-2-e
+// Tcl Message: open_project: Time (s): cpu = 00:00:16 ; elapsed = 00:00:12 . Memory (MB): peak = 9982.531 ; gain = 219.754 ; free physical = 11981 ; free virtual = 29318 
+// Elapsed time: 12 seconds
+dismissDialog("Open Project"); // bk (Open Project Progress)
+// WARNING: HSwingWorker (Refresh Filesets Swing Worker) is taking 1218 ms. Increasing delay to 3654 ms.
+// Elapsed time: 10 seconds
+selectButton(PAResourceAtoD.CmdMsgDialog_OK, "OK", "Critical Messages"); // f (PAResourceAtoD.CmdMsgDialog_OK)
+dismissDialog("Critical Messages"); // a (dialog1)
+// TclEventType: DG_GRAPH_GENERATED
+// Tcl Message: update_compile_order -fileset sources_1 
+// HMemoryUtils.trashcanNow. Engine heap size: 2,068 MB. GUI used memory: 88 MB. Current time: 4/12/26, 4:30:40 PM CDT
+// Elapsed time: 15 seconds
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, rom1p1r_128x32 (rom1p1r_128x32.sv)]", 10, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, rom1p1r_128x32 (rom1p1r_128x32.sv)]", 10); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, rom1p1r_128x32 (rom1p1r_128x32.sv)]", 10, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, rom1p1r_128x32 (rom1p1r_128x32.sv)]", 10, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+closeView(PAResourceOtoP.PAViews_CODE, "Code"); // J (PAResourceOtoP.PAViews_CODE, PlanAheadTabCode)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,106 MB. GUI used memory: 93 MB. Current time: 4/12/26, 4:31:00 PM CDT
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, ssio_ddr_in (ssio_ddr_in.sv)]", 12, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, ssio_ddr_in (ssio_ddr_in.sv)]", 12, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+closeView(PAResourceOtoP.PAViews_CODE, "Code"); // J (PAResourceOtoP.PAViews_CODE, PlanAheadTabCode)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, arrs (arrs.sv)]", 14, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, arrs (arrs.sv)]", 14, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+// [Engine Memory]: 2,282 MB (+148406kb) [00:01:16]
+closeView(PAResourceOtoP.PAViews_CODE, "Code"); // J (PAResourceOtoP.PAViews_CODE, PlanAheadTabCode)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources]", 24); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1]", 25); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, regfile (regfile.sv)]", 44, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, regfile (regfile.sv)]", 44, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, Verilog Header]", 1); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, Verilog Header]", 1); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv)]", 2); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv)]", 4); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), core : wallypipelinedcore (wallypipelinedcore.sv)]", 6); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), core : wallypipelinedcore (wallypipelinedcore.sv)]", 6); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv)]", 4); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, ssio_ddr_in (ssio_ddr_in.sv)]", 17, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, ssio_ddr_in (ssio_ddr_in.sv)]", 17, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+// HMemoryUtils.trashcanNow. Engine heap size: 2,345 MB. GUI used memory: 93 MB. Current time: 4/12/26, 4:31:55 PM CDT
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, ssio_ddr_in (ssio_ddr_in.sv)]", 41, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Simulation Sources, sim_1, ssio_ddr_in (ssio_ddr_in.sv)]", 41, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci)]", 7, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci)]", 7, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+// Run Command: PAResourceCommand.PACommandNames_RECUSTOMIZE_CORE
+// TclEventType: LOAD_FEATURE
+// Tcl Message: INFO: [Device 21-403] Loading part xcvu095-ffva2104-2-e 
+// HMemoryUtils.trashcanNow. Engine heap size: 2,781 MB. GUI used memory: 94 MB. Current time: 4/12/26, 4:32:10 PM CDT
+selectButton(RDIResource.ProgressDialog_CANCEL, "Cancel", "Re-customize IP"); // a (RDIResource.ProgressDialog_CANCEL)
+// [Engine Memory]: 2,828 MB (+452400kb) [00:02:33]
+// WARNING: HEventQueue.dispatchEvent() is taking  1595 ms.
+// HMemoryUtils.trashcanNow. Engine heap size: 2,844 MB. GUI used memory: 98 MB. Current time: 4/12/26, 4:32:27 PM CDT
+// Elapsed time: 15 seconds
+dismissDialog("Re-customize IP"); // C (Re-customize IP Progress)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, rvvisynth (rvvisynth.sv)]", 8, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci)]", 7); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+// WARNING: HEventQueue.dispatchEvent() is taking  1210 ms.
+selectButton(RDIResource.BaseDialog_OK, "OK", "Show IP Hierarchy"); // f (RDIResource.BaseDialog_OK)
+// TclEventType: DG_GRAPH_STALE
+dismissDialog("Show IP Hierarchy"); // x (dialog2)
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/L.f': 02m:22s
+// [GUI Memory]: 173 MB (+792kb) [00:02:51]
+// HMemoryUtils.trashcanNow. Engine heap size: 2,886 MB. GUI used memory: 98 MB. Current time: 4/12/26, 4:32:45 PM CDT
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Constraints]", 27); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+// TclEventType: DG_GRAPH_GENERATED
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/L.f': 02m:26s
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Utility Sources]", 56); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, regfile (regfile.sv)]", 26, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, regfile (regfile.sv)]", 26, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+closeView(PAResourceOtoP.PAViews_CODE, "Code"); // J (PAResourceOtoP.PAViews_CODE, PlanAheadTabCode)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv)]", 4); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4_v2_2_27_axi_ctrl_top (ddr4_v2_2_axi_ctrl_top.sv)]", 11); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4_v2_2_27_axi_ctrl_top (ddr4_v2_2_axi_ctrl_top.sv)]", 11); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4 (ddr4.sv)]", 12, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4 (ddr4.sv)]", 12, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4 (ddr4.sv), inst : ddr4_ddr4 (ddr4_ddr4.sv)]", 13, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4 (ddr4.sv), inst : ddr4_ddr4 (ddr4_ddr4.sv), u_ddr4_mem_intfc : ddr4_ddr4_mem_intfc (ddr4_ddr4_mem_intfc.sv)]", 15, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+// Elapsed time: 19 seconds
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4 (ddr4.sv)]", 12); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4_v2_2_27_axi_ctrl_top (ddr4_v2_2_axi_ctrl_top.sv)]", 11, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4_v2_2_27_axi_ctrl_top (ddr4_v2_2_axi_ctrl_top.sv), ddr4_v2_2_27_axi_ctrl_reg_bank (ddr4_v2_2_axi_ctrl_reg_bank.sv)]", 14, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+// HMemoryUtils.trashcanNow. Engine heap size: 2,944 MB. GUI used memory: 101 MB. Current time: 4/12/26, 4:33:35 PM CDT
+selectCodeEditor("ddr4_v2_2_axi_ctrl_top.sv", 239, 97); // K (ddr4_v2_2_axi_ctrl_top.sv)
+setText(RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX, "boot", true); // d.c (RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX)
+applyEnter(RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX, "boot"); // d.c (RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX)
+applyEnter(RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX, "boot"); // d.c (RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX)
+closeView(PAResourceOtoP.PAViews_CODE, "Code"); // J (PAResourceOtoP.PAViews_CODE, PlanAheadTabCode)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4_v2_2_27_axi_ctrl_top (ddr4_v2_2_axi_ctrl_top.sv)]", 11); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4 (ddr4.sv)]", 12, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectCodeEditor("ddr4.sv", 179, 107); // K (ddr4.sv)
+setText(RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX, "boot"); // d.c (RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX)
+selectCodeEditor("ddr4.sv", 295, 217); // K (ddr4.sv)
+selectCodeEditor("ddr4.sv", 295, 217); // K (ddr4.sv)
+selectCodeEditor("ddr4.sv", 295, 217); // K (ddr4.sv)
+selectCodeEditor("ddr4.sv", 295, 217); // K (ddr4.sv)
+selectCodeEditor("ddr4.sv", 295, 217); // K (ddr4.sv)
+applyEnter(RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX, "boot"); // d.c (RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX)
+applyEnter(RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX, "boot"); // d.c (RDIResource.HCodeEditor_SEARCH_TEXT_COMBO_BOX)
+closeView(PAResourceOtoP.PAViews_CODE, "Code"); // J (PAResourceOtoP.PAViews_CODE, PlanAheadTabCode)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ddr4 : ddr4 (ddr4.xci), ddr4 (ddr4.sv)]", 12); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, ssio_ddr_in (ssio_ddr_in.sv)]", 22); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, ssio_ddr_in (ssio_ddr_in.sv)]", 22); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), core : wallypipelinedcore (wallypipelinedcore.sv)]", 6); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), core : wallypipelinedcore (wallypipelinedcore.sv)]", 6); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv)]", 4); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTab(PAResourceEtoH.FileSetView_TABBED_PANE, PAResourceEtoH.FileSetView_ADD_TAB, "IP Sources", 1); // g (PAResourceEtoH.FileSetView_TABBED_PANE, SourcesView)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4]", 3); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4]", 3); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTab(PAResourceEtoH.FileSetView_TABBED_PANE, PAResourceEtoH.FileSetView_INSERT_TAB, "Hierarchy", 0); // g (PAResourceEtoH.FileSetView_TABBED_PANE, SourcesView)
+selectTab(PAResourceEtoH.FileSetView_TABBED_PANE, PAResourceEtoH.FileSetView_ADD_TAB, "Libraries", 2); // g (PAResourceEtoH.FileSetView_TABBED_PANE, SourcesView)
+// Elapsed time: 20 seconds
+selectTab(PAResourceEtoH.FileSetView_TABBED_PANE, PAResourceEtoH.FileSetView_INSERT_TAB, "Hierarchy", 0); // g (PAResourceEtoH.FileSetView_TABBED_PANE, SourcesView)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv)]", 4); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv)]", 7); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), bootrom.bootrom : rom_ahb (rom_ahb.sv)]", 13, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), bootrom.bootrom : rom_ahb (rom_ahb.sv)]", 13, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+// Elapsed time: 24 seconds
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), ram.ram : ram_ahb (ram_ahb.sv)]", 12, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), ram.ram : ram_ahb (ram_ahb.sv)]", 12, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), ram.ram : ram_ahb (ram_ahb.sv)]", 12, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+closeView(PAResourceOtoP.PAViews_CODE, "Code"); // J (PAResourceOtoP.PAViews_CODE, PlanAheadTabCode)
+// Elapsed time: 16 seconds
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, ssio_ddr_in (ssio_ddr_in.sv)]", 41, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, ssio_ddr_in (ssio_ddr_in.sv)]", 41, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+closeView(PAResourceOtoP.PAViews_CODE, "Code"); // J (PAResourceOtoP.PAViews_CODE, PlanAheadTabCode)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv)]", 2); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv)]", 2); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), ram.ram : ram_ahb (ram_ahb.sv)]", 12); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), bootrom.bootrom : rom_ahb (rom_ahb.sv)]", 13); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), bootrom.bootrom : rom_ahb (rom_ahb.sv)]", 13); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), bootrom.bootrom : rom_ahb (rom_ahb.sv), memory : rom1p1r (rom1p1r.sv)]", 14, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), bootrom.bootrom : rom_ahb (rom_ahb.sv), memory : rom1p1r (rom1p1r.sv)]", 14, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+// Elapsed time: 27 seconds
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), uartgen.uart : uart_apb (uart_apb.sv)]", 18, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), uartgen.uart : uart_apb (uart_apb.sv)]", 18, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+selectCodeEditor("uart_apb.sv", 71, 318); // ae (uart_apb.sv)
+selectCodeEditor("uart_apb.sv", 226, 309); // ae (uart_apb.sv)
+selectCodeEditor("uart_apb.sv", 159, 218); // ae (uart_apb.sv)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), uartgen.uart : uart_apb (uart_apb.sv), uartPC : uartPC16550D (uartPC16550D.sv)]", 19, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), uartgen.uart : uart_apb (uart_apb.sv), uartPC : uartPC16550D (uartPC16550D.sv)]", 19); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), uartgen.uart : uart_apb (uart_apb.sv), uartPC : uartPC16550D (uartPC16550D.sv)]", 19, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Node
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), uartgen.uart : uart_apb (uart_apb.sv), uartPC : uartPC16550D (uartPC16550D.sv)]", 19, true, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click - Node
+// HMemoryUtils.trashcanNow. Engine heap size: 2,978 MB. GUI used memory: 106 MB. Current time: 4/12/26, 4:37:20 PM CDT
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), uartgen.uart : uart_apb (uart_apb.sv), uartPC : uartPC16550D (uartPC16550D.sv)]", 19); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+// [Engine Memory]: 2,978 MB (+8629kb) [00:07:34]
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), wallypipelinedsoc : wallypipelinedsoc (wallypipelinedsoc.sv), uncoregen.uncore : uncore (uncore.sv), uartgen.uart : uart_apb (uart_apb.sv)]", 18); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, Design Sources, fpgaTop (fpgaTop.sv), ahbaxibridge : ahbaxibridge (ahbaxibridge.xci)]", 21); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+// WARNING: HEventQueue.dispatchEvent() is taking  2120 ms.
+dismissDialog("Show IP Hierarchy"); // x (dialog3)
+selectTab(PAResourceEtoH.FileSetView_TABBED_PANE, PAResourceEtoH.FileSetView_ADD_TAB, "IP Sources", 1); // g (PAResourceEtoH.FileSetView_TABBED_PANE, SourcesView)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4]", 3); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, sysrst]", 14); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4, Simulation]", 6); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4, Simulation, ddr4_microblaze_mcs]", 8); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4, Simulation]", 6); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+expandTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4, Instantiation Template]", 4); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4, Instantiation Template, ddr4.veo]", 6, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4, Instantiation Template, ddr4.veo]", 6, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+// HMemoryUtils.trashcanNow. Engine heap size: 3,009 MB. GUI used memory: 105 MB. Current time: 4/12/26, 4:37:55 PM CDT
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4, Instantiation Template, ddr4.vho]", 5, false); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+selectTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP, ddr4, Instantiation Template, ddr4.vho]", 5, false, false, false, false, false, true); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE) - Double Click
+closeView(PAResourceOtoP.PAViews_CODE, "Code"); // J (PAResourceOtoP.PAViews_CODE, PlanAheadTabCode)
+// Elapsed time: 57 seconds
+collapseTree(PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE, "[root, IP]", 0); // E (PAResourceEtoH.FileSetPanel_FILE_SET_PANEL_TREE)
+collapseTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Open Hardware Manager]", 22); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+expandTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Open Hardware Manager]", 22); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Open Hardware Manager, Open Target]", 23, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HW_TARGET
+selectMenu(PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, "Recent Targets"); // am (PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, Recent Targets)
+selectMenu(PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, "Recent Targets"); // am (PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, Recent Targets)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Open Hardware Manager, Open Target]", 23, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+selectMenu(PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, "Recent Targets"); // am (PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, Recent Targets)
+selectMenuItem(PAResourceCommand.PACommandNames_OPEN_TARGET_WIZARD, "Open New Target..."); // ap (PAResourceCommand.PACommandNames_OPEN_TARGET_WIZARD, Open New Target...)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl (Dont Echo) Command: 'rdi::info_commands get_hw_probes'
+// Tcl (Dont Echo) Command: 'load_features labtools'
+// TclEventType: LOAD_FEATURE
+// TclEventType: HW_SESSION_OPEN
+// Tcl Message: open_hw_manager 
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_TARGET_WIZARD
+// WARNING: HEventQueue.dispatchEvent() is taking  1205 ms.
+dismissDialog("Open Hardware Manager"); // bk (Open Hardware Manager Progress)
+selectButton("NEXT", "Next", "Open New Hardware Target"); // JButton (NEXT)
+// WARNING: HEventQueue.dispatchEvent() is taking  1070 ms.
+// TclEventType: HW_SERVER_UPDATE
+// TclEventType: HW_TARGET_CHANGE
+// WARNING: HEventQueue.dispatchEvent() is taking  1521 ms.
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: HW_TARGET_CLOSE
+// Elapsed time: 13 seconds
+dismissDialog("Open Target"); // bk (Open Target Progress)
+// TclEventType: HW_SYSMON_DELETE
+// TclEventType: HW_TARGET_UPDATE
+// WARNING: HEventQueue.dispatchEvent() is taking  1572 ms.
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+selectButton("NEXT", "Next", "Open New Hardware Target"); // JButton (NEXT)
+dismissDialog("Close Target"); // bk (Close Target Progress)
+selectButton("NEXT", "Next", "Open New Hardware Target"); // JButton (NEXT)
+// TclEventType: HW_OBJECT_DELETE
+// WARNING: HEventQueue.dispatchEvent() is taking  1103 ms.
+// TclEventType: HW_SERVER_CLOSE
+// Tcl Message: connect_hw_server -url localhost:3121 -allow_non_jtag 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0 INFO: [Labtools 27-3417] Launching cs_server... 
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:   ******** Xilinx cs_server v2025.1.0   ****** Build date   : May 13 2025-14:15:27     **** Build number : 2025.1.1747163727       ** Copyright 2017-2022 Xilinx, Inc. All Rights Reserved.       ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.    
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: connect_hw_server: Time (s): cpu = 00:00:01 ; elapsed = 00:00:09 . Memory (MB): peak = 10963.789 ; gain = 0.000 ; free physical = 11033 ; free virtual = 28478 
+// Tcl Message: current_hw_target [get_hw_targets */xilinx_tcf/Digilent/210308A1C656] 
+// TclEventType: HW_TARGET_CHANGE
+// Tcl Message: set_property PARAM.FREQUENCY 15000000 [get_hw_targets */xilinx_tcf/Digilent/210308A1C656] 
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210308A1C656 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.runs/impl_1/fpgaTop.bit} [get_hw_devices xcvu095_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROBES.FILE {/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.runs/impl_1/fpgaTop.ltx} [get_hw_devices xcvu095_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.runs/impl_1/fpgaTop.ltx} [get_hw_devices xcvu095_0] 
+// Tcl Message: current_hw_device [get_hw_devices xcvu095_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xcvu095_0] 0] 
+// TclEventType: HW_MIG_ADD
+// [GUI Memory]: 183 MB (+1237kb) [00:10:06]
+// TclEventType: HW_ILA_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// WARNING: HEventQueue.dispatchEvent() is taking  1219 ms.
+// TclEventType: HW_DEVICE_CHANGE
+// Elapsed time: 21 seconds
+closeView(PAResourceOtoP.PAViews_MIG, "MIG - MIG_1"); // b (PAResourceOtoP.PAViews_MIG, PlanAheadTabMIG)
+// Tcl Message: INFO: [Labtools 27-2302] Device xcvu095 (JTAG device index = 0) is programmed with a design that has 1 ILA core(s). INFO: [Labtools 27-2302] Device xcvu095 (JTAG device index = 0) is programmed with a design that has 1 MIG core(s). 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: DEBUG_PROBE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: HW_ILA_CHANGE
+// Tcl Message: refresh_hw_device: Time (s): cpu = 00:00:06 ; elapsed = 00:00:09 . Memory (MB): peak = 10963.789 ; gain = 0.000 ; free physical = 10998 ; free virtual = 28443 
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_OPEN_WCFG
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// Tcl Message: display_hw_ila_data [ get_hw_ila_data hw_ila_data_1 -of_objects [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}]] 
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/ap.c': 20s
+selectButton("FINISH", "Finish", "Open New Hardware Target"); // JButton (FINISH)
+// 'D' command handler elapsed time: 42 seconds
+dismissDialog("Open Hardware Target"); // bk (Open Hardware Target Progress)
+dismissDialog("Open New Hardware Target"); // ap (dialog4)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,074 MB. GUI used memory: 120 MB. Current time: 4/12/26, 4:40:05 PM CDT
+selectButton(PAResourceCommand.PACommandNames_RUN_TRIGGER, "Hardware_run_trigger"); // C (PAResourceCommand.PACommandNames_RUN_TRIGGER, Hardware_run_trigger)
+// Run Command: PAResourceCommand.PACommandNames_RUN_TRIGGER
+// TclEventType: HW_ILA_CHANGE
+// Tcl Message: run_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}] 
+// Tcl Message: INFO: [Labtools 27-1964] The ILA core 'hw_ila_1' trigger was armed at 2026-Apr-12 16:40:12 
+// Tcl Message: wait_on_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}] 
+// TclEventType: HW_ILA_CHANGE
+// TclEventType: WAVEFORM_GLASSPANE
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MODEL_EVENT
+// Tcl Message: display_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}]] 
+// Tcl Message: INFO: [Labtools 27-1966] The ILA core 'hw_ila_1' triggered at 2026-Apr-12 16:40:12 
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: HW_WAVE_ZIP_EXPORT_DONE
+// TclEventType: WAVEFORM_GLASSPANE
+// Tcl Message: INFO: [Labtools 27-3304] ILA Waveform data saved to file /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.hw/backup/hw_ila_data_1.ila. Use Tcl command 'read_hw_ila_data' or Vivado File->Import->Import ILA Data menu item to import the previously saved data. 
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "hw_ila_1", 0); // o (PlanAheadTabBaseWorkspace_JideTabbedPane)
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 305, 156); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1329, 311, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// Elapsed time: 10 seconds
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "hw_ila_1 ; Idle", 5, "hw_ila_1", 0, false); // m (PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE)
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "hw_ila_1 ; Idle", 5, "hw_ila_1", 0, false); // m (PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE)
+// [GUI Memory]: 194 MB (+1320kb) [00:10:36]
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "hw_ila_1 ; Idle", 5, "hw_ila_1", 0, false, false, false, false, false, true); // m (PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE) - Double Click
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_DASHBOARD
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "MIG_1 ; CAL PASS", 4, "MIG_1", 0, false); // m (PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE)
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "SysMon ; ", 3, "SysMon", 0, false); // m (PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE)
+selectTreeTable(PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE, "hw_ila_1 ; Idle", 5, "hw_ila_1", 0, false); // m (PAResourceEtoH.HardwareTreePanel_HARDWARE_TREE_TABLE)
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "hw_ila_1", 0); // o (PlanAheadTabBaseWorkspace_JideTabbedPane)
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 1, 114); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1169, 289, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,093 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:40:35 PM CDT
+selectButton(PAResourceEtoH.HardwareIlaWaveformView_RUN_TRIGGER_FOR_THIS_ILA_CORE, "Waveform View_run_trigger"); // C (PAResourceEtoH.HardwareIlaWaveformView_RUN_TRIGGER_FOR_THIS_ILA_CORE, Waveform View_run_trigger)
+// Run Command: PAResourceCommand.PACommandNames_RUN_TRIGGER
+// TclEventType: HW_ILA_CHANGE
+// Tcl Message: run_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}] 
+// Tcl Message: INFO: [Labtools 27-1964] The ILA core 'hw_ila_1' trigger was armed at 2026-Apr-12 16:40:40 
+// Tcl Message: wait_on_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}] 
+// Tcl Message: display_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}]] 
+// Tcl Message: INFO: [Labtools 27-1966] The ILA core 'hw_ila_1' triggered at 2026-Apr-12 16:40:40 
+// TclEventType: HW_ILA_CHANGE
+// TclEventType: WAVEFORM_GLASSPANE
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: HW_WAVE_ZIP_EXPORT_DONE
+// TclEventType: WAVEFORM_GLASSPANE
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// Tcl Message: INFO: [Labtools 27-3304] ILA Waveform data saved to file /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.hw/backup/hw_ila_data_1.ila. Use Tcl command 'read_hw_ila_data' or Vivado File->Import->Import ILA Data menu item to import the previously saved data. 
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 299, 120); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1326, 292, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 123 MB. Current time: 4/12/26, 4:40:43 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:40:48 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:40:48 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 124 MB. Current time: 4/12/26, 4:40:50 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 338, 144); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+/********** leftMouseClick (1414, 305, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 264, 129); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1375, 297, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 124 MB. Current time: 4/12/26, 4:40:52 PM CDT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 153, 99); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+/********** leftMouseClick (1317, 281, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 19, 127); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+/********** leftMouseClick (1246, 296, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 5, 120); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1239, 292, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 11, 120, false, false, false, false, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) - Double Click
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** startDrag (1246, 292); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:40:54 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:40:55 PM CDT
+/********** endDrag (1291, 294); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:40:56 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:40:57 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,086 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:40:57 PM CDT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 171, 93); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+/********** leftMouseClick (1326, 278, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// Elapsed time: 23 seconds
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 147, 161); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+/********** leftMouseClick (1313, 314, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 124, 169); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1301, 318, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 149, 169); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1314, 318, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,086 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:41:24 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// HMemoryUtils.trashcanNow. Engine heap size: 3,093 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:41:29 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 124 MB. Current time: 4/12/26, 4:41:30 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, -125, 178); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+/********** leftMouseClick (1170, 323, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:41:33 PM CDT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, -91, 116); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1188, 290, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, -45, 118); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1212, 291, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 35, 120); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1254, 292, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:41:37 PM CDT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 29, 163); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1251, 315, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 23, 180); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1248, 324, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 29, 177); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1251, 322, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:41:42 PM CDT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 23, 178); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1248, 323, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 23, 178); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+/********** leftMouseClick (1248, 323, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// HMemoryUtils.trashcanNow. Engine heap size: 3,085 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:41:44 PM CDT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 31, 177); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1252, 322, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// HMemoryUtils.trashcanNow. Engine heap size: 3,093 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:41:56 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// HMemoryUtils.trashcanNow. Engine heap size: 3,087 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:42:26 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// Elapsed time: 45 seconds
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 69, 189); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+/********** leftMouseClick (1251, 365, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 68, 189); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1250, 365, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,087 MB. GUI used memory: 123 MB. Current time: 4/12/26, 4:42:32 PM CDT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 7, 186); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1206, 363, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 148, 183); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1308, 361, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 69, 186); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1251, 363, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,087 MB. GUI used memory: 123 MB. Current time: 4/12/26, 4:42:34 PM CDT
+// Elapsed time: 18 seconds
+selectButton(PAResourceTtoZ.TriggerStatusPanel_RUN_TRIGGER_FOR_THIS_ILA_CORE, "ILA_run_trigger"); // C (PAResourceTtoZ.TriggerStatusPanel_RUN_TRIGGER_FOR_THIS_ILA_CORE, ILA_run_trigger)
+// Run Command: PAResourceCommand.PACommandNames_RUN_TRIGGER
+// TclEventType: HW_ILA_CHANGE
+// Tcl Message: run_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}] 
+// Tcl Message: INFO: [Labtools 27-1964] The ILA core 'hw_ila_1' trigger was armed at 2026-Apr-12 16:42:53 
+// Tcl Message: wait_on_hw_ila [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}] 
+// TclEventType: HW_ILA_CHANGE
+// TclEventType: WAVEFORM_GLASSPANE
+// Tcl Message: display_hw_ila_data [upload_hw_ila_data [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}]] 
+// TclEventType: WAVEFORM_MODEL_EVENT
+// Tcl Message: INFO: [Labtools 27-1966] The ILA core 'hw_ila_1' triggered at 2026-Apr-12 16:42:53 
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: HW_WAVE_ZIP_EXPORT_DONE
+// TclEventType: WAVEFORM_GLASSPANE
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// Tcl Message: INFO: [Labtools 27-3304] ILA Waveform data saved to file /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.hw/backup/hw_ila_data_1.ila. Use Tcl command 'read_hw_ila_data' or Vivado File->Import->Import ILA Data menu item to import the previously saved data. 
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 46, 189); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1234, 365, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,086 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:42:59 PM CDT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 84, 188); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1262, 364, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 82, 188); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1260, 364, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// Elapsed time: 76 seconds
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 84, 192); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1262, 367, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// HMemoryUtils.trashcanNow. Engine heap size: 3,086 MB. GUI used memory: 123 MB. Current time: 4/12/26, 4:44:17 PM CDT
+selectGraphicalView(RDIResource.RDIViews_WAVEFORM_VIEWER, 77, 190); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+/********** leftMouseClick (1257, 366, true); // b (RDIResource.RDIViews_WAVEFORM_VIEWER, PlanAheadTabWaveform View_viewer) **********/
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_SELECTED_WAVE_OBJECT_NAMES
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MOVE_CURSOR
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// Elapsed time: 20 seconds
+selectTab((HResource) null, (HResource) null, "Messages", 1); // ab
+selectTab((HResource) null, (HResource) null, "Serial I/O Links", 2); // ab
+selectTab((HResource) null, (HResource) null, "Serial I/O Scans", 3); // ab
+selectTab((HResource) null, (HResource) null, "Tcl Console", 0); // ab
+// HMemoryUtils.trashcanNow. Engine heap size: 3,086 MB. GUI used memory: 123 MB. Current time: 4/12/26, 4:44:46 PM CDT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// Elapsed time: 10 seconds
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Implementation, Open Implemented Design]", 19, true); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree) - Node
+// Run Command: PAResourceCommand.PACommandNames_GOTO_IMPLEMENTED_DESIGN
+// WARNING: HEventQueue.dispatchEvent() is taking  1055 ms.
+// Tcl Message: open_run impl_1 
+// HMemoryUtils.trashcanNow. Engine heap size: 3,647 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:45:05 PM CDT
+// TclEventType: SIGNAL_INTERFACE_ADD
+// TclEventType: SIGNAL_HIERARCHY_CHANGED
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: POWER_CNS_STALE
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: POWER_REPORT_STALE
+// TclEventType: SDC_CONSTRAINT_ADD
+// HMemoryUtils.trashcanNow. Engine heap size: 4,261 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:45:22 PM CDT
+// TclEventType: FLOORPLAN_MODIFY
+// TclEventType: DESIGN_NEW
+// [Engine Memory]: 4,424 MB (+1360531kb) [00:15:35]
+// HMemoryUtils.trashcanNow. Engine heap size: 4,424 MB. GUI used memory: 122 MB. Current time: 4/12/26, 4:45:27 PM CDT
+// WARNING: HEventQueue.dispatchEvent() is taking  1298 ms.
+// Xgd.load filename: /rs23/lnm7/open_hw/cvw/fpga/generator/./.Xil/Vivado-1814908-orion-196-205/xcvu095_detail.xgd_25B01C1A elapsed time: 3.2s
+// DeviceModel: Load Xgds SwingWorker Join Forever elapsed time: 3.6s
+// TclEventType: DESIGN_NEW
+// [GUI Memory]: 230 MB (+28124kb) [00:15:46]
+// [Engine Memory]: 5,438 MB (+831197kb) [00:15:46]
+// DeviceView Instantiated
+// [GUI Memory]: 250 MB (+9075kb) [00:15:50]
+// WARNING: HEventQueue.dispatchEvent() is taking  5127 ms.
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 11291.195 ; gain = 0.000 ; free physical = 10729 ; free virtual = 28183 
+// Tcl Message: INFO: [Netlist 29-17] Analyzing 10875 Unisim elements for replacement INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds INFO: [Project 1-479] Netlist was created with Vivado 2025.1 INFO: [Project 1-570] Preparing netlist for logic optimization 
+// Tcl Message: Read ShapeDB Complete: Time (s): cpu = 00:00:00.55 ; elapsed = 00:00:00.28 . Memory (MB): peak = 11558.516 ; gain = 34.750 ; free physical = 10481 ; free virtual = 27934 
+// Tcl Message: INFO: [Timing 38-478] Restoring timing data from binary archive. INFO: [Timing 38-479] Binary timing data restore complete. INFO: [Project 1-856] Restoring constraints from binary archive. INFO: [Project 1-853] Binary constraint restore complete. INFO: [Designutils 20-5722] Start Reading Physical Databases. 
+// Tcl Message: Reading placement. 
+// Tcl Message: Read Netlist Cache: Time (s): cpu = 00:00:00.16 ; elapsed = 00:00:00.16 . Memory (MB): peak = 12123.707 ; gain = 0.000 ; free physical = 9976 ; free virtual = 27429 
+// Tcl Message: Reading placer database... 
+// Tcl Message: Read Device Cache: Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.04 . Memory (MB): peak = 12123.707 ; gain = 0.000 ; free physical = 9976 ; free virtual = 27429 Read PlaceDB: Time (s): cpu = 00:00:05 ; elapsed = 00:00:05 . Memory (MB): peak = 12222.254 ; gain = 98.547 ; free physical = 9865 ; free virtual = 27319 Read PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 12222.254 ; gain = 0.000 ; free physical = 9865 ; free virtual = 27319 
+// Tcl Message: Reading routing. 
+// Tcl Message: Read RouteStorage: Time (s): cpu = 00:00:04 ; elapsed = 00:00:01 . Memory (MB): peak = 12345.121 ; gain = 122.867 ; free physical = 9761 ; free virtual = 27214 Read Physdb Files: Time (s): cpu = 00:00:09 ; elapsed = 00:00:06 . Memory (MB): peak = 12345.121 ; gain = 221.414 ; free physical = 9760 ; free virtual = 27213 
+// Tcl Message: Restored from archive | CPU: 9.380000 secs | Memory: 203.804497 MB | 
+// Tcl Message: Finished XDEF File Restore: Time (s): cpu = 00:00:09 ; elapsed = 00:00:07 . Memory (MB): peak = 12345.121 ; gain = 221.414 ; free physical = 9760 ; free virtual = 27214 
+// Tcl Message: Generating merged BMM file for the design top 'fpgaTop'... 
+// Tcl Message: INFO: [Memdata 28-144] Successfully populated the BRAM INIT strings from the following elf files: /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.gen/sources_1/ip/ddr4/sw/calibration_0/Debug/calibration_ddr.elf  
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.04 . Memory (MB): peak = 12345.121 ; gain = 0.000 ; free physical = 9743 ; free virtual = 27196 
+// TclEventType: CURR_DESIGN_SET
+// Device view-level: 0.0
+// [GUI Memory]: 263 MB (+656kb) [00:15:50]
+// TclEventType: HFED_INIT_ROUTE_STORAGE_COMPLETED
+// RouteApi::loadEngineXgdAndInitRouteStorage elapsed time: 11.5s
+// ExpRunCommands.openImplResults elapsed time: 50.8s
+// Tcl Message: open_run: Time (s): cpu = 00:01:21 ; elapsed = 00:00:49 . Memory (MB): peak = 13362.914 ; gain = 2324.066 ; free physical = 8715 ; free virtual = 26191 
+// TclEventType: DRC_ADDED
+// Device view-level: 0.1
+// TclEventType: DRC_ADDED
+// TclEventType: METHODOLOGY_ADDED
+// RouteApi::initDelayMediator elapsed time: 1.7s
+// RouteApi: Init Delay Mediator Swing Worker Finished
+// TclEventType: POWER_UPDATED
+// [GUI Memory]: 280 MB (+3629kb) [00:15:53]
+// [GUI Memory]: 296 MB (+1963kb) [00:15:56]
+// [GUI Memory]: 312 MB (+1022kb) [00:15:57]
+// [Engine Memory]: 5,762 MB (+54664kb) [00:15:57]
+// WARNING: HEventQueue.dispatchEvent() is taking  4925 ms.
+// HMemoryUtils.trashcanNow. Engine heap size: 5,763 MB. GUI used memory: 231 MB. Current time: 4/12/26, 4:45:50 PM CDT
+// TclEventType: TIMING_SUMMARY_UPDATED
+// WARNING: HEventQueue.dispatchEvent() is taking  2075 ms.
+// [Engine Memory]: 6,218 MB (+176115kb) [00:16:01]
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/q.a': 01m:00s
+// 'dX' command handler elapsed time: 61 seconds
+// WARNING: HEventQueue.dispatchEvent() is taking  1110 ms.
+// Elapsed time: 61 seconds
+dismissDialog("Open Implemented Design"); // bk (Open Implemented Design Progress)
+// [GUI Memory]: 328 MB (+1052kb) [00:16:04]
+selectButton(PAResourceAtoD.CmdMsgDialog_OK, "OK", "Critical Messages"); // f (PAResourceAtoD.CmdMsgDialog_OK)
+dismissDialog("Critical Messages"); // J (dialog5)
+// Device view-level: 0.4
+// HMemoryUtils.trashcanNow. Engine heap size: 6,211 MB. GUI used memory: 254 MB. Current time: 4/12/26, 4:46:01 PM CDT
+// Device view-level: 0.9
+// Device view-level: 1.2
+// Device view-level: 2.1
+// Device view-level: 1.8
+// Device view-level: 1.2
+// HMemoryUtils.trashcanNow. Engine heap size: 5,478 MB. GUI used memory: 256 MB. Current time: 4/12/26, 4:46:03 PM CDT
+// Device view-level: 0.6
+// Device view-level: 0.4
+// Device view-level: 0.1
+// Device view-level: 0.4
+// HMemoryUtils.trashcanNow. Engine heap size: 5,478 MB. GUI used memory: 256 MB. Current time: 4/12/26, 4:46:06 PM CDT
+// Device view-level: 1.2
+// Device view-level: 0.9
+// Device view-level: 0.6
+// Device view-level: 0.1
+// HMemoryUtils.trashcanNow. Engine heap size: 5,478 MB. GUI used memory: 253 MB. Current time: 4/12/26, 4:46:07 PM CDT
+// Device view-level: 0.0
+// Device view-level: 0.1
+// Elapsed time: 28 seconds
+selectButton(PAResourceAtoD.DesignTimingSumSectionPanel_WORST_NEGATIVE_SLACK, "-1.730 ns"); // h (PAResourceAtoD.DesignTimingSumSectionPanel_WORST_NEGATIVE_SLACK)
+// [Engine Memory]: 6,995 MB (+488722kb) [00:16:36]
+// PAPropertyPanels.initPanels (Path 61) elapsed time: 0.5s
+// HMemoryUtils.trashcanNow. Engine heap size: 6,996 MB. GUI used memory: 255 MB. Current time: 4/12/26, 4:46:30 PM CDT
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 62 ; -1.724 ; 48 ; 40 ; 72 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[3].wordram.CacheDataMem/ram.RAM_reg_0/DINADIN[13] ; 21.072989 ; 4.9200006 ; 16.153002 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 1, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C", 5); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+// HMemoryUtils.trashcanNow. Engine heap size: 5,479 MB. GUI used memory: 255 MB. Current time: 4/12/26, 4:46:33 PM CDT
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 61 ; -1.73 ; 51 ; 39 ; 65 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[1].wordram.CacheDataMem/ram.RAM_reg_0/DINBDIN[23] ; 21.117 ; 4.6140018 ; 16.503 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 0, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C", 5); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 62 ; -1.724 ; 48 ; 40 ; 72 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[3].wordram.CacheDataMem/ram.RAM_reg_0/DINADIN[13] ; 21.072989 ; 4.9200006 ; 16.153002 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 1, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C", 5); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+// HMemoryUtils.trashcanNow. Engine heap size: 5,479 MB. GUI used memory: 257 MB. Current time: 4/12/26, 4:46:38 PM CDT
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 62 ; -1.724 ; 48 ; 40 ; 72 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[3].wordram.CacheDataMem/ram.RAM_reg_0/DINADIN[13] ; 21.072989 ; 4.9200006 ; 16.153002 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 1, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C", 5); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+selectTableHeader(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "From", 5); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 65 ; -1.696 ; 48 ; 40 ; 72 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[3]/word[3].wordram.CacheDataMem/ram.RAM_reg_0/DINADIN[13] ; 21.064987 ; 4.9200006 ; 16.145002 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 4, "wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[3]/word[3].wordram.CacheDataMem/ram.RAM_reg_0/DINADIN[13]", 6); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 61 ; -1.73 ; 51 ; 39 ; 65 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[1].wordram.CacheDataMem/ram.RAM_reg_0/DINBDIN[23] ; 21.117 ; 4.6140018 ; 16.503 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 0, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C", 5); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 61 ; -1.73 ; 51 ; 39 ; 65 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[1].wordram.CacheDataMem/ram.RAM_reg_0/DINBDIN[23] ; 21.117 ; 4.6140018 ; 16.503 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 0, "wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[1].wordram.CacheDataMem/ram.RAM_reg_0/DINBDIN[23]", 6); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+// HMemoryUtils.trashcanNow. Engine heap size: 6,809 MB. GUI used memory: 256 MB. Current time: 4/12/26, 4:46:59 PM CDT
+// Elapsed time: 12 seconds
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 65 ; -1.696 ; 48 ; 40 ; 72 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[3]/word[3].wordram.CacheDataMem/ram.RAM_reg_0/DINADIN[13] ; 21.064987 ; 4.9200006 ; 16.145002 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 4, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C", 5); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 69 ; -1.673 ; 46 ; 39 ; 72 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[1].wordram.CacheDataMem/ram.RAM_reg_0/DINADIN[19] ; 21.014988 ; 4.942 ; 16.073 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 8, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C", 5); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+// Elapsed time: 11 seconds
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 69 ; -1.673 ; 46 ; 39 ; 72 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[1].wordram.CacheDataMem/ram.RAM_reg_0/DINADIN[19] ; 21.014988 ; 4.942 ; 16.073 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 8, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C", 5); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE)
+selectTable(PAResourceTtoZ.TimingItemFlatTablePanel_TABLE, "Path 69 ; -1.673 ; 46 ; 39 ; 72 ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C ; wallypipelinedsoc/core/lsu/bus.dcache.dcache/CacheWays[0]/word[1].wordram.CacheDataMem/ram.RAM_reg_0/DINADIN[19] ; 21.014988 ; 4.942 ; 16.073 ; 19.992 ; mmcm_clkout1 ; mmcm_clkout1 ;  ; 0.06795767", 8, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C", 5, false, false, false, false, true); // e.b (PAResourceTtoZ.TimingItemFlatTablePanel_TABLE) - Double Click
+selectTable(PAResourceOtoP.PathReportTableView_DESCRIPTION, "Source ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C   (rising edge-triggered cell FDRE clocked by mmcm_clkout1  {rise@0.000ns fall@9.996ns period=19.992ns})", 2, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C   (rising edge-triggered cell FDRE clocked by mmcm_clkout1  {rise@0.000ns fall@9.996ns period=19.992ns})", 1); // p (PAResourceOtoP.PathReportTableView_DESCRIPTION)
+selectTable(PAResourceOtoP.PathReportTableView_DESCRIPTION, "Source ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C   (rising edge-triggered cell FDRE clocked by mmcm_clkout1  {rise@0.000ns fall@9.996ns period=19.992ns})", 2, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C   (rising edge-triggered cell FDRE clocked by mmcm_clkout1  {rise@0.000ns fall@9.996ns period=19.992ns})", 1); // p (PAResourceOtoP.PathReportTableView_DESCRIPTION)
+selectTable(PAResourceOtoP.PathReportTableView_DESCRIPTION, "Source ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C   (rising edge-triggered cell FDRE clocked by mmcm_clkout1  {rise@0.000ns fall@9.996ns period=19.992ns})", 2, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C   (rising edge-triggered cell FDRE clocked by mmcm_clkout1  {rise@0.000ns fall@9.996ns period=19.992ns})", 1); // p (PAResourceOtoP.PathReportTableView_DESCRIPTION)
+selectTable(PAResourceOtoP.PathReportTableView_DESCRIPTION, "Source ; wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C   (rising edge-triggered cell FDRE clocked by mmcm_clkout1  {rise@0.000ns fall@9.996ns period=19.992ns})", 2, "wallypipelinedsoc/core/lsu/AddressMReg/q_reg[5]/C   (rising edge-triggered cell FDRE clocked by mmcm_clkout1  {rise@0.000ns fall@9.996ns period=19.992ns})", 1); // p (PAResourceOtoP.PathReportTableView_DESCRIPTION)
+// Elapsed time: 18 seconds
+collapseTree(PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE, "[Root, Intra-Clock Paths, mmcm_clkout1]", 10); // a (PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE)
+selectTree(PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE, "[Root, Intra-Clock Paths, mmcm_clkout0]", 9, true); // a (PAResourceItoN.NavigableTimingReportTab_TIMING_REPORT_NAVIGATION_TREE) - Node
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "Project Summary", 0); // o (PlanAheadTabBaseWorkspace_JideTabbedPane)
+selectTab("PlanAheadTabBaseWorkspace_JideTabbedPane", (HResource) null, "Device", 1); // o (PlanAheadTabBaseWorkspace_JideTabbedPane)
+// HMemoryUtils.trashcanNow. Engine heap size: 5,496 MB. GUI used memory: 257 MB. Current time: 4/12/26, 4:48:00 PM CDT
+// TclEventType: HW_TARGET_NEEDS_CLOSE
+// TclEventType: HW_SERVER_UPDATE
+// TclEventType: HW_TARGET_NEEDS_CLOSE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_CLOSE_WCFG
+closeView(PAResourceOtoP.PAViews_MIG, "MIG - MIG_1"); // b (PAResourceOtoP.PAViews_MIG, PlanAheadTabMIG)
+// TclEventType: HW_OBJECT_DELETE
+closeView(PAResourceOtoP.PAViews_DASHBOARD, "hw_ila_1"); // e (PAResourceOtoP.PAViews_DASHBOARD, PlanAheadTabhw_ila_1)
+// TclEventType: HW_MIG_DELETE
+// TclEventType: HW_SYSMON_DELETE
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: HW_SERVER_UPDATE
+dismissDialog("Close Hardware Target"); // j.a (dialog6)

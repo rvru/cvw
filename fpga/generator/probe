@@ -47,7 +47,7 @@ set_property C_ADV_TRIGGER true [get_debug_cores u_ila_0 ]
 set_property ALL_PROBE_SAME_MU true [get_debug_cores u_ila_0 ]
 set_property ALL_PROBE_SAME_MU_CNT 4 [get_debug_cores u_ila_0 ]
 endgroup
-connect_debug_port u_ila_0/clk [get_nets [list xlnx_ddr4_c0/inst/u_ddr4_infrastructure/addn_ui_clkout1 ]]"""
+connect_debug_port u_ila_0/clk [get_nets CPUCLK]"""
 
 def convertLine(x):
   temp = x.split()

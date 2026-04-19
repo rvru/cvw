@@ -103,10 +103,10 @@ if {$board=="ArtyA7"} {
     source ../constraints/small-debug-wfi.xdc
 } elseif {$board=="genesys2"} {
     source ../constraints/small-debug.xdc
+} elseif {$board=="vcu108" || $board=="vcu118"} {
+    # The VCU flow uses the smaller debug bundle that matches the current hierarchy.
+    source ../constraints/vcu-small-debug.xdc
 } else {
-    #source ../constraints/vcu-small-debug.xdc
-    #source ../constraints/small-debug.xdc
-    #source ../constraints/small-debug.xdc
     source ../constraints/big-debug-spi.xdc
 }
 

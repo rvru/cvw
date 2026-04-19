@@ -2,7 +2,7 @@ dst := IP
 
 all: ArtyA7
 
-.PHONY: ArtyA7 vcu118 vcu108 genesys2 fpga32
+.PHONY: ArtyA7 vcu118 vcu108 genesys2 fpga32 starbug starbug-code
 
 ArtyA7: export XILINX_PART := xc7a100tcsg324-1
 ArtyA7: export XILINX_BOARD := digilentinc.com:arty-a7-100:part0:1.1
@@ -12,8 +12,13 @@ ArtyA7: export SYSTEMCLOCK := 20000000
 ArtyA7: export MAXSDCCLOCK  :=  5000000
 ArtyA7: FPGA_Arty
 
-
-
+starbug: export XILINX_PART := xcvu095-ffva2104-2-e
+starbug: export XILINX_BOARD := xilinx.com:vcu108:part0:1.7
+starbug: export board := vcu108
+starbug: export version := starbug
+starbug: export SYSTEMCLOCK := 50000000
+starbug: export MAXSDCCLOCK  := 12500000
+starbug: FPGA_Starbug_VCU
 
 fpga32: export XILINX_PART := xc7a100tcsg324-1
 fpga32: export XILINX_BOARD := digilentinc.com:arty-a7-100:part0:1.1
@@ -51,7 +56,7 @@ genesys2: FPGA_GENESYS2
 
 check_code:
 ifndef CODE
-	$(error CODE is not set. Usage: make Arty CODE=your_value (CODE should be a folder located in ../loadable_programs/))
+	$(error CODE is not set. Usage: make {TARGET} CODE=your_value (CODE should be a folder located in ../loadable_programs/))
 else
 	@echo "Generating using ROM code from ../loadable_programs/$(CODE)..."
 endif
@@ -65,11 +70,13 @@ EXT_MEM_RANGE = $(shell grep 'EXT_MEM_RANGE' ../../config/deriv/fpga$(version)/c
 .PHONY: FPGA_Arty FPGA_VCU FPGA_Arty_32
 FPGA_Arty: PreProcessFiles IP_Arty zsbl
 	vivado -mode tcl -source wally.tcl 2>&1 | tee wally.log
-FPGA_VCU: PreProcessFiles IP_VCU zsbl
+FPGA_VCU: PreProcessFiles IP_VCU code
 	vivado -mode tcl -source wally.tcl 2>&1 | tee wally.log
 FPGA_Arty_32: PreProcessFiles IP_Arty code
 	vivado -mode tcl -source wally.tcl 2>&1 | tee wally.log
 FPGA_GENESYS2: PreProcessFiles IP_GENESYS2 zsbl
+	vivado -mode tcl -source wally.tcl 2>&1 | tee wally.log
+FPGA_Starbug_VCU: PreProcessFiles IP_VCU code
 	vivado -mode tcl -source wally.tcl 2>&1 | tee wally.log
 
 # Generate IP Blocks
@@ -124,10 +131,10 @@ zsbl:
 
 
 # for my testing, replace zsbl with my code
-.PHONY: code
-code:
+.PHONY: code check_code
+code: check_code
 	$(MAKE) -C ../ROM_code clean
-	SYSTEMCLOCK=$(SYSTEMCLOCK) EXT_MEM_BASE=$(EXT_MEM_BASE) EXT_MEM_RANGE=$(EXT_MEM_RANGE) $(MAKE) -C ../ROM_code
+	SYSTEMCLOCK=$(SYSTEMCLOCK) EXT_MEM_BASE=$(EXT_MEM_BASE) EXT_MEM_RANGE=$(EXT_MEM_RANGE) romCode=$(CODE) $(MAKE) -C ../ROM_code
 
 
 # Generate Individual IP Blocks
@@ -152,3 +159,13 @@ arty artya7: ArtyA7
 VCU118: vcu118
 VCU108: vcu108
 
+.PHONY: vcu108-code
+vcu108-code: vcu108
+
+STARBUG_BENCH_DIR ?= ../../examples/C/starbug_benchmarks/$(CODE)
+
+.PHONY: starbug-code
+starbug-code: check_code
+	$(MAKE) -C $(STARBUG_BENCH_DIR) clean
+	$(MAKE) -C $(STARBUG_BENCH_DIR) vliw-wally
+	$(MAKE) starbug CODE=$(CODE)

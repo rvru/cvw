@@ -15,7 +15,7 @@ ArtyA7: FPGA_Arty
 starbug: export XILINX_PART := xcvu095-ffva2104-2-e
 starbug: export XILINX_BOARD := xilinx.com:vcu108:part0:1.7
 starbug: export board := vcu108
-starbug: export version := vcu108
+starbug: export version := starbug
 starbug: export SYSTEMCLOCK := 50000000
 starbug: export MAXSDCCLOCK  := 12500000
 starbug: FPGA_Starbug_VCU

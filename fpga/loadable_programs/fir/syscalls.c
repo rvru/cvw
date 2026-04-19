@@ -23,8 +23,21 @@ extern volatile uint64_t fromhost;
 #include <stdint.h>
 
 void uartInit(void) {
+  volatile uint8_t *UART_IER = (uint8_t*)0x10000001;
   volatile uint8_t *UART_LCR = (uint8_t*)0x10000003;
-	*UART_LCR = 0b0000011; // 8-bit characters, 1 stop bit, no parity
+  volatile uint8_t *UART_FCR = (uint8_t*)0x10000002;
+  volatile uint8_t *UART_DLL = (uint8_t*)0x10000000;
+  volatile uint8_t *UART_DLM = (uint8_t*)0x10000001;
+
+  const uint32_t baud = 115200;
+  const uint32_t divisor = (SYSTEMCLOCK + 8 * baud) / (baud << 4);
+
+  *UART_IER = 0x00;                    // disable interrupts
+  *UART_LCR = 0x80;                    // DLAB=1
+  *UART_DLL = divisor & 0xFF;          // 50 MHz -> 27
+  *UART_DLM = (divisor >> 8) & 0xFF;   // 0
+  *UART_LCR = 0x03;                    // 8N1
+  *UART_FCR = 0xC7;                    // enable/clear FIFOs
 }
 
 void uartSend(char c) {

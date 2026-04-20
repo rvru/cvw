@@ -2,34 +2,35 @@
 // ram_ahb.sv
 //
 // Written: David_Harris@hmc.edu 9 January 2021
-// Modified: 
+// Modified:
 //
 // Purpose: On-chip RAM, external to core, with AHB interface
-// 
+//
 // Documentation: RISC-V System on Chip Design
 //
 // A component of the CORE-V-WALLY configurable RISC-V project.
 // https://github.com/openhwgroup/cvw
-// 
+//
 // Copyright (C) 2021-23 Harvey Mudd College & Oklahoma State University
 //
 // SPDX-License-Identifier: Apache-2.0 WITH SHL-2.1
 //
-// Licensed under the Solderpad Hardware License v 2.1 (the “License”); you may not use this file 
-// except in compliance with the License, or, at your option, the Apache License version 2.0. You 
+// Licensed under the Solderpad Hardware License v 2.1 (the “License”); you may not use this file
+// except in compliance with the License, or, at your option, the Apache License version 2.0. You
 // may obtain a copy of the License at
 //
 // https://solderpad.org/licenses/SHL-2.1/
 //
-// Unless required by applicable law or agreed to in writing, any work distributed under the 
-// License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
-// either express or implied. See the License for the specific language governing permissions 
+// Unless required by applicable law or agreed to in writing, any work distributed under the
+// License is distributed on an “AS IS” BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+// either express or implied. See the License for the specific language governing permissions
 // and limitations under the License.
 ////////////////////////////////////////////////////////////////////////////////////////////////
 
-module ram_ahb import cvw::*;  #(parameter cvw_t P, 
-                                 parameter RANGE = 65535, PRELOAD = 0) (
-  input  logic                 HCLK, HRESETn, 
+module ram_ahb import cvw::*;  #(parameter cvw_t P,
+                                 parameter RANGE = 65535, PRELOAD = 0,
+                                 parameter logic [63:0] BASE = '0) (
+  input  logic                 HCLK, HRESETn,
   input  logic                 HSELRam,
   input  logic [P.PA_BITS-1:0] HADDR,
   input  logic                 HWRITE,
@@ -41,8 +42,10 @@ module ram_ahb import cvw::*;  #(parameter cvw_t P,
   output logic                 HRESPRam, HREADYRam
 );
 
-  localparam                   ADDR_WIDTH = $clog2(RANGE/8);
-  localparam                   OFFSET = $clog2(P.XLEN/8);   
+  localparam int unsigned      DEPTH = (RANGE + 1)/(P.XLEN/8);
+  localparam                   ADDR_WIDTH = $clog2(DEPTH);
+  localparam                   OFFSET = $clog2(P.XLEN/8);
+  localparam [ADDR_WIDTH-1:0]  BASE_WORD = BASE[ADDR_WIDTH+OFFSET-1:OFFSET];
 
   logic [P.XLEN/8-1:0]         ByteMask;
   logic [P.PA_BITS-1:0]        HADDRD, RamAddr;
@@ -51,13 +54,13 @@ module ram_ahb import cvw::*;  #(parameter cvw_t P,
   logic                        nextHREADYRam;
   logic                        DelayReady;
 
-  // a new AHB transactions starts when HTRANS requests a transaction, 
+  // a new AHB transactions starts when HTRANS requests a transaction,
   // the peripheral is selected, and the previous transaction is completing
-  assign initTrans = HREADY & HSELRam & HTRANS[1] ; 
-  assign memwrite  = initTrans & HWRITE;  
+  assign initTrans = HREADY & HSELRam & HTRANS[1] ;
+  assign memwrite  = initTrans & HWRITE;
   assign memread   = initTrans & ~HWRITE;
- 
-  flopenr #(1) memwritereg(HCLK, ~HRESETn, HREADY, memwrite, memwriteD); 
+
+  flopenr #(1) memwritereg(HCLK, ~HRESETn, HREADY, memwrite, memwriteD);
   flopenr #(P.PA_BITS)   haddrreg(HCLK, ~HRESETn, HREADY, HADDR, HADDRD);
 
   // Stall on a read after a write because the RAM can't take both addresses on the same cycle
@@ -70,24 +73,24 @@ module ram_ahb import cvw::*;  #(parameter cvw_t P,
   mux2 #(P.PA_BITS) adrmux(HADDR, HADDRD, memwriteD | ~HREADY, RamAddr);
 
   // single-ported RAM
-  ram1p1rwbe #(P.USE_SRAM, RANGE/8, P.XLEN, PRELOAD) memory(.clk(HCLK), .ce(1'b1), 
-    .addr(RamAddr[ADDR_WIDTH+OFFSET-1:OFFSET]), .we(memwriteD), .din(HWDATA), .bwe(HWSTRB), .dout(HREADRam));
-  
+  ram1p1rwbe #(P.USE_SRAM, DEPTH, P.XLEN, PRELOAD) memory(.clk(HCLK), .ce(1'b1),
+    .addr(RamAddr[ADDR_WIDTH+OFFSET-1:OFFSET] - BASE_WORD), .we(memwriteD), .din(HWDATA), .bwe(HWSTRB), .dout(HREADRam));
+
   // use this to add arbitrary latency to ram. Helps test AHB controller correctness
   if(P.RAM_LATENCY > 0) begin
     logic [7:0]       NextCycle, Cycle;
     logic             CntEn, CntRst;
     logic             CycleFlag;
-    
+
     flopenr #(8) counter (HCLK, ~HRESETn | CntRst, CntEn, NextCycle, Cycle);
     assign NextCycle = Cycle + 1'b1;
 
     typedef enum      logic  {READY, DELAY} statetype;
     statetype CurrState, NextState;
-    
+
     always_ff @(posedge HCLK)
       if (~HRESETn)    CurrState <= READY;
-      else             CurrState <= NextState;  
+      else             CurrState <= NextState;
 
     always_comb begin
     case(CurrState)

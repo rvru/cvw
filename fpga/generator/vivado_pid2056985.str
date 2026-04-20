@@ -1,0 +1,852 @@
+/*
+
+AMD Vivado v2025.1 (64-bit) [Major: 2025, Minor: 1]
+SW Build: 6140274 on Wed May 21 22:58:25 MDT 2025
+IP Build: 6138677 on Thu May 22 03:10:11 MDT 2025
+IP Build: 6138677 on Thu May 22 03:10:11 MDT 2025
+
+Process ID (PID): 2056985
+License: Customer
+Mode: GUI Mode
+
+Current time: 	Sun Apr 19 21:30:07 CDT 2026
+Time zone: 	Central Standard Time (America/Chicago)
+
+OS: Ubuntu
+OS Version: 5.15.0-97-generic
+OS Architecture: amd64
+Available processors (cores): 8
+LSB Release Description: Ubuntu 22.04.5 LTS
+
+Display: localhost:10.0
+Screen size: 1536x864
+Local screen bounds: x = 0, y = 0, width = 1536, height = 864
+Screen resolution (DPI): 100
+Available screens: 1
+Default font: family=Dialog,name=Dialog,style=plain,size=12
+Scale size: 12
+OS font scaling: 100%
+Anti-Alias Enabled: false
+
+Java version: 	21.0.1 64-bit
+
+Java home: 	/rs23/lnm7/vcu/Xilinx/2025.1/tps/lnx64/jre21.0.1_12
+Java executable: 	/rs23/lnm7/vcu/Xilinx/2025.1/tps/lnx64/jre21.0.1_12/bin/java
+Java arguments: 	[-Dsun.java2d.pmoffscreen=false, -Dhttps.protocols=TLSv1,TLSv1.1,TLSv1.2, -Dsun.java2d.xrender=false, -Dsun.java2d.uiScale.enabled=false, -Dswing.aatext=true, -XX:-UsePerfData, -Djdk.map.althashing.threshold=512, -XX:StringTableSize=4072, -XX:+UseStringDeduplication, -XX:MaxGCPauseMillis=200, -XX:ParallelGCThreads=4, -XX:+ParallelRefProcEnabled, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.base/java.nio=ALL-UNNAMED, --add-opens=java.desktop/sun.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-opens=java.desktop/javax.swing=ALL-UNNAMED, --add-opens=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-opens=java.desktop/java.awt.event=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.base/java.nio=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.tree=ALL-UNNAMED, --add-exports=java.desktop/javax.swing.plaf.basic=ALL-UNNAMED, --add-exports=java.desktop/sun.swing=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.table=ALL-UNNAMED, --add-exports=java.desktop/sun.swing.plaf.synth=ALL-UNNAMED, --add-exports=java.desktop/sun.awt.shell=ALL-UNNAMED, --add-exports=java.base/sun.security.action=ALL-UNNAMED, --add-exports=java.desktop/sun.font=ALL-UNNAMED, --add-opens=java.desktop/sun.awt.X11=ALL-UNNAMED, -XX:NewSize=80m, -XX:MaxNewSize=80m, -Xms812m, -Xmx6144m, -Xss10m, -Xrs]
+Java initial memory (-Xms): 	812 MB
+Java maximum memory (-Xmx):	 6 GB
+
+User name: 	lnm7
+User home directory: /home/lnm7
+User working directory: /rs23/lnm7/open_hw/cvw/fpga/generator
+User country: 	US
+User language: 	en
+User locale: 	en_US
+
+RDI_BASEROOT: /rs23/lnm7/vcu/Xilinx/2025.1
+HDI_APPROOT: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+RDI_DATADIR: /rs23/lnm7/vcu/Xilinx/2025.1/data
+RDI_BINDIR: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/bin
+
+Vivado preferences file: /home/lnm7/.Xilinx/Vivado/2025.1/vivado.xml
+Vivado preferences directory: /home/lnm7/.Xilinx/Vivado/2025.1/
+Vivado layouts directory: /home/lnm7/.Xilinx/Vivado/2025.1/data/layouts
+PlanAhead jar file: 	/rs23/lnm7/vcu/Xilinx/2025.1/Vivado/lib/classes/planAhead.jar
+Vivado log file: 	/rs23/lnm7/open_hw/cvw/fpga/generator/vivado.log
+Vivado journal file: 	/rs23/lnm7/open_hw/cvw/fpga/generator/vivado.jou
+Engine tmp dir: 	./.Xil/Vivado-2056985-orion-196-205
+Non-Default Parameters:	[]
+
+Xilinx & AMD Environment Variables
+--------------------------------------------------------------------------------------------
+RDI_APPROOT: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+RDI_BASEROOT: /rs23/lnm7/vcu/Xilinx/2025.1
+RDI_BINROOT: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/bin
+RDI_BUILD: yes
+RDI_DATADIR: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/data
+RDI_INSTALLROOT: /rs23/lnm7/vcu/Xilinx
+RDI_INSTALLVER: Vivado
+RDI_JAVA_PLATFORM: 
+RDI_JAVA_VERSION: 21.0.1_12
+RDI_LIBDIR: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/lib/lnx64.o/Ubuntu/22:/rs23/lnm7/vcu/Xilinx/2025.1/Vivado/lib/lnx64.o/Ubuntu:/rs23/lnm7/vcu/Xilinx/2025.1/Vivado/lib/lnx64.o
+RDI_OPT_EXT: .o
+RDI_PATCHROOT: 
+RDI_PLATFORM: lnx64
+RDI_PREPEND_PATH: /rs23/lnm7/vcu/Xilinx/2025.1/Vitis/bin
+RDI_PROG: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/bin/unwrapped/lnx64.o/vivado
+RDI_SESSION_INFO: /rs23/lnm7/open_hw/cvw/fpga/generator:orion-196-205_1776652185_2056938
+RDI_SHARED_DATA: /rs23/lnm7/vcu/Xilinx/SharedData/Vivado/data
+RDI_TPS_ROOT: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado/tps/lnx64
+RDI_USE_JDK21: True
+SHELL: /bin/bash
+VIVADO_HOME: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+XILINX_DSP: 
+XILINX_HLS: /rs23/lnm7/vcu/Xilinx/2025.1/Vitis
+XILINX_PLANAHEAD: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+XILINX_SDK: /rs23/lnm7/vcu/Xilinx/2025.1/Vitis
+XILINX_VITIS: /rs23/lnm7/vcu/Xilinx/2025.1/Vitis
+XILINX_VIVADO: /rs23/lnm7/vcu/Xilinx/2025.1/Vivado
+
+
+GUI allocated memory:	812 MB
+GUI max memory:		6,144 MB
+Engine allocated memory: 1,818 MB
+
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
+
+*/
+
+// TclEventType: START_GUI
+// Tcl Message: start_gui 
+// HMemoryUtils.trashcanNow. Engine heap size: 1,819 MB. GUI used memory: 68 MB. Current time: 4/19/26, 9:30:08 PM CDT
+selectButton(PAResourceEtoH.GettingStartedView_OPEN_PROJECT, "Open Project"); // t (PAResourceEtoH.GettingStartedView_OPEN_PROJECT)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_PROJECT
+setFileChooser("/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.xpr");
+// Opening Vivado Project: /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.xpr. Version: Vivado v2025.1 
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: FLOW_ADDED
+// TclEventType: MSGMGR_MOVEMSG
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: FILE_SET_NEW
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// WARNING: HEventQueue.dispatchEvent() is taking  1317 ms.
+// Tcl Message: open_project /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.xpr 
+// TclEventType: RUN_COMPLETED
+// TclEventType: RUN_STATUS_CHANGE
+// TclEventType: RUN_CURRENT
+// TclEventType: PROJECT_DASHBOARD_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: PROJECT_DASHBOARD_GADGET_NEW
+// TclEventType: PROJECT_DASHBOARD_GADGET_CHANGE
+// TclEventType: COMPOSITE_FILE_CHANGE
+// TclEventType: PROJECT_NEW
+// [GUI Memory]: 92 MB (+93650kb) [00:00:29]
+// [Engine Memory]: 1,925 MB (+1867250kb) [00:00:29]
+// [GUI Memory]: 115 MB (+19130kb) [00:00:30]
+// [GUI Memory]: 132 MB (+11932kb) [00:00:30]
+// [Engine Memory]: 2,025 MB (+4165kb) [00:00:30]
+// WARNING: HEventQueue.dispatchEvent() is taking  2552 ms.
+// Tcl Message: open_project /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.xpr 
+// Tcl Message: Scanning sources... Finished scanning sources 
+// Tcl Message: INFO: [IP_Flow 19-234] Refreshing IP repositories INFO: [IP_Flow 19-1704] No user IP repositories specified INFO: [IP_Flow 19-2313] Loaded Vivado IP repository '/rs23/lnm7/vcu/Xilinx/2025.1/Vivado/data/ip'. 
+// HMemoryUtils.trashcanNow. Engine heap size: 2,040 MB. GUI used memory: 86 MB. Current time: 4/19/26, 9:30:25 PM CDT
+// Project name: WallyFPGA; location: /rs23/lnm7/open_hw/cvw/fpga/generator; part: xcvu095-ffva2104-2-e
+// Tcl Message: open_project: Time (s): cpu = 00:00:15 ; elapsed = 00:00:13 . Memory (MB): peak = 9986.703 ; gain = 224.609 ; free physical = 10928 ; free virtual = 29255 
+// Elapsed time: 12 seconds
+dismissDialog("Open Project"); // bk (Open Project Progress)
+// TclEventType: DG_GRAPH_GENERATED
+// [GUI Memory]: 142 MB (+3768kb) [00:00:45]
+// [GUI Memory]: 159 MB (+10879kb) [00:00:45]
+// TclEventType: DG_GRAPH_GENERATED
+// TclEventType: FILE_SET_CHANGE
+// TclEventType: DG_GRAPH_STALE
+// Tcl Message: update_compile_order -fileset sources_1 
+// TclEventType: DG_GRAPH_GENERATED
+// HMemoryUtils.trashcanNow. Engine heap size: 2,078 MB. GUI used memory: 88 MB. Current time: 4/19/26, 9:30:43 PM CDT
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/L.f': 20s
+// Elapsed time: 20 seconds
+collapseTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Open Hardware Manager]", 22); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+expandTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Open Hardware Manager]", 22); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Program and Debug, Open Hardware Manager, Open Target]", 23, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HW_TARGET
+selectMenu(PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, "Recent Targets"); // am (PAResourceOtoP.ProgramDebugTab_OPEN_RECENTLY_OPENED_TARGET, Recent Targets)
+selectMenuItem(PAResourceCommand.PACommandNames_OPEN_TARGET_WIZARD, "Open New Target..."); // ap (PAResourceCommand.PACommandNames_OPEN_TARGET_WIZARD, Open New Target...)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_HARDWARE_MANAGER
+// Tcl (Dont Echo) Command: 'rdi::info_commands get_hw_probes'
+// Tcl (Dont Echo) Command: 'load_features labtools'
+// TclEventType: LOAD_FEATURE
+// WARNING: HEventQueue.dispatchEvent() is taking  1344 ms.
+// TclEventType: HW_SESSION_OPEN
+// Tcl Message: open_hw_manager 
+closeView(PAResourceOtoP.PAViews_PROJECT_SUMMARY, "Project Summary"); // x (PAResourceOtoP.PAViews_PROJECT_SUMMARY, PlanAheadTabProject Summary)
+// Run Command: PAResourceCommand.PACommandNames_OPEN_TARGET_WIZARD
+dismissDialog("Open Hardware Manager"); // bk (Open Hardware Manager Progress)
+selectButton("NEXT", "Next", "Open New Hardware Target"); // JButton (NEXT)
+// WARNING: HEventQueue.dispatchEvent() is taking  1076 ms.
+// TclEventType: HW_SERVER_UPDATE
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_SYSMON_DELETE
+// Elapsed time: 25 seconds
+dismissDialog("Open Target"); // bk (Open Target Progress)
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+selectButton("NEXT", "Next", "Open New Hardware Target"); // JButton (NEXT)
+dismissDialog("Close Target"); // bk (Close Target Progress)
+selectButton("NEXT", "Next", "Open New Hardware Target"); // JButton (NEXT)
+// TclEventType: HW_OBJECT_DELETE
+// TclEventType: HW_SERVER_CLOSE
+// Tcl Message: connect_hw_server -url localhost:3121 -allow_non_jtag 
+// Tcl Message: INFO: [Labtools 27-2285] Connecting to hw_server url TCP:localhost:3121 
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: INFO: [Labtools 27-3415] Connecting to cs_server url TCP:localhost:0 INFO: [Labtools 27-3417] Launching cs_server... 
+// Tcl Message: INFO: [Labtools 27-2221] Launch Output:   ******** Xilinx cs_server v2025.1.0   ****** Build date   : May 13 2025-14:15:27     **** Build number : 2025.1.1747163727       ** Copyright 2017-2022 Xilinx, Inc. All Rights Reserved.       ** Copyright 2022-2026 Advanced Micro Devices, Inc. All Rights Reserved.    
+// TclEventType: HW_SERVER_UPDATE
+// Tcl Message: connect_hw_server: Time (s): cpu = 00:00:01 ; elapsed = 00:00:08 . Memory (MB): peak = 10059.297 ; gain = 7.578 ; free physical = 10713 ; free virtual = 29138 
+// Tcl Message: current_hw_target [get_hw_targets */xilinx_tcf/Digilent/210308A1C656] 
+// TclEventType: HW_TARGET_CHANGE
+// Tcl Message: set_property PARAM.FREQUENCY 15000000 [get_hw_targets */xilinx_tcf/Digilent/210308A1C656] 
+// TclEventType: HW_TARGET_CHANGE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_ADD
+// TclEventType: HW_TARGET_UPDATE
+// Tcl Message: open_hw_target 
+// Tcl Message: INFO: [Labtoolstcl 44-466] Opening hw_target localhost:3121/xilinx_tcf/Digilent/210308A1C656 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.runs/impl_1/fpgaTop.bit} [get_hw_devices xcvu095_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROBES.FILE {/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.runs/impl_1/fpgaTop.ltx} [get_hw_devices xcvu095_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.runs/impl_1/fpgaTop.ltx} [get_hw_devices xcvu095_0] 
+// Tcl Message: current_hw_device [get_hw_devices xcvu095_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xcvu095_0] 0] 
+// Tcl Message: INFO: [Labtools 27-1435] Device xcvu095 (JTAG device index = 0) is not programmed (DONE status = 0). 
+// Elapsed time: 11 seconds
+selectButton("FINISH", "Finish", "Open New Hardware Target"); // JButton (FINISH)
+// 'D' command handler elapsed time: 48 seconds
+// [Engine Memory]: 2,161 MB (+36346kb) [00:01:52]
+dismissDialog("Open Hardware Target"); // bk (Open Hardware Target Progress)
+dismissDialog("Open New Hardware Target"); // ap (dialog1)
+// HMemoryUtils.trashcanNow. Engine heap size: 2,178 MB. GUI used memory: 93 MB. Current time: 4/19/26, 9:31:48 PM CDT
+selectButton(PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE, "Program device"); // h (PAResourceOtoP.ProgramDebugTab_PROGRAM_DEVICE)
+// Run Command: PAResourceCommand.PACommandNames_PROGRAM_FPGA
+selectButton(PAResourceOtoP.ProgramFpgaDialog_PROGRAM, "Program", "Program Device"); // f (PAResourceOtoP.ProgramFpgaDialog_PROGRAM, RDIResource.BaseDialog_OK)
+// WARNING: HEventQueue.dispatchEvent() is taking  1195 ms.
+// TclEventType: HW_DEVICE_CHANGE
+dismissDialog("Program Device"); // aT (dialog2)
+// Tcl Message: set_property PROBES.FILE {/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.runs/impl_1/fpgaTop.ltx} [get_hw_devices xcvu095_0] 
+// Tcl Message: set_property FULL_PROBES.FILE {/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.runs/impl_1/fpgaTop.ltx} [get_hw_devices xcvu095_0] 
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: set_property PROGRAM.FILE {/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.runs/impl_1/fpgaTop.bit} [get_hw_devices xcvu095_0] 
+// Tcl Message: program_hw_devices [get_hw_devices xcvu095_0] 
+// TclEventType: HW_TARGET_NEEDS_CLOSE
+// TclEventType: HW_DEVICE_CHANGE
+// Tcl Message: INFO: [Labtools 27-3164] End of startup status: HIGH 
+// Tcl Message: program_hw_devices: Time (s): cpu = 00:00:22 ; elapsed = 00:00:22 . Memory (MB): peak = 10109.469 ; gain = 0.000 ; free physical = 10846 ; free virtual = 29176 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_SYSMON_CHANGE
+// Tcl Message: refresh_hw_device [lindex [get_hw_devices xcvu095_0] 0] 
+// TclEventType: HW_MIG_ADD
+// TclEventType: HW_ILA_CHANGE
+// TclEventType: HW_DEVICE_UPDATE
+// WARNING: HEventQueue.dispatchEvent() is taking  1138 ms.
+// TclEventType: HW_DEVICE_CHANGE
+// WARNING: HEventQueue.dispatchEvent() is taking  1421 ms.
+// Elapsed time: 29 seconds
+closeView(PAResourceOtoP.PAViews_MIG, "MIG - MIG_1"); // b (PAResourceOtoP.PAViews_MIG, PlanAheadTabMIG)
+// Tcl Message: INFO: [Labtools 27-2302] Device xcvu095 (JTAG device index = 0) is programmed with a design that has 1 ILA core(s). INFO: [Labtools 27-2302] Device xcvu095 (JTAG device index = 0) is programmed with a design that has 1 MIG core(s). 
+// TclEventType: HW_DEVICE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// TclEventType: DEBUG_PROBE_CHANGE
+// TclEventType: HW_DEVICE_PROBES_CHANGE
+// TclEventType: HW_ILA_CHANGE
+// Tcl Message: refresh_hw_device: Time (s): cpu = 00:00:05 ; elapsed = 00:00:08 . Memory (MB): peak = 10109.469 ; gain = 0.000 ; free physical = 10833 ; free virtual = 29164 
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: WAVEFORM_OPEN_WCFG
+// TclEventType: WAVEFORM_DELAYED_MODEL_EVENT
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// [GUI Memory]: 170 MB (+2461kb) [00:02:31]
+// TclEventType: WAVEFORM_UPDATE_COMMANDS
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// Tcl Message: display_hw_ila_data [ get_hw_ila_data hw_ila_data_1 -of_objects [get_hw_ilas -of_objects [get_hw_devices xcvu095_0] -filter {CELL_NAME=~"u_ila_0"}]] 
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/E.a': 32s
+// 'E' command handler elapsed time: 36 seconds
+dismissDialog("Program Device"); // bk (Program Device Progress)
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: HW_SERVER_UPDATE
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_UPDATE_WAVEFORM
+// TclEventType: WAVEFORM_MODEL_EVENT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,237 MB. GUI used memory: 102 MB. Current time: 4/19/26, 9:32:28 PM CDT
+// Elapsed time: 56 seconds
+collapseTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Open Synthesized Design]", 16); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+expandTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Open Synthesized Design]", 16); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Elapsed time: 38 seconds
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Synthesis, Open Synthesized Design, Report Power]", 27, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// WARNING: HEventQueue.dispatchEvent() is taking  1144 ms.
+// Tcl Message: open_run synth_1 -name synth_1 
+// Tcl Message: Design is defaulting to impl run constrset: constrs_1 Design is defaulting to synth run part: xcvu095-ffva2104-2-e 
+// HMemoryUtils.trashcanNow. Engine heap size: 2,380 MB. GUI used memory: 102 MB. Current time: 4/19/26, 9:34:03 PM CDT
+// HMemoryUtils.trashcanNow. Engine heap size: 2,929 MB. GUI used memory: 102 MB. Current time: 4/19/26, 9:34:23 PM CDT
+// HMemoryUtils.trashcanNow. Engine heap size: 3,131 MB. GUI used memory: 102 MB. Current time: 4/19/26, 9:34:31 PM CDT
+// TclEventType: DEBUG_PORT_ADD
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: POWER_CNS_STALE
+// TclEventType: POWER_REPORT_STALE
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: SDC_CONSTRAINT_ADD
+// [Engine Memory]: 3,147 MB (+919795kb) [00:04:38]
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_INTERFACE_ADD
+// TclEventType: SIGNAL_HIERARCHY_CHANGED
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: SIGNAL_MODIFY
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: LOC_CONSTRAINT_REMOVE
+// TclEventType: LOC_CONSTRAINT_ADD
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: TIMING_RESULTS_STALE
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: READ_XDC_FILE_START
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: READ_XDC_FILE_END
+// TclEventType: FLOORPLAN_MODIFY
+// TclEventType: DESIGN_NEW
+// [Engine Memory]: 3,802 MB (+522271kb) [00:04:52]
+// HMemoryUtils.trashcanNow. Engine heap size: 3,822 MB. GUI used memory: 103 MB. Current time: 4/19/26, 9:34:47 PM CDT
+// [GUI Memory]: 183 MB (+4535kb) [00:04:53]
+// Xgd.load filename: /rs23/lnm7/open_hw/cvw/fpga/generator/./.Xil/Vivado-2056985-orion-196-205/xcvu095_detail.xgd_280789A7 elapsed time: 3s
+// DeviceModel: Load Xgds SwingWorker Join Forever elapsed time: 3.3s
+// TclEventType: HFED_INIT_ROUTE_STORAGE_COMPLETED
+// RouteApi::loadEngineXgdAndInitRouteStorage elapsed time: 2.6s
+// TclEventType: DESIGN_NEW
+// [Engine Memory]: 4,093 MB (+106127kb) [00:04:59]
+// [GUI Memory]: 214 MB (+22884kb) [00:05:00]
+// [GUI Memory]: 233 MB (+8745kb) [00:05:01]
+// DeviceView Instantiated
+// [GUI Memory]: 245 MB (+389kb) [00:05:01]
+// WARNING: HEventQueue.dispatchEvent() is taking  2522 ms.
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:01 ; elapsed = 00:00:01 . Memory (MB): peak = 10801.430 ; gain = 0.000 ; free physical = 10162 ; free virtual = 28492 
+// Tcl Message: INFO: [Netlist 29-17] Analyzing 4535 Unisim elements for replacement INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds INFO: [Project 1-479] Netlist was created with Vivado 2025.1 INFO: [Project 1-570] Preparing netlist for logic optimization INFO: [Chipscope 16-324] Core: ddr4 UUID: 33d4d5d7-c06f-557a-a2bf-81bd24eeac60  
+// Tcl Message: Parsing XDC File [/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.gen/sources_1/ip/ddr4/bd_0/ip/ip_0/bd_c703_microblaze_I_0.xdc] for cell 'ddr4/inst/u_ddr4_mem_intfc/u_ddr_cal_riu/mcs0/inst/microblaze_I/U0' 
+// Tcl Message: INFO: [Timing 38-35] Done setting XDC timing constraints. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:15] INFO: [Timing 38-2] Deriving generated clocks [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:15] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:88] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:89] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:90] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:91] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:92] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:93] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:94] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:95] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:96] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:97] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:98] 
+// Tcl Message: INFO: [Vivado 12-626] No clocks found. Please use 'create_clock' or 'create_generated_clock' command to create clocks. [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc:99] 
+// Tcl Message: Finished Parsing XDC File [/rs23/lnm7/open_hw/cvw/fpga/constraints/constraints-vcu108.xdc] Parsing XDC File [/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.gen/sources_1/ip/ddr4/ddr4_board.xdc] for cell 'ddr4/inst' Finished Parsing XDC File [/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.gen/sources_1/ip/ddr4/ddr4_board.xdc] for cell 'ddr4/inst' Parsing XDC File [/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.gen/sources_1/ip/clkconverter/clkconverter_clocks.xdc] for cell 'clkconverter/inst' 
+// Tcl Message: Finished Parsing XDC File [/rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.gen/sources_1/ip/clkconverter/clkconverter_clocks.xdc] for cell 'clkconverter/inst' 
+// Tcl Message: INFO: [Project 1-1714] 37 XPM XDC files have been applied to the design. INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s). 
+// Tcl Message: Generating merged BMM file for the design top 'fpgaTop'... 
+// Tcl Message: INFO: [Memdata 28-144] Successfully populated the BRAM INIT strings from the following elf files: /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.gen/sources_1/ip/ddr4/sw/calibration_0/Debug/calibration_ddr.elf  
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.02 . Memory (MB): peak = 11734.891 ; gain = 0.000 ; free physical = 9385 ; free virtual = 27715 
+// TclEventType: CURR_DESIGN_SET
+// Device view-level: 0.0
+// ExpRunCommands.openSynthResults elapsed time: 55.9s
+// Tcl Message: open_run: Time (s): cpu = 00:01:05 ; elapsed = 00:00:55 . Memory (MB): peak = 12056.504 ; gain = 1875.000 ; free physical = 9016 ; free virtual = 27347 
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/q.a': 55s
+// Run Command: PAResourceCommand.PACommandNames_POWER_ESTIMATION
+// RouteApi::initDelayMediator elapsed time: 1.3s
+// WARNING: HEventQueue.dispatchEvent() is taking  1851 ms.
+// RouteApi: Init Delay Mediator Swing Worker Finished
+// Device view-level: 0.0
+// HMemoryUtils.trashcanNow. Engine heap size: 4,492 MB. GUI used memory: 185 MB. Current time: 4/19/26, 9:35:08 PM CDT
+// RouteApi::getLoadDelays (initGetNetDelaysThread) elapsed time: 16.4s
+// Elapsed time: 119 seconds
+selectButton(PAResourceTtoZ.XPowerSettingsDialog_SAVE_THESE_SETTINGS_AND_RUN, "OK", "Report Power"); // f (PAResourceTtoZ.XPowerSettingsDialog_SAVE_THESE_SETTINGS_AND_RUN)
+// Run Command: PAResourceCommand.PACommandNames_RUN_POWER_ESTIMATION
+// [Engine Memory]: 4,896 MB (+627060kb) [00:06:05]
+// 'du' command handler elapsed time: 63 seconds
+dismissDialog("Report Power"); // a (dialog3)
+// Tcl Message: report_power -name {power_1} 
+// Tcl Message: Command: report_power -name power_1 
+// Tcl Message: INFO: [Power 33-23] Power model is not available for xiphy_riu_or INFO: [Power 33-23] Power model is not available for genVref.u_hpio_vref 
+// Tcl Message: INFO: [Timing 38-35] Done setting XDC timing constraints. 
+// HMemoryUtils.trashcanNow. Engine heap size: 4,936 MB. GUI used memory: 183 MB. Current time: 4/19/26, 9:36:03 PM CDT
+// Tcl Message: Running Vector-less Activity Propagation... 
+// TclEventType: TIMING_RESULTS_STALE
+// Tcl Message:  Finished Running Vector-less Activity Propagation 
+// HMemoryUtils.trashcanNow. Engine heap size: 4,977 MB. GUI used memory: 183 MB. Current time: 4/19/26, 9:36:23 PM CDT
+// TclEventType: POWER_UPDATED
+// [GUI Memory]: 259 MB (+1900kb) [00:06:32]
+// [GUI Memory]: 274 MB (+2150kb) [00:06:34]
+// WARNING: HEventQueue.dispatchEvent() is taking  3489 ms.
+// Tcl Message: 3 Infos, 1 Warnings, 0 Critical Warnings and 0 Errors encountered. report_power completed successfully 
+// Tcl Message: report_power: Time (s): cpu = 00:01:06 ; elapsed = 00:00:29 . Memory (MB): peak = 12896.238 ; gain = 70.035 ; free physical = 8176 ; free virtual = 26507 
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/cU.a': 29s
+// Elapsed time: 29 seconds
+dismissDialog("Power Estimation"); // bk (Power Estimation Progress)
+// Elapsed time: 19 seconds
+selectButton(PAResourceAtoD.CmdMsgDialog_OK, "OK", "Critical Messages"); // f (PAResourceAtoD.CmdMsgDialog_OK)
+dismissDialog("Critical Messages"); // J (dialog4)
+// Device view-level: 0.0
+// Elapsed time: 11 seconds
+collapseTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Utilization Details, Signals]", 6); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+collapseTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Utilization Details]", 3); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+selectTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Power Supply]", 2, false); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+selectTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Summary]", 1, false); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+selectButton((HResource) null, "RDIResource.FrameControlsPanel_MAXIMIZE_Power"); // P.a (RDIResource.FrameControlsPanel_MAXIMIZE_Power)
+maximizeFrame(PAResourceOtoP.PAViews_POWER, "Power - power_1"); // S (PAResourceOtoP.PAViews_POWER, Power)
+collapseTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Implementation, Open Implemented Design]", 32); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+expandTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Implementation, Open Implemented Design]", 32); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+selectTree(PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, "[, Implementation, Open Implemented Design, Report Power]", 43, false); // g (PAResourceEtoH.FlowNavigatorTreePanel_FLOW_NAVIGATOR_TREE, Flow Navigator Tree)
+// Tcl Message: open_run impl_1 
+// HMemoryUtils.trashcanNow. Engine heap size: 5,052 MB. GUI used memory: 208 MB. Current time: 4/19/26, 9:37:28 PM CDT
+// TclEventType: SIGNAL_INTERFACE_ADD
+// TclEventType: SIGNAL_HIERARCHY_CHANGED
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: POWER_CNS_STALE
+// TclEventType: PLACEDB_MODIFY_PRE
+// TclEventType: SDC_CONSTRAINT_ADD
+// TclEventType: POWER_REPORT_STALE
+// TclEventType: SDC_CONSTRAINT_ADD
+// HMemoryUtils.trashcanNow. Engine heap size: 5,565 MB. GUI used memory: 204 MB. Current time: 4/19/26, 9:37:43 PM CDT
+// TclEventType: FLOORPLAN_MODIFY
+// TclEventType: DESIGN_NEW
+// [Engine Memory]: 5,667 MB (+551293kb) [00:07:53]
+// HMemoryUtils.trashcanNow. Engine heap size: 5,677 MB. GUI used memory: 205 MB. Current time: 4/19/26, 9:37:47 PM CDT
+// TclEventType: DESIGN_NEW
+// [Engine Memory]: 6,458 MB (+532212kb) [00:07:55]
+// DeviceView Instantiated
+// WARNING: HEventQueue.dispatchEvent() is taking  2534 ms.
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 12969.090 ; gain = 13.000 ; free physical = 8049 ; free virtual = 26380 
+// Tcl Message: INFO: [Netlist 29-17] Analyzing 5923 Unisim elements for replacement INFO: [Netlist 29-28] Unisim Transformation completed in 1 CPU seconds INFO: [Project 1-479] Netlist was created with Vivado 2025.1 INFO: [Project 1-570] Preparing netlist for logic optimization 
+// Tcl Message: Read ShapeDB Complete: Time (s): cpu = 00:00:00.22 ; elapsed = 00:00:00.22 . Memory (MB): peak = 13149.816 ; gain = 21.578 ; free physical = 7869 ; free virtual = 26200 
+// Tcl Message: INFO: [Timing 38-478] Restoring timing data from binary archive. INFO: [Timing 38-479] Binary timing data restore complete. INFO: [Project 1-856] Restoring constraints from binary archive. INFO: [Project 1-853] Binary constraint restore complete. INFO: [Designutils 20-5722] Start Reading Physical Databases. 
+// Tcl Message: Reading placement. 
+// Tcl Message: Read Netlist Cache: Time (s): cpu = 00:00:00.12 ; elapsed = 00:00:00.12 . Memory (MB): peak = 13437.887 ; gain = 0.000 ; free physical = 7598 ; free virtual = 25929 
+// Tcl Message: Reading placer database... 
+// Tcl Message: Read Device Cache: Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.03 . Memory (MB): peak = 13437.887 ; gain = 0.000 ; free physical = 7597 ; free virtual = 25928 Read PlaceDB: Time (s): cpu = 00:00:04 ; elapsed = 00:00:03 . Memory (MB): peak = 13496.176 ; gain = 58.289 ; free physical = 7538 ; free virtual = 25869 Read PulsedLatchDB: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 13497.176 ; gain = 0.000 ; free physical = 7538 ; free virtual = 25869 
+// Tcl Message: Reading routing. 
+// Tcl Message: Read RouteStorage: Time (s): cpu = 00:00:02 ; elapsed = 00:00:01 . Memory (MB): peak = 13572.332 ; gain = 75.156 ; free physical = 7469 ; free virtual = 25800 Read Physdb Files: Time (s): cpu = 00:00:06 ; elapsed = 00:00:05 . Memory (MB): peak = 13572.332 ; gain = 134.445 ; free physical = 7469 ; free virtual = 25800 
+// Tcl Message: Restored from archive | CPU: 6.840000 secs | Memory: 141.725449 MB | 
+// Tcl Message: Finished XDEF File Restore: Time (s): cpu = 00:00:07 ; elapsed = 00:00:05 . Memory (MB): peak = 13572.332 ; gain = 134.445 ; free physical = 7469 ; free virtual = 25800 
+// Tcl Message: Generating merged BMM file for the design top 'fpgaTop'... 
+// Tcl Message: INFO: [Memdata 28-144] Successfully populated the BRAM INIT strings from the following elf files: /rs23/lnm7/open_hw/cvw/fpga/generator/WallyFPGA.gen/sources_1/ip/ddr4/sw/calibration_0/Debug/calibration_ddr.elf  
+// Tcl Message: Netlist sorting complete. Time (s): cpu = 00:00:00.03 ; elapsed = 00:00:00.02 . Memory (MB): peak = 13584.332 ; gain = 0.000 ; free physical = 7456 ; free virtual = 25788 
+// Elapsed time: 27 seconds
+unMaximizeFrame(PAResourceOtoP.PAViews_POWER, "Power"); // S (PAResourceOtoP.PAViews_POWER, Power)
+// TclEventType: CURR_DESIGN_SET
+// Device view-level: 0.0
+// Tcl Message: open_run: Time (s): cpu = 00:00:36 ; elapsed = 00:00:28 . Memory (MB): peak = 14253.793 ; gain = 1357.555 ; free physical = 6774 ; free virtual = 25125 
+// TclEventType: DRC_ADDED
+// TclEventType: METHODOLOGY_ADDED
+// RouteApi::initDelayMediator elapsed time: 2.1s
+// HMemoryUtils.trashcanNow. Engine heap size: 6,514 MB. GUI used memory: 218 MB. Current time: 4/19/26, 9:37:53 PM CDT
+// RouteApi: Init Delay Mediator Swing Worker Finished
+// TclEventType: POWER_UPDATED
+// [GUI Memory]: 288 MB (+339kb) [00:07:59]
+// TclEventType: HFED_INIT_ROUTE_STORAGE_COMPLETED
+// RouteApi::loadEngineXgdAndInitRouteStorage elapsed time: 9.1s
+// [GUI Memory]: 307 MB (+5317kb) [00:08:02]
+// [Engine Memory]: 6,885 MB (+109055kb) [00:08:03]
+// [GUI Memory]: 323 MB (+250kb) [00:08:03]
+// WARNING: HEventQueue.dispatchEvent() is taking  5025 ms.
+// Device view-level: 0.1
+// TclEventType: TIMING_SUMMARY_UPDATED
+// WARNING: HEventQueue.dispatchEvent() is taking  2039 ms.
+// [Engine Memory]: 7,431 MB (+211662kb) [00:08:06]
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/q.a': 38s
+// Run Command: PAResourceCommand.PACommandNames_POWER_ESTIMATION
+// WARNING: HEventQueue.dispatchEvent() is taking  1254 ms.
+// Elapsed time: 20 seconds
+selectButton(PAResourceTtoZ.XPowerSettingsDialog_SAVE_THESE_SETTINGS_AND_RUN, "OK", "Report Power"); // f (PAResourceTtoZ.XPowerSettingsDialog_SAVE_THESE_SETTINGS_AND_RUN)
+// Run Command: PAResourceCommand.PACommandNames_RUN_POWER_ESTIMATION
+// 'du' command handler elapsed time: 9 seconds
+dismissDialog("Report Power"); // a (dialog5)
+// Tcl Message: report_power -name {power_1} 
+// Tcl Message: Command: report_power -name power_1 
+// WARNING: HEventQueue.dispatchEvent() is taking  1205 ms.
+// Tcl Message: Running Vector-less Activity Propagation... 
+// HMemoryUtils.trashcanNow. Engine heap size: 7,467 MB. GUI used memory: 270 MB. Current time: 4/19/26, 9:38:24 PM CDT
+// TclEventType: TIMING_RESULTS_STALE
+// Tcl Message:  Finished Running Vector-less Activity Propagation 
+// HMemoryUtils.trashcanNow. Engine heap size: 6,612 MB. GUI used memory: 266 MB. Current time: 4/19/26, 9:38:41 PM CDT
+// TclEventType: POWER_UPDATED
+// [GUI Memory]: 341 MB (+2143kb) [00:08:49]
+// [GUI Memory]: 359 MB (+910kb) [00:08:52]
+// WARNING: HEventQueue.dispatchEvent() is taking  4809 ms.
+// Tcl Message: 0 Infos, 1 Warnings, 0 Critical Warnings and 0 Errors encountered. report_power completed successfully 
+// Tcl Message: report_power: Time (s): cpu = 00:01:32 ; elapsed = 00:00:37 . Memory (MB): peak = 14429.336 ; gain = 157.574 ; free physical = 6478 ; free virtual = 24814 
+// Elapsed Time for: 'PAResourceItoN.MsgLongTask_MESSAGE_LONG_TASK/cU.a': 37s
+// Elapsed time: 37 seconds
+dismissDialog("Power Analysis"); // bk (Power Analysis Progress)
+// Elapsed time: 229 seconds
+selectButton((HResource) null, "RDIResource.FrameControlsPanel_MAXIMIZE_Power"); // P.a (RDIResource.FrameControlsPanel_MAXIMIZE_Power)
+maximizeFrame(PAResourceOtoP.PAViews_POWER, "Power - power_1"); // S (PAResourceOtoP.PAViews_POWER, Power)
+// Elapsed time: 29 seconds
+selectTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Utilization Details, Signals, Data]", 7, false); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+collapseTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Utilization Details, Signals]", 6); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+selectTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Utilization Details, Logic]", 7, false); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+selectTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Utilization Details, DSP]", 9, false); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+selectTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Utilization Details, BRAM]", 8, false); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+selectTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Utilization Details, Clock Manager]", 10, false); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+selectTree(PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE, "[Report Contents, Utilization Details, Hierarchical]", 4, false); // h (PAResourceOtoP.PowerResultTab_REPORT_NAVIGATION_TREE)
+expandTreeTable(PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE, "1.5461618 ; ddr4 (ddr4) ; 0.208 ; 0.048 ; 0.046 ; 0.002 ; 0.001 ; 0.094 ; 0.027 ; <0.001 ; 0.344 ; 0.23 ; 0.114 ; 0.824", 1); // f (PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE)
+expandTreeTable(PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE, "1.5461618 ; inst (ddr4_ddr4) ; 0.208 ; 0.048 ; 0.046 ; 0.002 ; 0.001 ; 0.094 ; 0.027 ; <0.001 ; 0.344 ; 0.23 ; 0.114 ; 0.824", 2); // f (PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE)
+collapseTreeTable(PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE, "1.5461618 ; ddr4 (ddr4) ; 0.208 ; 0.048 ; 0.046 ; 0.002 ; 0.001 ; 0.094 ; 0.027 ; <0.001 ; 0.344 ; 0.23 ; 0.114 ; 0.824", 1); // f (PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE)
+expandTreeTable(PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE, "0.20573957 ; wallypipelinedsoc (wallypipelinedsoc) ; 0.029 ; 0.045 ; 0.043 ; 0.002 ; <0.001 ; 0.025 ; 0.107 ; <0.001 ; <0.001 ; <0.001 ; <0.001 ; <0.001", 2); // f (PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE)
+expandTreeTable(PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE, "0.17598848 ; core (wallypipelinedcore) ; 0.027 ; 0.041 ; 0.04 ; 0.002 ; <0.001 ; 0.023 ; 0.085 ; <0.001 ; <0.001 ; <0.001 ; <0.001 ; <0.001", 3); // f (PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE)
+// PAPropertyPanels.initPanels (ifu (ifu)) elapsed time: 0.2s
+selectTreeTable(PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE, "0.027682345 ; ifu (ifu) ; 0.012 ; 0.01 ; 0.01 ; <0.001 ; <0.001 ; 0.006 ; 0.001 ; <0.001 ; <0.001 ; <0.001 ; <0.001 ; <0.001", 5, "0.027682345", 0, true); // f (PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE) - Node
+selectTreeTable(PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE, "0.027682345 ; ifu (ifu) ; 0.012 ; 0.01 ; 0.01 ; <0.001 ; <0.001 ; 0.006 ; 0.001 ; <0.001 ; <0.001 ; <0.001 ; <0.001 ; <0.001", 5, "ifu (ifu)", 1, true); // f (PAResourceOtoP.PowerInstTreeTablePanel_POWER_INST_TREE_TABLE) - Node
+// [GUI Memory]: 377 MB (+138kb) [00:24:11]
+// TclEventType: HW_TARGET_NEEDS_CLOSE
+// TclEventType: WAVEFORM_UPDATE_TITLE
+// TclEventType: HW_TARGET_CLOSE
+// TclEventType: WAVEFORM_MODEL_EVENT
+// TclEventType: WAVEFORM_CLOSE_WCFG
+// TclEventType: HW_OBJECT_DELETE
+// Elapsed time: 805 seconds
+closeView(PAResourceOtoP.PAViews_MIG, "MIG - MIG_1"); // b (PAResourceOtoP.PAViews_MIG, PlanAheadTabMIG)
+closeView(PAResourceOtoP.PAViews_DASHBOARD, "hw_ila_1"); // e (PAResourceOtoP.PAViews_DASHBOARD, PlanAheadTabhw_ila_1)
+// TclEventType: HW_MIG_DELETE
+// TclEventType: HW_SYSMON_DELETE
+// TclEventType: HW_TARGET_UPDATE
+// TclEventType: DEBUG_PROBE_DELETE
+// TclEventType: DEBUG_PROBE_SET_CHANGE
+// Tcl Message: ERROR: [Labtoolstcl 44-513] HW Target shutdown. Closing target: localhost:3121/xilinx_tcf/Digilent/210308A1C656 
+// TclEventType: HW_TARGET_NEEDS_CLOSE
+// TclEventType: HW_SERVER_UPDATE

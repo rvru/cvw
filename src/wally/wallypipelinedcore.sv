@@ -50,6 +50,8 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
    input  logic                  ExternalStall
 );
 
+  localparam [31:0] NOP = 32'h00000013;
+
   logic                          StallF, StallD, StallE, StallM, StallW;
   logic                          FlushD, FlushE, FlushM, FlushW;
   logic                          TrapM, RetM;
@@ -197,6 +199,18 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   logic [31:0]          VLIWInstr3D;        // Fourth VLIW instruction (decoded)
   logic [3:0]           VLIWValidD;        // Valid bits for each VLIW instruction
   logic                 VLIWModeD;         // Indicates VLIW mode is active so we can ignore 
+  logic [31:0]          LaneInstrD0, LaneInstrD1, LaneInstrD2, LaneInstrD3;
+  logic                 LaneValidD0, LaneValidD1, LaneValidD2, LaneValidD3;
+
+  assign LaneValidD0 = VLIWModeD ? VLIWValidD[0] : 1'b1;
+  assign LaneValidD1 = VLIWModeD & VLIWValidD[1];
+  assign LaneValidD2 = VLIWModeD & VLIWValidD[2];
+  assign LaneValidD3 = VLIWModeD & VLIWValidD[3];
+
+  assign LaneInstrD0 = VLIWModeD ? (VLIWValidD[0] ? VLIWInstr0D : NOP) : InstrD;
+  assign LaneInstrD1 = LaneValidD1 ? VLIWInstr1D : NOP;
+  assign LaneInstrD2 = LaneValidD2 ? VLIWInstr2D : NOP;
+  assign LaneInstrD3 = LaneValidD3 ? VLIWInstr3D : NOP;
 
 
 
@@ -294,7 +308,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
   ieu #(P) 
   ieu(.clk, .reset,
      // Decode Stage interface
-     .InstrD(VLIWModeD ? VLIWInstr0D : InstrD), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD,
+     .InstrD(LaneInstrD0), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .LaneValidD(LaneValidD0), .IllegalBaseInstrD,
      // Execute Stage interface
      .PCE, .PCLinkE, .FWriteIntE, .FCvtIntE, .IEUAdrE, .IntDivE, .W64E,
      .Funct3E, .ForwardedSrcAE, .ForwardedSrcBE, .MDUActiveE, .CMOpM, .IFUPrefetchE, .LSUPrefetchM,
@@ -330,6 +344,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteM_1(RegWriteMOut_1), .RegWriteM_2(RegWriteMOut_2), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
      .RegWriteW_1(RegWriteWOut_1), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3),       // WriteEnable status of other lanes insts in W stage
      .RdE_1(RdE_1), .RdE_2(RdE_2), .RdE_3(RdE_3),                                           // These are inputs to the controller that are used for MatchDE checking across lanes
+     .InstrValidE_1(InstrValidE_1), .InstrValidE_2(InstrValidE_2), .InstrValidE_3(InstrValidE_3),
      
      .MemReadE(MemReadE),                                        // Output signal identifying whether a read of memory will happen for this lane
      .SCE(SCE),                                                  // Output signal identifying whether result source E == 3'b100
@@ -341,7 +356,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
     ieu #(P)
     ieu_1(.clk, .reset,
       // Decode Stage interface
-      .InstrD(VLIWInstr1D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_1),
+      .InstrD(LaneInstrD1), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .LaneValidD(LaneValidD1), .IllegalBaseInstrD(IllegalBaseInstrD_1),
       // Execute Stage interface
       .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_1), .FCvtIntE(FCvtIntE_1), 
         // .IEUAdrE, 
@@ -381,6 +396,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_2), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
      .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_2), .RegWriteW_3(RegWriteWOut_3),       // WriteEnable status of other lanes insts in W stage
      .RdE_1(RdE), .RdE_2(RdE_2), .RdE_3(RdE_3),                                             // These are inputs to the controller that are used for MatchDE checking across lanes
+     .InstrValidE_1(InstrValidE), .InstrValidE_2(InstrValidE_2), .InstrValidE_3(InstrValidE_3),
      
      .MemReadE(MemReadE_1),                                       // Output signal identifying whether a read of memory will happen for this lane
      .SCE(SCE_1),                                                 // Output signal identifying whether result source E == 3'b100
@@ -392,7 +408,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
     ieu #(P)
     ieu_2(.clk, .reset,
       // Decode Stage interface
-      .InstrD(VLIWInstr2D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_2),
+      .InstrD(LaneInstrD2), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .LaneValidD(LaneValidD2), .IllegalBaseInstrD(IllegalBaseInstrD_2),
       // Execute Stage interface
       .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_2), .FCvtIntE(FCvtIntE_2), 
         // .IEUAdrE, 
@@ -432,6 +448,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_3),       // WriteEnable status of other lanes insts in M stage
      .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_3),       // WriteEnable status of other lanes insts in W stage
      .RdE_1(RdE), .RdE_2(RdE_1), .RdE_3(RdE_3),                                             // These are inputs to the controller that are used for MatchDE checking across lanes
+     .InstrValidE_1(InstrValidE), .InstrValidE_2(InstrValidE_1), .InstrValidE_3(InstrValidE_3),
      
      .MemReadE(MemReadE_2),                                         // Output signal identifying whether a read of memory will happen for this lane
      .SCE(SCE_2),                                                   // Output signal identifying whether result source E == 3'b100
@@ -443,7 +460,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
     ieu #(P)
     ieu_3(.clk, .reset,
       // Decode Stage interface
-      .InstrD(VLIWInstr3D), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .IllegalBaseInstrD(IllegalBaseInstrD_3),
+      .InstrD(LaneInstrD3), .STATUS_FS, .ENVCFG_CBE, .IllegalIEUFPUInstrD, .LaneValidD(LaneValidD3), .IllegalBaseInstrD(IllegalBaseInstrD_3),
       // Execute Stage interface
       .PCE, .PCLinkE, .FWriteIntE(FWriteIntE_3), .FCvtIntE(FCvtIntE_3), 
         // .IEUAdrE, 
@@ -483,6 +500,7 @@ module wallypipelinedcore import cvw::*; #(parameter cvw_t P) (
      .RegWriteM_1(RegWriteMOut), .RegWriteM_2(RegWriteMOut_1), .RegWriteM_3(RegWriteMOut_2),       // WriteEnable status of other lanes insts in M stage
      .RegWriteW_1(RegWriteWOut), .RegWriteW_2(RegWriteWOut_1), .RegWriteW_3(RegWriteWOut_2),       // WriteEnable status of other lanes insts in W stage
      .RdE_1(RdE), .RdE_2(RdE_1), .RdE_3(RdE_2),                                             // These are inputs to the controller that are used for MatchDE checking across lanes
+     .InstrValidE_1(InstrValidE), .InstrValidE_2(InstrValidE_1), .InstrValidE_3(InstrValidE_2),
 
      .MemReadE(MemReadE_3),                                         // Output signal identifying whether a read of memory will happen for this lane
      .SCE(SCE_3),                                                   // Output signal identifying whether result source E == 3'b100

@@ -25,7 +25,7 @@ export DC_HOME="/rs23/shared/synopsys/syn/W-2024.09-SP5-3/"
 export VCS_HOME=/cad/synopsys/VCS                                   # Change this for your path to Synopsys VCS, excluding bin
 export BREKER_HOME=/cad/breker/TREK                                 # Change this for your path to Breker Trek
 export SPYGLASS_HOME=/cad/synopsys/SPYGLASS_HOME                    # Change this for your path to Synopsys Spyglass
-export VIVADO_HOME=/rs23/shared/vivado/2025.1/Vivado
+export VIVADO_HOME=/rs23/lnm7/vcu/Xilinx/2025.1/Vivado
 # Tools
 # Questa and Synopsys
 export PATH=$QUESTA_HOME/bin:$DC_HOME/bin:$VCS_HOME/bin:$SPYGLASS_HOME/bin:$VIVADO_HOME/bin:$PATH

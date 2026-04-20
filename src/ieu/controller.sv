@@ -35,6 +35,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   input  logic [31:0] InstrD,                  // Instruction in Decode stage
   input  logic [1:0]  STATUS_FS,               // is FPU enabled?
   input  logic [3:0]  ENVCFG_CBE,              // Cache block operation enables
+  input  logic        LaneValidD,              // Decode-stage lane is active
   output logic [2:0]  ImmSrcD,                 // Type of immediate extension
   input  logic        IllegalIEUFPUInstrD,     // Illegal IEU and FPU instruction
   output logic        IllegalBaseInstrD,       // Illegal I-type instruction, or illegal RV32 access to upper 16 registers
@@ -103,6 +104,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
 
   // Extra RdEs for MatchDE checking across lanes
   input  logic  [4:0]  RdE_1, RdE_2, RdE_3,       // Pipelined destination registers from other lanes
+  input  logic         InstrValidE_1, InstrValidE_2, InstrValidE_3, // Execute-stage validity from other lanes
   output logic MemReadE,                          // Signal identifying whether a read of memory will happen for this lane
   output logic SCE,                               // Signal identifying whether result source E == 3'b100
   input  logic MemReadE_1, MemReadE_2, MemReadE_3,// Signals identifying whether a read of memory will happen for other lanes
@@ -174,6 +176,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   logic [3:0]  CMOpD, CMOpE;                   // which CMO instruction 1: cbo.inval; 2: cbo.flush; 4: cbo.clean; 8: cbo.zero
   logic        IFUPrefetchD;                   // instruction prefetch
   logic        LSUPrefetchD, LSUPrefetchE;     // data prefetch
+  logic        InstrValidW;                    // Instruction is valid in Writeback stage
   logic        MatchDE;                        // Match between a source register in Decode stage and destination register in Execute stage
   logic        MatchDE_0;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
   logic        MatchDE_1;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
@@ -326,7 +329,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   assign IllegalERegAdrD = P.E_SUPPORTED & P.ZICSR_SUPPORTED & ControlsD[`CTRLW-1] & InstrD[11]; 
   assign {BaseRegWriteD, PreImmSrcD, ALUSrcAD, BaseALUSrcBD, MemRWD,
           ResultSrcD, BranchD, ALUOpD, JumpD, ALUResultSrcD, BaseW64D, CSRReadD, 
-          PrivilegedD, FenceXD, MDUD, AtomicD, CMOD, unused} = IllegalIEUFPUInstrD ? `CTRLW'b0 : ControlsD;
+          PrivilegedD, FenceXD, MDUD, AtomicD, CMOD, unused} = (IllegalIEUFPUInstrD | ~LaneValidD) ? `CTRLW'b0 : ControlsD;
   
   assign CSRZeroSrcD = InstrD[14] ? (InstrD[19:15] == 0) : (Rs1D == 0); // Is a CSR instruction using zero as the source?
   assign CSRWriteD = CSRReadD & !(CSRZeroSrcD & InstrD[13]);            // Don't write if setting or clearing zeros
@@ -425,7 +428,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
     IFUPrefetchD = 1'b0;
     LSUPrefetchD = 1'b0;
     ImmSrcD = PreImmSrcD;
-    if (P.ZICBOP_SUPPORTED & (InstrD[14:0] == 15'b110_00000_0010011)) begin // ori with destination x0 is hint for Prefetch
+    if (LaneValidD && P.ZICBOP_SUPPORTED && (InstrD[14:0] == 15'b110_00000_0010011)) begin // ori with destination x0 is hint for Prefetch
       /* verilator lint_off CASEINCOMPLETE */
       case (Rs2D) // which type of prefectch?  Note: prefetch.r and .w are handled the same in Wally 
         5'b00000: IFUPrefetchD = 1'b1; // prefetch.i
@@ -439,7 +442,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   end
 
   // Decode stage pipeline control register
-  flopenrc #(1)  controlregD(clk, reset, FlushD, ~StallD, 1'b1, InstrValidD);
+  flopenrc #(1)  controlregD(clk, reset, FlushD, ~StallD, LaneValidD, InstrValidD);
 
   // Execute stage pipeline control register and logic
   flopenrc #(45) controlregE(clk, reset, FlushE, ~StallE,
@@ -456,14 +459,14 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   assign {eqE, ltE} = FlagsE;
   mux2 #(1) branchflagmux(eqE, ltE, Funct3E[2], BranchFlagE);
   assign BranchTakenE = BranchFlagE ^ Funct3E[0];
-  assign PCSrcE = JumpE | BranchE & BranchTakenE;
+  assign PCSrcE = InstrValidE & (JumpE | BranchE & BranchTakenE);
 
   // Other execute stage controller signals
-  assign MemReadE = MemRWE[1];
-  assign SCE = (ResultSrcE == 3'b100);
-  assign MDUActiveE = (ResultSrcE == 3'b011);
-  assign RegWriteE = IEURegWriteE | FWriteIntE; // IRF register writes could come from IEU or FPU controllers
-  assign IntDivE = MDUE & Funct3E[2]; // Integer division operation
+  assign MemReadE = InstrValidE & MemRWE[1];
+  assign SCE = InstrValidE & (ResultSrcE == 3'b100);
+  assign MDUActiveE = InstrValidE & (ResultSrcE == 3'b011);
+  assign RegWriteE = InstrValidE & (IEURegWriteE | FWriteIntE); // IRF register writes could come from IEU or FPU controllers
+  assign IntDivE = InstrValidE & MDUE & Funct3E[2]; // Integer division operation
   
   // Memory stage pipeline control register
   flopenrc #(25) controlregM(clk, reset, FlushM, ~StallM,
@@ -472,17 +475,17 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   flopenrc #(5)  RdMReg(clk, reset, FlushM, ~StallM, RdE, RdM);  
 
   // Writeback stage pipeline control register
-  flopenrc #(5) controlregW(clk, reset, FlushW, ~StallW,
-                         {RegWriteM, ResultSrcM, IntDivM},
-                         {RegWriteW, ResultSrcW, IntDivW});  
+  flopenrc #(6) controlregW(clk, reset, FlushW, ~StallW,
+                         {RegWriteM, ResultSrcM, IntDivM, InstrValidM},
+                         {RegWriteW, ResultSrcW, IntDivW, InstrValidW});
   flopenrc #(5) RdWReg(clk, reset, FlushW, ~StallW, RdM, RdW);
 
   // Flush F, D, and E stages on a CSR write or Fence.I or SFence.VMA
-  assign CSRWriteFenceM = CSRWriteM | FenceM;
+  assign CSRWriteFenceM = InstrValidM & (CSRWriteM | FenceM);
 
   // Assignments to relay this ieu instance's Mem and WB stage write enables to other instances
-  assign RegWriteMOut = RegWriteM;
-  assign RegWriteWOut = RegWriteW;
+  assign RegWriteMOut = InstrValidM & RegWriteM;
+  assign RegWriteWOut = InstrValidW & RegWriteW;
 
   // This is the signal that indicates which FU this ieu should be recieving forwarded results from.
   // If 0, it indicates the ieu's own Mem or WB stage will forward its results.
@@ -504,7 +507,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
 
     if (Rs1E != 5'b0) begin     // if current instance source reg 1 in E stage is not zero, check mem and wb stages
       // Check all Mem stage destinations first
-      if      ((Rs1E == RdM) & RegWriteM) begin
+      if      ((Rs1E == RdM) & RegWriteM & InstrValidM) begin
         ForwardAE = 2'b10;
         ForwardSelectController_Rs1 = 2'b00;
       end
@@ -522,7 +525,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
       end
 
       // Then check all WB stage destinations
-      else if ((Rs1E == RdW) & RegWriteW) begin
+      else if ((Rs1E == RdW) & RegWriteW & InstrValidW) begin
         ForwardAE = 2'b01;
         ForwardSelectController_Rs1 = 2'b00;
       end
@@ -543,7 +546,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
  
     if (Rs2E != 5'b0) begin     // if current instance source reg 2 in E stage is not zero, check mem and wb stages
     // Check all Mem stage destinations first
-      if      ((Rs2E == RdM) & RegWriteM) begin
+      if      ((Rs2E == RdM) & RegWriteM & InstrValidM) begin
         ForwardBE = 2'b10;
         ForwardSelectController_Rs2 = 2'b00;
       end
@@ -561,7 +564,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
       end
 
       // Then check all WB stage destinations
-      else if ((Rs2E == RdW) & RegWriteW) begin
+      else if ((Rs2E == RdW) & RegWriteW & InstrValidW) begin
         ForwardBE = 2'b01;
         ForwardSelectController_Rs2 = 2'b00;
       end
@@ -588,49 +591,51 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   always_comb begin
     UsesRs1D = 1'b0;
     UsesRs2D = 1'b0;
-    unique case (OpD)
-      // rs1 only
-      7'b0000011, // loads
-      7'b0010011, // I-type ALU (also prefetch hints)
-      7'b0011011, // IW-type ALU
-      7'b1100111: // jalr
-        UsesRs1D = 1'b1;
+    if (LaneValidD) begin
+      unique case (OpD)
+        // rs1 only
+        7'b0000011, // loads
+        7'b0010011, // I-type ALU (also prefetch hints)
+        7'b0011011, // IW-type ALU
+        7'b1100111: // jalr
+          UsesRs1D = 1'b1;
 
-      // rs1 + rs2
-      7'b0100011, // stores
-      7'b0110011, // R/M-type
-      7'b0111011, // RW/MW-type
-      7'b1100011: begin // branches
-        UsesRs1D = 1'b1;
-        UsesRs2D = 1'b1;
-      end
+        // rs1 + rs2
+        7'b0100011, // stores
+        7'b0110011, // R/M-type
+        7'b0111011, // RW/MW-type
+        7'b1100011: begin // branches
+          UsesRs1D = 1'b1;
+          UsesRs2D = 1'b1;
+        end
 
-      // Atomics: LR uses rs1 only; other AMOs use rs1 + rs2
-      7'b0101111: begin
-        UsesRs1D = 1'b1;
-        UsesRs2D = (InstrD[31:27] != 5'b00010);
-      end
+        // Atomics: LR uses rs1 only; other AMOs use rs1 + rs2
+        7'b0101111: begin
+          UsesRs1D = 1'b1;
+          UsesRs2D = (InstrD[31:27] != 5'b00010);
+        end
 
-      // fence/cbo: cbo.* uses rs1 as address base; fence/fence.i do not
-      7'b0001111:
-        UsesRs1D = (Funct3D == 3'b010);
+        // fence/cbo: cbo.* uses rs1 as address base; fence/fence.i do not
+        7'b0001111:
+          UsesRs1D = (Funct3D == 3'b010);
 
-      // CSR reg forms consume rs1; CSR immediate forms encode zimm in rs1 field
-      7'b1110011:
-        UsesRs1D = (Funct3D[1:0] != 2'b00) & ~Funct3D[2];
+        // CSR reg forms consume rs1; CSR immediate forms encode zimm in rs1 field
+        7'b1110011:
+          UsesRs1D = (Funct3D[1:0] != 2'b00) & ~Funct3D[2];
 
-      default: begin
-        UsesRs1D = 1'b0;
-        UsesRs2D = 1'b0;
-      end
-    endcase
+        default: begin
+          UsesRs1D = 1'b0;
+          UsesRs2D = 1'b0;
+        end
+      endcase
+    end
   end
 
   // logic for forwarding which will require cross-lane MatchDE checks
-  assign MatchDE_0 = ((UsesRs1D & (Rs1D == RdE))   | (UsesRs2D & (Rs2D == RdE)))   & (RdE != 5'b0);   // Decode-stage source depends on lane-0 execute destination
-  assign MatchDE_1 = ((UsesRs1D & (Rs1D == RdE_1)) | (UsesRs2D & (Rs2D == RdE_1))) & (RdE_1 != 5'b0);
-  assign MatchDE_2 = ((UsesRs1D & (Rs1D == RdE_2)) | (UsesRs2D & (Rs2D == RdE_2))) & (RdE_2 != 5'b0);
-  assign MatchDE_3 = ((UsesRs1D & (Rs1D == RdE_3)) | (UsesRs2D & (Rs2D == RdE_3))) & (RdE_3 != 5'b0);
+  assign MatchDE_0 = InstrValidE   & (((UsesRs1D & (Rs1D == RdE))   | (UsesRs2D & (Rs2D == RdE)))   & (RdE != 5'b0));   // Decode-stage source depends on lane-0 execute destination
+  assign MatchDE_1 = InstrValidE_1 & (((UsesRs1D & (Rs1D == RdE_1)) | (UsesRs2D & (Rs2D == RdE_1))) & (RdE_1 != 5'b0));
+  assign MatchDE_2 = InstrValidE_2 & (((UsesRs1D & (Rs1D == RdE_2)) | (UsesRs2D & (Rs2D == RdE_2))) & (RdE_2 != 5'b0));
+  assign MatchDE_3 = InstrValidE_3 & (((UsesRs1D & (Rs1D == RdE_3)) | (UsesRs2D & (Rs2D == RdE_3))) & (RdE_3 != 5'b0));
   assign MatchDE = MatchDE_0 | MatchDE_1 | MatchDE_2 | MatchDE_3; 
 
   logic LoadStallD_helper;

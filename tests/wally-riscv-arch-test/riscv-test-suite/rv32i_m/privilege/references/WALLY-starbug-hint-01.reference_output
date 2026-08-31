@@ -1,0 +1,17 @@
+00000011 # bundle size 1 result
+00000024 # bundle size 2 result lane 0
+00000032 # bundle size 2 result lane 1
+00000056 # bundle size 2 post-bundle reduction
+00000101 # bundle size 3 result lane 0
+00000201 # bundle size 3 result lane 1
+00000303 # bundle size 3 result lane 2
+00000605 # bundle size 3 post-bundle reduction
+00001001 # bundle size 4 result lane 0
+00002002 # bundle size 4 result lane 1
+00003003 # bundle size 4 result lane 2
+00004004 # bundle size 4 result lane 3
+0000A00A # bundle size 4 post-bundle reduction
+00000056 # out-of-range immediate still behaves as a hint
+0000000b # mcause for ecall from terminating tests in M mode
+00000000 # mtval of ecall (defined as zero here)
+00001800 # masked mstatus.MPP=11, MPIE=0, and MIE=0

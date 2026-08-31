@@ -28,7 +28,7 @@ WALLY = os.environ.get('WALLY')
 regressionDir = f'{WALLY}/sim'
 archVerifDir = f'{WALLY}/addins/cvw-arch-verif'
 coveragesim = "questa"     # Questa is required for code/functional coverage
-defaultsim = "verilator"   # Default simulator for all other tests
+defaultsim = "questa"   # Default simulator for all other tests
 lockstepsim = "questa"
 testfloatsim = "questa"    # change to Verilator when Issue #707 about testfloat not running Verilator is resolved
 

@@ -85,6 +85,7 @@ module fctrl import cvw::*;  #(parameter cvw_t P) (
   logic                        FCvtIntD, FCvtIntM;                 // convert to integer operation
   logic                        ZfaD;                               // Zfa variants of instructions
   logic                        ZfaFRoundNXD;                       // Zfa froundnx instruction
+  logic                        UseRs2ForAdr3D;                     // fadd/fsub reuse rs2 as the addend carried on Z
 
   // FPU Instruction Decoder
   assign Fmt = Funct7D[1:0];
@@ -290,18 +291,18 @@ module fctrl import cvw::*;  #(parameter cvw_t P) (
   // When disabled infinity and NaN on source registers are ignored by the unpacker and thus special case logic.
   
   //    X - all except int->fp, store, load, mv int->fp
-  assign XEnD = ~(((FResSelD==2'b10)&~FWriteIntD)|                                                 // load/store
-                  ((FResSelD==2'b00)&FRegWriteD&(OpCtrlD==3'b011))|                                // mv int to float
-                  ((FResSelD==2'b01)&(PostProcSelD==2'b00)&OpCtrlD[2]));                           // cvt int to float
+  assign XEnD = ~IllegalFPUInstrD & ~(((FResSelD==2'b10)&~FWriteIntD)|                             // load/store
+                                      ((FResSelD==2'b00)&FRegWriteD&(OpCtrlD==3'b011))|            // mv int to float
+                                      ((FResSelD==2'b01)&(PostProcSelD==2'b00)&OpCtrlD[2]));       // cvt int to float
 
   //    Y - all except cvt, mv, load, class, sqrt
-  assign YEnD = ~(((FResSelD==2'b10)&(FWriteIntD|FRegWriteD))|                                     // load or class 
-                  ((FResSelD==2'b00)&FRegWriteD&(OpCtrlD==3'b011))|                                // mv int to float as above
-                  ((FResSelD==2'b11)&(PostProcSelD==2'b00))|                                       // mv float to int 
-                  ((FResSelD==2'b01)&((PostProcSelD==2'b00)|((PostProcSelD==2'b01)&OpCtrlD[0])))); // cvt both or sqrt
+  assign YEnD = ~IllegalFPUInstrD & ~(((FResSelD==2'b10)&(FWriteIntD|FRegWriteD))|                // load or class 
+                                      ((FResSelD==2'b00)&FRegWriteD&(OpCtrlD==3'b011))|           // mv int to float as above
+                                      ((FResSelD==2'b11)&(PostProcSelD==2'b00))|                  // mv float to int 
+                                      ((FResSelD==2'b01)&((PostProcSelD==2'b00)|((PostProcSelD==2'b01)&OpCtrlD[0])))); // cvt both or sqrt
 
   //    Z - fma ops only
-  assign ZEnD = (PostProcSelD==2'b10)&(~OpCtrlD[2]|OpCtrlD[1]);                                    // fma, add, sub   
+  assign ZEnD = ~IllegalFPUInstrD & (PostProcSelD==2'b10)&(~OpCtrlD[2]|OpCtrlD[1]);               // fma, add, sub   
 
   //  Final Res Sel:
   //        fp      int
@@ -358,7 +359,8 @@ module fctrl import cvw::*;  #(parameter cvw_t P) (
   // rename input addresses for readability
   assign Adr1D = InstrD[19:15];
   assign Adr2D = InstrD[24:20];
-  assign Adr3D = InstrD[31:27];
+  assign UseRs2ForAdr3D = (PostProcSelD == 2'b10) & OpCtrlD[2] & OpCtrlD[1];
+  assign Adr3D = UseRs2ForAdr3D ? InstrD[24:20] : InstrD[31:27];
  
   // D/E pipeline register
   flopenrc #(`FCTRLW+2+P.FMTBITS) DECtrlReg3(clk, reset, FlushE, ~StallE, 

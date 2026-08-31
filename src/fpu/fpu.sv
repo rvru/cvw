@@ -61,7 +61,26 @@ module fpu import cvw::*;  #(parameter cvw_t P) (
   input  logic [P.FLEN-1:0]    ReadDataW,                          // Read data (from LSU)
   output logic [P.XLEN-1:0]    FCvtIntResW,                        // convert result to to be written to integer register (to IEU)
   output logic                 FCvtIntW,                           // select FCvtIntRes (to IEU)
-  output logic [P.XLEN-1:0]    FIntDivResultW                      // Result from integer division (to IEU)
+  output logic [P.XLEN-1:0]    FIntDivResultW,                     // Result from integer division (to IEU)
+  // Shared floating-point register file
+  input  logic [P.FLEN-1:0]    FRD1D_rf, FRD2D_rf, FRD3D_rf,       // Decode-stage read data from shared FP register file
+  output logic                 FRegWriteWOut,                      // Shared FP register file write enable
+  output logic [4:0]           FAdr1D_rf, FAdr2D_rf, FAdr3D_rf,    // Shared FP register file read addresses
+  output logic [4:0]           FAdrW_rf,                           // Shared FP register file write address
+  output logic [P.FLEN-1:0]    FWriteDataW_rf,                     // Shared FP register file write data
+  // Cross-lane FP hazard and forwarding
+  input  logic [4:0]           RdE_1, RdE_2, RdE_3,
+  input  logic [4:0]           RdM_1, RdM_2, RdM_3,
+  input  logic [4:0]           RdW_1, RdW_2, RdW_3,
+  input  logic                 FRegWriteE_1, FRegWriteE_2, FRegWriteE_3,
+  input  logic                 FRegWriteM_1, FRegWriteM_2, FRegWriteM_3,
+  input  logic                 FRegWriteW_1, FRegWriteW_2, FRegWriteW_3,
+  input  logic                 FpLoadStoreM_1, FpLoadStoreM_2, FpLoadStoreM_3,
+  input  logic [P.FLEN-1:0]    FpResM_1, FpResM_2, FpResM_3,
+  input  logic [P.FLEN-1:0]    FResultW_1, FResultW_2, FResultW_3,
+  output logic                 FRegWriteEOut,                      // E-stage FP register write intent for hazards
+  output logic [P.FLEN-1:0]    FpResMOut,                          // M-stage FP result for forwarding
+  output logic [P.FLEN-1:0]    FResultWOut                         // W-stage FP result for forwarding
 );
 
   // RISC-V FPU specifics:
@@ -75,6 +94,7 @@ module fpu import cvw::*;  #(parameter cvw_t P) (
   logic                        FDivStartE, IDivStartE;             // Start division or squareroot
   logic                        FWriteIntM;                         // Write to integer register
   logic [1:0]                  ForwardXE, ForwardYE, ForwardZE;    // forwarding mux control signals
+  logic [1:0]                  ForwardLaneXE, ForwardLaneYE, ForwardLaneZE;
   logic [2:0]                  OpCtrlE, OpCtrlM;                   // Select which operation to do in each component
   logic [1:0]                  FResSelE, FResSelM, FResSelW;       // Select one of the results that finish in the memory stage
   logic [1:0]                  PostProcSelE, PostProcSelM;         // select result in the post processing unit
@@ -94,6 +114,8 @@ module fpu import cvw::*;  #(parameter cvw_t P) (
   logic [P.XLEN-1:0]           IntSrcXE;                           // Input 1 to the various units (after forwarding)
   logic [P.FLEN-1:0]           PreYE, YE;                          // Input 2 to the various units (after forwarding)
   logic [P.FLEN-1:0]           PreZE, ZE;                          // Input 3 to the various units (after forwarding)
+  logic [P.FLEN-1:0]           FResultWSelectX, FResultWSelectY, FResultWSelectZ;
+  logic [P.FLEN-1:0]           FpResMSelectX, FpResMSelectY, FpResMSelectZ;
 
   // unpacking signals
   logic                        XsE, YsE, ZsE;                      // input's sign - execute stage
@@ -183,11 +205,19 @@ module fpu import cvw::*;  #(parameter cvw_t P) (
               .FResSelE, .FResSelM, .FResSelW, .FPUActiveE, .PostProcSelE, .PostProcSelM, .FCvtIntW, 
               .Adr1D, .Adr2D, .Adr3D, .Adr1E, .Adr2E, .Adr3E);
 
-  // FP register file
-  fregfile #(P.FLEN) fregfile (.clk, .reset, .we4(FRegWriteW),
-    .a1(InstrD[19:15]), .a2(InstrD[24:20]), .a3(InstrD[31:27]), 
-    .a4(RdW), .wd4(FResultW),
-    .rd1(FRD1D), .rd2(FRD2D), .rd3(FRD3D));  
+  assign FRD1D = FRD1D_rf;
+  assign FRD2D = FRD2D_rf;
+  assign FRD3D = FRD3D_rf;
+  // Keep shared-regfile reads aligned with the decoded source mapping.
+  assign FAdr1D_rf = Adr1D;
+  assign FAdr2D_rf = Adr2D;
+  assign FAdr3D_rf = Adr3D;
+  assign FAdrW_rf = RdW;
+  assign FWriteDataW_rf = FResultW;
+  assign FRegWriteWOut = FRegWriteW;
+  assign FRegWriteEOut = FRegWriteE;
+  assign FpResMOut = FpResM;
+  assign FResultWOut = FResultW;
 
   // D/E pipeline registers  
   flopenrc #(P.FLEN) DEReg1(clk, reset, FlushE, ~StallE, FRD1D, FRD1E);
@@ -200,13 +230,81 @@ module fpu import cvw::*;  #(parameter cvw_t P) (
 
   // Hazard unit for FPU: determines if any forwarding or stalls are needed
   fhazard fhazard(.Adr1D, .Adr2D, .Adr3D, .Adr1E, .Adr2E, .Adr3E, 
-    .FRegWriteE, .FRegWriteM, .FRegWriteW, .RdE, .RdM, .RdW, .FResSelM, 
-    .XEnD, .YEnD, .ZEnD, .FPUStallD, .ForwardXE, .ForwardYE, .ForwardZE);
+    .FRegWriteE, .FRegWriteM, .FRegWriteW, .RdE, .RdM, .RdW, .FpLoadStoreM,
+    .XEnD, .YEnD, .ZEnD,
+    .FRegWriteE_1, .FRegWriteE_2, .FRegWriteE_3,
+    .FRegWriteM_1, .FRegWriteM_2, .FRegWriteM_3,
+    .FRegWriteW_1, .FRegWriteW_2, .FRegWriteW_3,
+    .FpLoadStoreM_1, .FpLoadStoreM_2, .FpLoadStoreM_3,
+    .RdE_1, .RdE_2, .RdE_3,
+    .RdM_1, .RdM_2, .RdM_3,
+    .RdW_1, .RdW_2, .RdW_3,
+    .FPUStallD, .ForwardXE, .ForwardYE, .ForwardZE,
+    .ForwardLaneXE, .ForwardLaneYE, .ForwardLaneZE);
+
+  always_comb begin
+    case (ForwardLaneXE)
+      2'b00: begin
+        FResultWSelectX = FResultW;
+        FpResMSelectX = FpResM;
+      end
+      2'b01: begin
+        FResultWSelectX = FResultW_1;
+        FpResMSelectX = FpResM_1;
+      end
+      2'b10: begin
+        FResultWSelectX = FResultW_2;
+        FpResMSelectX = FpResM_2;
+      end
+      default: begin
+        FResultWSelectX = FResultW_3;
+        FpResMSelectX = FpResM_3;
+      end
+    endcase
+
+    case (ForwardLaneYE)
+      2'b00: begin
+        FResultWSelectY = FResultW;
+        FpResMSelectY = FpResM;
+      end
+      2'b01: begin
+        FResultWSelectY = FResultW_1;
+        FpResMSelectY = FpResM_1;
+      end
+      2'b10: begin
+        FResultWSelectY = FResultW_2;
+        FpResMSelectY = FpResM_2;
+      end
+      default: begin
+        FResultWSelectY = FResultW_3;
+        FpResMSelectY = FpResM_3;
+      end
+    endcase
+
+    case (ForwardLaneZE)
+      2'b00: begin
+        FResultWSelectZ = FResultW;
+        FpResMSelectZ = FpResM;
+      end
+      2'b01: begin
+        FResultWSelectZ = FResultW_1;
+        FpResMSelectZ = FpResM_1;
+      end
+      2'b10: begin
+        FResultWSelectZ = FResultW_2;
+        FpResMSelectZ = FpResM_2;
+      end
+      default: begin
+        FResultWSelectZ = FResultW_3;
+        FpResMSelectZ = FpResM_3;
+      end
+    endcase
+  end
 
   // forwarding muxs
-  mux3  #(P.FLEN)  fxemux (FRD1E, FResultW, PreFpResM, ForwardXE, XE);
-  mux3  #(P.FLEN)  fyemux (FRD2E, FResultW, PreFpResM, ForwardYE, PreYE);
-  mux3  #(P.FLEN)  fzemux (FRD3E, FResultW, PreFpResM, ForwardZE, PreZE);
+  mux3  #(P.FLEN)  fxemux (FRD1E, FResultWSelectX, FpResMSelectX, ForwardXE, XE);
+  mux3  #(P.FLEN)  fyemux (FRD2E, FResultWSelectY, FpResMSelectY, ForwardYE, PreYE);
+  mux3  #(P.FLEN)  fzemux (FRD3E, FResultWSelectZ, FpResMSelectZ, ForwardZE, PreZE);
 
   // Select NAN-boxed value of Y = 1.0 in proper format for fma to add/subtract X*Y+Z
   if(P.FPSIZES == 1) assign BoxedOneE = {2'b0, {P.NE-1{1'b1}}, (P.NF)'(0)};

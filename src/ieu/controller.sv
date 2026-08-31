@@ -177,12 +177,15 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   logic        IFUPrefetchD;                   // instruction prefetch
   logic        LSUPrefetchD, LSUPrefetchE;     // data prefetch
   logic        InstrValidW;                    // Instruction is valid in Writeback stage
+  logic        DecodeInstrValidD;              // Current-cycle decode validity used by the controller pipeline
+  logic        ExecuteInstrValidD;             // D->E validity: Starbug uses current decode valid, scalar uses flopped D valid
   logic        MatchDE;                        // Match between a source register in Decode stage and destination register in Execute stage
   logic        MatchDE_0;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
   logic        MatchDE_1;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
   logic        MatchDE_2;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
   logic        MatchDE_3;                      // Supporting signals ORed to get MatchDE from each connected VLIW lane
   logic        UsesRs1D, UsesRs2D;            // Decode-stage source usage (prevents false hazard matches on immediate fields)
+  logic        FPIntRs1D, FPIntRs2D;          // FP instructions that source integer registers through the IEU path
   logic        FCvtIntStallD, MDUStallD, CSRRdStallD; // Stall due to conversion, load, multiply/divide, CSR read 
   logic        FunctCZeroD;                    // Funct7 and Funct3 indicate czero.* (not including Op check)
   logic        BUW64D;                         // Indicates if it is a .uw type B instruction in Decode Stage
@@ -194,6 +197,17 @@ module controller import cvw::*;  #(parameter cvw_t P) (
   assign Rs1D    = InstrD[19:15];
   assign Rs2D    = InstrD[24:20];
   assign RdD     = InstrD[11:7];
+  assign FPIntRs1D = (OpD == 7'b1010011) &
+                     ((((Funct7D == 7'b1111000) | (Funct7D == 7'b1111001) |
+                        (Funct7D == 7'b1111010) | (Funct7D == 7'b1111011)) &
+                       (Funct3D == 3'b000) & (Rs2D == 5'b00000)) | // fmv.*.x
+                      (Funct7D == 7'b1101000) | (Funct7D == 7'b1101001) |
+                      (Funct7D == 7'b1101010) | (Funct7D == 7'b1101011) | // fcvt fp <- int
+                      ((Funct7D == 7'b1011001) & P.ZFA_SUPPORTED & (P.XLEN == 32) & P.D_SUPPORTED & (Funct3D == 3'b000)) |
+                      ((Funct7D == 7'b1011011) & P.ZFA_SUPPORTED & (P.XLEN == 64) & P.Q_SUPPORTED & (Funct3D == 3'b000)));
+  assign FPIntRs2D = (OpD == 7'b1010011) &
+                     (((Funct7D == 7'b1011001) & P.ZFA_SUPPORTED & (P.XLEN == 32) & P.D_SUPPORTED & (Funct3D == 3'b000)) |
+                      ((Funct7D == 7'b1011011) & P.ZFA_SUPPORTED & (P.XLEN == 64) & P.Q_SUPPORTED & (Funct3D == 3'b000)));
 
   // Funct 7 checking
   // Be rigorous about detecting illegal instructions if CSRs or bit manipulation or conditional ops are supported
@@ -441,12 +455,16 @@ module controller import cvw::*;  #(parameter cvw_t P) (
     end
   end
 
-  // Decode stage pipeline control register
+  // Keep the original flopped D-stage validity for the scalar IFU/bpred path.
+  // VLIW decode also needs a current-cycle valid so flushed bundle lanes do not
+  // advance into E.
   flopenrc #(1)  controlregD(clk, reset, FlushD, ~StallD, LaneValidD, InstrValidD);
+  assign DecodeInstrValidD = LaneValidD & ~FlushD;
+  assign ExecuteInstrValidD = P.STARBUG_SUPPORTED ? DecodeInstrValidD : InstrValidD;
 
   // Execute stage pipeline control register and logic
   flopenrc #(45) controlregE(clk, reset, FlushE, ~StallE,
-                           {ALUSelectD, RegWriteD, ResultSrcD, MemRWD, JumpD, BranchD, ALUSrcAD, ALUSrcBD, ALUResultSrcD, CSRReadD, CSRWriteD, PrivilegedD, Funct3D, Funct7D, W64D, BUW64D, SubArithD, MDUD, AtomicD, InvalidateICacheD, FlushDCacheD, FenceD, CMOpD, IFUPrefetchD, LSUPrefetchD, CZeroD, InstrValidD},
+                           {ALUSelectD, RegWriteD, ResultSrcD, MemRWD, JumpD, BranchD, ALUSrcAD, ALUSrcBD, ALUResultSrcD, CSRReadD, CSRWriteD, PrivilegedD, Funct3D, Funct7D, W64D, BUW64D, SubArithD, MDUD, AtomicD, InvalidateICacheD, FlushDCacheD, FenceD, CMOpD, IFUPrefetchD, LSUPrefetchD, CZeroD, ExecuteInstrValidD},
                            {ALUSelectE, IEURegWriteE, ResultSrcE, MemRWE, JumpE, BranchE, ALUSrcAE, ALUSrcBE, ALUResultSrcE, CSRReadE, CSRWriteE, PrivilegedE, Funct3E, Funct7E, W64E, UW64E, SubArithE, MDUE, AtomicE, InvalidateICacheE, FlushDCacheE, FenceE, CMOpE, IFUPrefetchE, LSUPrefetchE, CZeroE, InstrValidE});
   flopenrc #(5)  Rs1EReg(clk, reset, FlushE, ~StallE, Rs1D, Rs1E);
   flopenrc #(5)  Rs2EReg(clk, reset, FlushE, ~StallE, Rs2D, Rs2E);
@@ -595,6 +613,7 @@ module controller import cvw::*;  #(parameter cvw_t P) (
       unique case (OpD)
         // rs1 only
         7'b0000011, // loads
+        7'b0000111, // FP loads use rs1 as the address base
         7'b0010011, // I-type ALU (also prefetch hints)
         7'b0011011, // IW-type ALU
         7'b1100111: // jalr
@@ -607,6 +626,17 @@ module controller import cvw::*;  #(parameter cvw_t P) (
         7'b1100011: begin // branches
           UsesRs1D = 1'b1;
           UsesRs2D = 1'b1;
+        end
+
+        // FP stores only consume rs1 in the integer pipeline; rs2 is a FP source
+        7'b0100111:
+          UsesRs1D = 1'b1;
+
+        // A small subset of FP opcodes source integer registers through the IEU
+        // forwarding path: fmv.*.x, fcvt.*.<int>, and fmvp.*.x.
+        7'b1010011: begin
+          UsesRs1D = FPIntRs1D;
+          UsesRs2D = FPIntRs2D;
         end
 
         // Atomics: LR uses rs1 only; other AMOs use rs1 + rs2

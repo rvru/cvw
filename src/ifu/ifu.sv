@@ -77,9 +77,18 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   output logic                 ICacheStallF,                             // I$ busy with multicycle operation
   // Faults
   input  logic                 IllegalBaseInstrD,                        // Illegal non-compressed instruction
+  input  logic                 IllegalBaseInstrD_1,
+  input  logic                 IllegalBaseInstrD_2,
+  input  logic                 IllegalBaseInstrD_3,
   input  logic                 IllegalFPUInstrD,                         // Illegal FP instruction
+  input  logic                 IllegalFPUInstrD_1,
+  input  logic                 IllegalFPUInstrD_2,
+  input  logic                 IllegalFPUInstrD_3,
   output logic                 InstrPageFaultF,                          // Instruction page fault 
   output logic                 IllegalIEUFPUInstrD,                      // Illegal instruction including compressed & FP
+  output logic                 IllegalIEUFPUInstrD_1,
+  output logic                 IllegalIEUFPUInstrD_2,
+  output logic                 IllegalIEUFPUInstrD_3,
   output logic                 InstrMisalignedFaultM,                    // Branch target not aligned to 4 bytes if no compressed allowed (2 bytes if allowed)
   // mmu management
   input  logic [1:0]           PrivilegeModeW,                           // Privilege mode in Writeback stage
@@ -140,7 +149,13 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   logic                        CompressedF, CompressedE;                 // The fetched instruction is compressed
   logic [31:0]                 PostSpillInstrRawF;                       // Fetch instruction after merge two halves of spill
   logic [31:0]                 InstrRawD;                                // Non-decompressed instruction in the Decode stage
-  logic                        IllegalIEUInstrD;                         // IEU Instruction (regular or compressed) is not good
+  logic                        IllegalIEUInstrScalarD;                   // IEU Instruction (regular or compressed) is not good
+  logic                        IllegalIEUInstrLane0D;
+  logic                        IllegalIEUInstrLane1D;
+  logic                        IllegalIEUInstrLane2D;
+  logic                        IllegalIEUInstrLane3D;
+  logic                        IllegalCompInstrD;
+  logic                        IllegalVLIWComp0D, IllegalVLIWComp1D, IllegalVLIWComp2D, IllegalVLIWComp3D;
   
   logic [1:0]                  IFURWF;                                   // IFU alreays read IFURWF = 10
   logic [31:0]                 InstrE, InstrE_1, InstrE_2, InstrE_3;     // Instruction in the Execution stage
@@ -348,7 +363,9 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
   logic [OFFSETLEN-1:0] fetch_byte_offset;
   integer bit_offset;
+  integer bits_remaining;
   logic bundle_ok;
+  logic [P.ICACHE_LINELENINBITS+31:0] bundle_window;
   if (P.STARBUG_SUPPORTED) begin : vliw_extract
   always_comb begin
     // --- defaults so no latches are inferred ---
@@ -365,7 +382,9 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
     // Defaults for signals that were only conditionally assigned
     fetch_byte_offset = '0;
     bit_offset = 0;
+    bits_remaining = 0;
     bundle_ok = 1'b0;
+    bundle_window = '0;
 
     // Default temporaries (clear them so they are driven on all paths)
     check_16bit0 = 16'b0;
@@ -379,16 +398,21 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
       fetch_byte_offset = PCPF[OFFSETLEN-1:0];
       bit_offset = (fetch_byte_offset * 8) + 16; // Start after 16-bit hint
+      bits_remaining = P.ICACHE_LINELENINBITS - bit_offset;
+      // Shift the line so the first bundled instruction always starts at bit 0.
+      // This avoids repeatedly slicing the raw cache line at awkward halfword offsets.
+      bundle_window = {{32{1'b0}}, ReadDataLine} >> bit_offset;
 
       // Instruction 0
       if (imm_c >= 1) begin
-        if (bit_offset + 16 <= P.ICACHE_LINELENINBITS) begin
-          check_16bit0 = ReadDataLine[bit_offset +: 16];
+        if (bits_remaining >= 16) begin
+          check_16bit0 = bundle_window[15:0];
           if (check_16bit0[1:0] == 2'b11) begin
-            if (bit_offset + 32 <= P.ICACHE_LINELENINBITS) begin
-              VLIWInstr0F = ReadDataLine[bit_offset +: 32];
+            if (bits_remaining >= 32) begin
+              VLIWInstr0F = bundle_window[31:0];
               VLIWValidF[0] = 1'b1;
-              bit_offset = bit_offset + 32;
+              bundle_window = bundle_window >> 32;
+              bits_remaining = bits_remaining - 32;
               BundleBytesF = BundleBytesF + 'd4;
             end else begin
               bundle_ok = 1'b0;
@@ -396,7 +420,8 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
           end else begin
             VLIWInstr0F = {16'b0, check_16bit0};
             VLIWValidF[0] = 1'b1;
-            bit_offset = bit_offset + 16;
+            bundle_window = bundle_window >> 16;
+            bits_remaining = bits_remaining - 16;
             BundleBytesF = BundleBytesF + 'd2;
           end
         end else begin
@@ -406,13 +431,14 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
       // Instruction 1
       if (bundle_ok && imm_c >= 2) begin
-        if (bit_offset + 16 <= P.ICACHE_LINELENINBITS) begin
-          check_16bit1 = ReadDataLine[bit_offset +: 16];
+        if (bits_remaining >= 16) begin
+          check_16bit1 = bundle_window[15:0];
           if (check_16bit1[1:0] == 2'b11) begin
-            if (bit_offset + 32 <= P.ICACHE_LINELENINBITS) begin
-              VLIWInstr1F = ReadDataLine[bit_offset +: 32];
+            if (bits_remaining >= 32) begin
+              VLIWInstr1F = bundle_window[31:0];
               VLIWValidF[1] = 1'b1;
-              bit_offset = bit_offset + 32;
+              bundle_window = bundle_window >> 32;
+              bits_remaining = bits_remaining - 32;
               BundleBytesF = BundleBytesF + 'd4;
             end else begin
               bundle_ok = 1'b0;
@@ -420,7 +446,8 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
           end else begin
             VLIWInstr1F = {16'b0, check_16bit1};
             VLIWValidF[1] = 1'b1;
-            bit_offset = bit_offset + 16;
+            bundle_window = bundle_window >> 16;
+            bits_remaining = bits_remaining - 16;
             BundleBytesF = BundleBytesF + 'd2;
           end
         end else begin
@@ -430,13 +457,14 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
       // Instruction 2
       if (bundle_ok && imm_c >= 3) begin
-        if (bit_offset + 16 <= P.ICACHE_LINELENINBITS) begin
-          check_16bit2 = ReadDataLine[bit_offset +: 16];
+        if (bits_remaining >= 16) begin
+          check_16bit2 = bundle_window[15:0];
           if (check_16bit2[1:0] == 2'b11) begin
-            if (bit_offset + 32 <= P.ICACHE_LINELENINBITS) begin
-              VLIWInstr2F = ReadDataLine[bit_offset +: 32];
+            if (bits_remaining >= 32) begin
+              VLIWInstr2F = bundle_window[31:0];
               VLIWValidF[2] = 1'b1;
-              bit_offset = bit_offset + 32;
+              bundle_window = bundle_window >> 32;
+              bits_remaining = bits_remaining - 32;
               BundleBytesF = BundleBytesF + 'd4;
             end else begin
               bundle_ok = 1'b0;
@@ -444,7 +472,8 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
           end else begin
             VLIWInstr2F = {16'b0, check_16bit2};
             VLIWValidF[2] = 1'b1;
-            bit_offset = bit_offset + 16;
+            bundle_window = bundle_window >> 16;
+            bits_remaining = bits_remaining - 16;
             BundleBytesF = BundleBytesF + 'd2;
           end
         end else begin
@@ -454,13 +483,14 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
 
       // Instruction 3
       if (bundle_ok && imm_c >= 4) begin
-        if (bit_offset + 16 <= P.ICACHE_LINELENINBITS) begin
-          check_16bit3 = ReadDataLine[bit_offset +: 16];
+        if (bits_remaining >= 16) begin
+          check_16bit3 = bundle_window[15:0];
           if (check_16bit3[1:0] == 2'b11) begin
-            if (bit_offset + 32 <= P.ICACHE_LINELENINBITS) begin
-              VLIWInstr3F = ReadDataLine[bit_offset +: 32];
+            if (bits_remaining >= 32) begin
+              VLIWInstr3F = bundle_window[31:0];
               VLIWValidF[3] = 1'b1;
-              bit_offset = bit_offset + 32;
+              bundle_window = bundle_window >> 32;
+              bits_remaining = bits_remaining - 32;
               BundleBytesF = BundleBytesF + 'd4;
             end else begin
               bundle_ok = 1'b0;
@@ -468,7 +498,8 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
           end else begin
             VLIWInstr3F = {16'b0, check_16bit3};
             VLIWValidF[3] = 1'b1;
-            bit_offset = bit_offset + 16;
+            bundle_window = bundle_window >> 16;
+            bits_remaining = bits_remaining - 16;
             BundleBytesF = BundleBytesF + 'd2;
           end
         end else begin
@@ -647,12 +678,12 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
    
   // expand 16-bit compressed instructions to 32 bits
   if (P.ZCA_SUPPORTED) begin: decomp
-    logic IllegalCompInstrD;
     decompress #(P) decomp(.InstrRawD, .InstrD, .IllegalCompInstrD); 
-    assign IllegalIEUInstrD = IllegalBaseInstrD | IllegalCompInstrD; // illegal if bad 32 or 16-bit instr
+    assign IllegalIEUInstrScalarD = IllegalBaseInstrD | IllegalCompInstrD; // illegal if bad 32 or 16-bit instr
   end else begin: decomp
     assign InstrD = InstrRawD;
-    assign IllegalIEUInstrD = IllegalBaseInstrD;
+    assign IllegalCompInstrD = 1'b0;
+    assign IllegalIEUInstrScalarD = IllegalBaseInstrD;
   end
 
   ///////////////////////////////////////////
@@ -660,8 +691,6 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
   ///////////////////////////////////////////
   if (P.STARBUG_SUPPORTED) begin : vliw_decomp_block
     if (P.ZCA_SUPPORTED) begin: vliw_decomp
-      logic IllegalVLIWComp0D, IllegalVLIWComp1D, IllegalVLIWComp2D, IllegalVLIWComp3D;
-      
       // Decompress each VLIW instruction if it's 16-bit
       decompress #(P) vliw_decomp0(
         .InstrRawD(VLIWInstrRaw0D[15:0] != 16'b0 ? VLIWInstrRaw0D : VLIWInstrRaw0D), 
@@ -699,10 +728,25 @@ module ifu import cvw::*;  #(parameter cvw_t P) (
       assign VLIWInstr1D = VLIWInstrRaw1D;
       assign VLIWInstr2D = VLIWInstrRaw2D;
       assign VLIWInstr3D = VLIWInstrRaw3D;
+      assign {IllegalVLIWComp0D, IllegalVLIWComp1D, IllegalVLIWComp2D, IllegalVLIWComp3D} = '0;
     end
+  end else begin : no_vliw_decomp_block
+    assign VLIWInstr0D = '0;
+    assign VLIWInstr1D = '0;
+    assign VLIWInstr2D = '0;
+    assign VLIWInstr3D = '0;
+    assign {IllegalVLIWComp0D, IllegalVLIWComp1D, IllegalVLIWComp2D, IllegalVLIWComp3D} = '0;
   end
 
-  assign IllegalIEUFPUInstrD = IllegalIEUInstrD & (IllegalFPUInstrD | !P.F_SUPPORTED);
+  assign IllegalIEUInstrLane0D = VLIWModeD ? (IllegalBaseInstrD   | IllegalVLIWComp0D) : IllegalIEUInstrScalarD;
+  assign IllegalIEUInstrLane1D = IllegalBaseInstrD_1 | IllegalVLIWComp1D;
+  assign IllegalIEUInstrLane2D = IllegalBaseInstrD_2 | IllegalVLIWComp2D;
+  assign IllegalIEUInstrLane3D = IllegalBaseInstrD_3 | IllegalVLIWComp3D;
+
+  assign IllegalIEUFPUInstrD   = IllegalIEUInstrLane0D & (IllegalFPUInstrD   | !P.F_SUPPORTED);
+  assign IllegalIEUFPUInstrD_1 = IllegalIEUInstrLane1D & (IllegalFPUInstrD_1 | !P.F_SUPPORTED);
+  assign IllegalIEUFPUInstrD_2 = IllegalIEUInstrLane2D & (IllegalFPUInstrD_2 | !P.F_SUPPORTED);
+  assign IllegalIEUFPUInstrD_3 = IllegalIEUInstrLane3D & (IllegalFPUInstrD_3 | !P.F_SUPPORTED);
 
   // Misaligned PC logic
   // Instruction address misalignment only from br/jal(r) instructions.

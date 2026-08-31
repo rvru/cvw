@@ -185,3 +185,10 @@ docs/docker/testvector-generation
 
 
 ._*
+
+# macOS metadata
+.DS_Store
+._*
+
+# Vivado scratch
+fpga/generator/vivado_pid*.str

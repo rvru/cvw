@@ -14,6 +14,9 @@ repos:
     rev: v5.0.0
     hooks:
       - id: check-added-large-files
+        # Vendored CMSIS-DSP: arm_common_tables.c is 4.7 MB of generated
+        # twiddle-factor tables and is upstream code, not ours to split.
+        exclude: ^examples/C/embench_starbug/common/lib/
       - id: check-case-conflict
       - id: check-docstring-first
       # - id: check-executables-have-shebangs

@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="505" viewBox="0 0 1120 505">
+<style>text { font-family: Arial, Helvetica, sans-serif; fill: #202124; } .title { font-size: 24px; font-weight: 700; } .subtitle { font-size: 13px; fill: #5f6368; } .axis { font-size: 12px; fill: #5f6368; } .label { font-size: 12px; } .value { font-size: 12px; font-weight: 700; }</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<text x="285" y="38" class="title">Starbug Speedup vs Scalar</text>
+<text x="285" y="60" class="subtitle">Speedup derived from kernel cycle counts (CCNT). Higher is better.</text>
+<line x1="629.8" y1="82" x2="629.8" y2="465" stroke="#9aa0a6" stroke-dasharray="4 4"/>
+<text x="635.8" y="76" class="axis">baseline</text>
+<text x="273" y="108" class="label" text-anchor="end">fir_f32_taps256_n128</text>
+<rect x="285" y="95" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="95" width="660.9" height="20" fill="#1a73e8" rx="4"/>
+<text x="953.9" y="110" class="value">1.917x</text>
+<text x="273" y="142" class="label" text-anchor="end">fir_f32_taps256_n1</text>
+<rect x="285" y="129" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="129" width="594.4" height="20" fill="#1a73e8" rx="4"/>
+<text x="887.4" y="144" class="value">1.724x</text>
+<text x="273" y="176" class="label" text-anchor="end">lms_f32_taps256_n128</text>
+<rect x="285" y="163" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="163" width="581.0" height="20" fill="#1a73e8" rx="4"/>
+<text x="874.0" y="178" class="value">1.685x</text>
+<text x="273" y="210" class="label" text-anchor="end">lms_f32_taps256_n1</text>
+<rect x="285" y="197" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="197" width="546.6" height="20" fill="#1a73e8" rx="4"/>
+<text x="839.6" y="212" class="value">1.585x</text>
+<text x="273" y="244" class="label" text-anchor="end">biquad_cascade_df2T_f32_sos3_n128</text>
+<rect x="285" y="231" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="231" width="519.0" height="20" fill="#1a73e8" rx="4"/>
+<text x="812.0" y="246" class="value">1.505x</text>
+<text x="273" y="278" class="label" text-anchor="end">dct4_2048_f32</text>
+<rect x="285" y="265" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="265" width="457.9" height="20" fill="#1a73e8" rx="4"/>
+<text x="750.9" y="280" class="value">1.328x</text>
+<text x="273" y="312" class="label" text-anchor="end">rfft2048_f32</text>
+<rect x="285" y="299" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="299" width="449.9" height="20" fill="#1a73e8" rx="4"/>
+<text x="742.9" y="314" class="value">1.305x</text>
+<text x="273" y="346" class="label" text-anchor="end">dct4_512_f32</text>
+<rect x="285" y="333" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="333" width="439.2" height="20" fill="#1a73e8" rx="4"/>
+<text x="732.2" y="348" class="value">1.274x</text>
+<text x="273" y="380" class="label" text-anchor="end">rfft512_f32</text>
+<rect x="285" y="367" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="367" width="376.2" height="20" fill="#1a73e8" rx="4"/>
+<text x="669.2" y="382" class="value">1.091x</text>
+<text x="273" y="414" class="label" text-anchor="end">biquad_cascade_df2T_f32_sos3_n1</text>
+<rect x="285" y="401" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="401" width="319.4" height="20" fill="#1a73e8" rx="4"/>
+<text x="612.4" y="416" class="value">0.926x</text>
+<line x1="285.0" y1="469" x2="285.0" y2="475" stroke="#9aa0a6"/>
+<text x="285.0" y="493" class="axis" text-anchor="middle">0.00x</text>
+<line x1="411.7" y1="469" x2="411.7" y2="475" stroke="#9aa0a6"/>
+<text x="411.7" y="493" class="axis" text-anchor="middle">0.37x</text>
+<line x1="538.3" y1="469" x2="538.3" y2="475" stroke="#9aa0a6"/>
+<text x="538.3" y="493" class="axis" text-anchor="middle">0.73x</text>
+<line x1="665.0" y1="469" x2="665.0" y2="475" stroke="#9aa0a6"/>
+<text x="665.0" y="493" class="axis" text-anchor="middle">1.10x</text>
+<line x1="791.7" y1="469" x2="791.7" y2="475" stroke="#9aa0a6"/>
+<text x="791.7" y="493" class="axis" text-anchor="middle">1.47x</text>
+<line x1="918.3" y1="469" x2="918.3" y2="475" stroke="#9aa0a6"/>
+<text x="918.3" y="493" class="axis" text-anchor="middle">1.84x</text>
+<line x1="1045.0" y1="469" x2="1045.0" y2="475" stroke="#9aa0a6"/>
+<text x="1045.0" y="493" class="axis" text-anchor="middle">2.20x</text>
+</svg>

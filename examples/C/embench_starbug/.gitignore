@@ -1,0 +1,12 @@
+# Build trees and per-run scratch. Sources, Makefiles, the runner and the
+# curated results under presentation_assets/ are tracked; raw objdumps and
+# terminal captures are not.
+.build-starbug/
+.build*/
+logs/
+temp.txt
+temp.out
+test.dump
+check.out
+starting_counts.txt
+*copy.S

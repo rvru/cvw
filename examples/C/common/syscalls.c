@@ -47,6 +47,7 @@ char uartPutStr(const char *str) {
     while (*str) {
         uartSend(*str++);
     }
+    return 0;
 }
 
 /////////////////////////////
@@ -399,6 +400,8 @@ static void vprintfmt(void (*putch)(int, void**), void **putdat, const char *fmt
       break;
     }
   }
+  (void) err;
+  (void) altflag;
 }
 
 int printf(const char* fmt, ...)

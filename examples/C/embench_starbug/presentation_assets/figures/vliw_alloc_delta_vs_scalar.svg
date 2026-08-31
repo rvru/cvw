@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="505" viewBox="0 0 1120 505">
+<style>text { font-family: Arial, Helvetica, sans-serif; fill: #202124; } .title { font-size: 24px; font-weight: 700; } .subtitle { font-size: 13px; fill: #5f6368; } .axis { font-size: 12px; fill: #5f6368; } .label { font-size: 12px; } .value { font-size: 12px; font-weight: 700; }</style>
+<rect width="100%" height="100%" fill="#fff"/>
+<text x="285" y="38" class="title">VLIW ELF Allocated Size Delta vs Scalar</text>
+<text x="285" y="60" class="subtitle">Allocated footprint delta in KiB. Positive bars mean the VLIW ELF is larger.</text>
+<text x="273" y="108" class="label" text-anchor="end">fir_f32_taps256_n128</text>
+<rect x="285" y="95" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="95" width="68.5" height="20" fill="#34a853" rx="4"/>
+<text x="361.5" y="110" class="value">+580 B (text +580, rodata +0)</text>
+<text x="273" y="142" class="label" text-anchor="end">fir_f32_taps256_n1</text>
+<rect x="285" y="129" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="129" width="68.5" height="20" fill="#34a853" rx="4"/>
+<text x="361.5" y="144" class="value">+580 B (text +580, rodata +0)</text>
+<text x="273" y="176" class="label" text-anchor="end">lms_f32_taps256_n128</text>
+<rect x="285" y="163" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="163" width="111.2" height="20" fill="#34a853" rx="4"/>
+<text x="404.2" y="178" class="value">+942 B (text +942, rodata +0)</text>
+<text x="273" y="210" class="label" text-anchor="end">lms_f32_taps256_n1</text>
+<rect x="285" y="197" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="197" width="111.2" height="20" fill="#34a853" rx="4"/>
+<text x="404.2" y="212" class="value">+942 B (text +942, rodata +0)</text>
+<text x="273" y="244" class="label" text-anchor="end">biquad_cascade_df2T_f32_sos3_n128</text>
+<rect x="285" y="231" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="231" width="31.2" height="20" fill="#34a853" rx="4"/>
+<text x="324.2" y="246" class="value">+264 B (text +264, rodata +0)</text>
+<text x="273" y="278" class="label" text-anchor="end">dct4_2048_f32</text>
+<rect x="285" y="265" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="265" width="660.9" height="20" fill="#34a853" rx="4"/>
+<text x="953.9" y="280" class="value">+5596 B (text +5596, rodata +0)</text>
+<text x="273" y="312" class="label" text-anchor="end">rfft2048_f32</text>
+<rect x="285" y="299" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="299" width="326.7" height="20" fill="#34a853" rx="4"/>
+<text x="619.7" y="314" class="value">+2766 B (text +2766, rodata +0)</text>
+<text x="273" y="346" class="label" text-anchor="end">dct4_512_f32</text>
+<rect x="285" y="333" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="333" width="637.5" height="20" fill="#34a853" rx="4"/>
+<text x="930.5" y="348" class="value">+5398 B (text +5398, rodata +0)</text>
+<text x="273" y="380" class="label" text-anchor="end">rfft512_f32</text>
+<rect x="285" y="367" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="367" width="303.0" height="20" fill="#34a853" rx="4"/>
+<text x="596.0" y="382" class="value">+2566 B (text +2566, rodata +0)</text>
+<text x="273" y="414" class="label" text-anchor="end">biquad_cascade_df2T_f32_sos3_n1</text>
+<rect x="285" y="401" width="760.0" height="20" fill="#f1f3f4" rx="4"/>
+<rect x="285" y="401" width="31.2" height="20" fill="#34a853" rx="4"/>
+<text x="324.2" y="416" class="value">+264 B (text +264, rodata +0)</text>
+<line x1="285.0" y1="469" x2="285.0" y2="475" stroke="#9aa0a6"/>
+<text x="285.0" y="493" class="axis" text-anchor="middle">0.00 KiB</text>
+<line x1="411.7" y1="469" x2="411.7" y2="475" stroke="#9aa0a6"/>
+<text x="411.7" y="493" class="axis" text-anchor="middle">1.05 KiB</text>
+<line x1="538.3" y1="469" x2="538.3" y2="475" stroke="#9aa0a6"/>
+<text x="538.3" y="493" class="axis" text-anchor="middle">2.09 KiB</text>
+<line x1="665.0" y1="469" x2="665.0" y2="475" stroke="#9aa0a6"/>
+<text x="665.0" y="493" class="axis" text-anchor="middle">3.14 KiB</text>
+<line x1="791.7" y1="469" x2="791.7" y2="475" stroke="#9aa0a6"/>
+<text x="791.7" y="493" class="axis" text-anchor="middle">4.19 KiB</text>
+<line x1="918.3" y1="469" x2="918.3" y2="475" stroke="#9aa0a6"/>
+<text x="918.3" y="493" class="axis" text-anchor="middle">5.24 KiB</text>
+<line x1="1045.0" y1="469" x2="1045.0" y2="475" stroke="#9aa0a6"/>
+<text x="1045.0" y="493" class="axis" text-anchor="middle">6.28 KiB</text>
+</svg>
